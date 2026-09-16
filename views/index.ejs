@@ -98,10 +98,10 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
+            <!-- PANEL BREAKDOWN STATUS TASK -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Sudah Paid (Lunas)
                     </h3>
@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Belum Paid (Pending)
                     </h3>
@@ -366,6 +366,8 @@
                         const unpaidContainer = document.getElementById('unpaid-task-container');
                         const dashboardWidgets = document.getElementById('dashboard-widgets');
                         const noSummaryMsg = document.getElementById('no-summary-msg');
+                        const titlePaidPanel = document.getElementById('panel-title-paid');
+                        const titleUnpaidPanel = document.getElementById('panel-title-unpaid');
 
                         // =========================================================
                         // KONDISI 1: PDO
@@ -375,6 +377,9 @@
                             pdoBreakdown.classList.add('grid');
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
+
+                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas)`;
+                            titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending)`;
 
                             let tTask = data[4] && data[4][1] !== undefined ? data[4][1] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -498,7 +503,7 @@
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
-
+                        
                         // =========================================================
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
@@ -606,20 +611,23 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH
+                        // KONDISI 3: PETTY CASH (TABEL & PANEL SESUAI REQUEST)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
-                            // TAMPILKAN PANEL LUNAS / PENDING
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
-                            paidContainer.innerHTML = '';
-                            unpaidContainer.innerHTML = '';
-                            
                             dashboardWidgets.classList.add('hidden');
                             noSummaryMsg.classList.remove('hidden');
 
+                            // Sesuaikan judul panel
+                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid)`;
+                            titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Pending)`;
+
+                            paidContainer.innerHTML = '';
+                            unpaidContainer.innerHTML = '';
+
                             const displayHeaders = [
-                                "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
+                                "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
                                 "Status LPJ", "Status Pengajuan", "Keterangan", "Progress", "Dokumen"
                             ];
@@ -631,141 +639,134 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            let headerRow = data[2] || [];
-                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 12, ppc: 13, ket: 14, prog: 15, dok: 16 };
-                            
-                            for(let c = 0; c < headerRow.length; c++) {
-                                if(!headerRow[c]) continue;
-                                let str = headerRow[c].toString().toLowerCase();
-                                if(str === 'no') colIdx.no = c;
-                                else if(str === 'cro') colIdx.cro = c;
-                                else if(str.includes('wilayah')) colIdx.wil = c;
-                                else if(str.includes('pemakaian')) colIdx.pem = c;
-                                else if(str.includes('sisa')) colIdx.sisa = c;
-                                else if(str.includes('permintaan')) colIdx.perm = c;
-                                else if(str.includes('status lpj')) colIdx.slpj = c;
-                                else if(str.includes('pengajuan') || str.includes('status pengajuan')) colIdx.ppc = c;
-                                else if(str.includes('keterangan')) colIdx.ket = c;
-                                else if(str.includes('progress')) colIdx.prog = c;
-                                else if(str.includes('dokumen')) colIdx.dok = c;
-                            }
-
-                            for (let i = 17; i < data.length; i++) {
+                            // Karena baris atas petty cash lumayan kotor, kita parse dari index 8 ke bawah
+                            for (let i = 8; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
-                                let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
+                                let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
+                                // Render Banner Bulan
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
-                                    let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="10" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
 
                                 if (colZero === '' || isNaN(colZero)) continue;
 
-                                // --- LOGIKA KOTAK PAID/BELUM PAID PETTY CASH ---
-                                let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
-                                let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
-                                let permValRaw = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm].toString() : '0';
-                                let ketVal = row[colIdx.ket] !== undefined && row[colIdx.ket] !== null ? row[colIdx.ket].toString().trim() : '-';
-                                let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
+                                // Ambil data dari index array (Sesuai foto Excel asli)
+                                let croVal = row[1] !== undefined && row[1] !== null ? row[1].toString().trim() : '-';
+                                let wilVal = row[2] !== undefined && row[2] !== null ? row[2].toString().trim() : '-';
+                                let pemVal = row[3] !== undefined && row[3] !== null ? row[3] : 0;
+                                let sisaVal = row[4] !== undefined && row[4] !== null ? row[4] : 0;
+                                let permVal = row[5] !== undefined && row[5] !== null ? row[5] : 0;
+                                let lpjVal = row[6];
+                                let ppcVal = row[7];
+                                let ketVal = row[8] !== undefined && row[8] !== null ? row[8].toString().trim() : '-';
+                                let progVal = row[9] !== undefined && row[9] !== null ? row[9].toString().trim() : '-';
+                                let dokVal = row[10] !== undefined && row[10] !== null ? row[10].toString().trim() : '-';
 
-                                let cleanPerm = permValRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
-                                let numPerm = parseInt(cleanPerm, 10);
-                                let permStr = isNaN(numPerm) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numPerm);
+                                // Format Uang
+                                let formatRp = (val) => {
+                                    if (val === '-' || val === '') return '-';
+                                    let cleanStr = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                    let numVal = parseFloat(cleanStr);
+                                    return isNaN(numVal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
+                                };
 
-                                let isPaid = progVal.toLowerCase().includes('paid');
+                                let pemStr = formatRp(pemVal);
+                                let sisaStr = formatRp(sisaVal);
+                                let permStr = formatRp(permVal);
 
-                                let taskItemHTML = `
-                                    <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
-                                        <div class="pr-2">
-                                            <p class="text-white font-medium text-xs mb-1 truncate max-w-[200px]" title="${croVal} - ${wilVal}">${croVal} - ${wilVal}</p>
-                                            <p class="text-[10px] text-gray-400">Ket: <span class="text-blue-400 font-semibold truncate max-w-[150px] inline-block align-bottom" title="${ketVal}">${ketVal}</span></p>
-                                            <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
-                                        </div>
-                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap">
-                                            ${isPaid ? 'PAID' : 'BELUM PAID'}
-                                        </span>
-                                    </div>
-                                `;
+                                // Format Checkbox
+                                let formatCheck = (val) => {
+                                    let isTrue = String(val).toUpperCase() === 'TRUE' || val === 1 || val === '1' || val === true || String(val).includes('TRUE') || String(val).includes('☑');
+                                    if (isTrue) {
+                                        return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                    } else {
+                                        return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
+                                    }
+                                };
+                                let lpjHTML = formatCheck(lpjVal);
+                                let ppcHTML = formatCheck(ppcVal);
 
-                                if (isPaid) {
-                                    paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                } else {
-                                    unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                // Format Progress Badge
+                                let rawProg = progVal.toLowerCase();
+                                let progHTML = '-';
+                                if (rawProg.includes('paid')) {
+                                    progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
+                                } else if (rawProg.includes('review') || rawProg.includes('dirops')) {
+                                    progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-purple-500/20 text-purple-400 border border-purple-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
+                                } else if (rawProg !== '-' && rawProg !== '') {
+                                    progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-slate-500/10 text-slate-400 border border-slate-500/20 inline-block whitespace-nowrap">${progVal}</span>`;
                                 }
-                                // ---------------------------------------------
 
-                                let cellData = [
-                                    row[colIdx.no], row[colIdx.cro], row[colIdx.wil], row[colIdx.pem],
-                                    row[colIdx.sisa], row[colIdx.perm], row[colIdx.slpj], row[colIdx.ppc], 
-                                    row[colIdx.ket], row[colIdx.prog], row[colIdx.dok]
-                                ];
+                                // Format Dokumen
+                                let dokHTML = '-';
+                                if (dokVal !== '-' && dokVal !== '') {
+                                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                    if (urlRegex.test(dokVal)) {
+                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
+                                    } else {
+                                        const safeName = dokVal.replace(/'/g, "\\'");
+                                        dokHTML = `
+                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px]" title="${safeName}">
+                                                <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${dokVal}</span>
+                                            </button>
+                                        `;
+                                    }
+                                }
+
+                                // --- LOGIKA PANEL ATAS (HANYA MUNCUL JIKA PAID / REVIEW) ---
+                                // JIKA KOSONG / '-' TIDAK AKAN MASUK KE KOTAK MANAPUN!
+                                if (rawProg.includes('paid') || rawProg.includes('review') || rawProg.includes('dirops')) {
+                                    let isPaid = rawProg.includes('paid');
+                                    let taskItemHTML = `
+                                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
+                                            <div class="pr-2">
+                                                <p class="text-white font-medium text-xs mb-1 truncate max-w-[200px]" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500">- ${wilVal}</span></p>
+                                                <p class="text-[10px] text-gray-400 truncate max-w-[200px]" title="${ketVal}">Ket: <span class="text-blue-400 font-semibold">${ketVal}</span></p>
+                                                <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
+                                            </div>
+                                            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase">
+                                                ${isPaid ? 'PAID' : progVal}
+                                            </span>
+                                        </div>
+                                    `;
+
+                                    if (isPaid) {
+                                        paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                    } else {
+                                        unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                    }
+                                }
+                                // -------------------------------------------------------------
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
-                                cellData.forEach((rawVal, c) => {
-                                    let cellVal = (rawVal !== undefined && rawVal !== null) ? rawVal : '-';
-                                    if (cellVal !== '-') cellVal = cellVal.toString().trim();
-                                    if (cellVal === 'nan' || cellVal === '') cellVal = '-';
-
-                                    if ((c === 3 || c === 4 || c === 5) && cellVal !== '-') {
-                                        let cleanStr = cellVal.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
-                                        let numVal = parseInt(cleanStr, 10);
-                                        if (!isNaN(numVal)) {
-                                            cellVal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
-                                        }
-                                    }
-
-                                    if (c === 6 || c === 7) {
-                                        let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true') {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
-                                        } else {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                        }
-                                    }
-                                    
-                                    // Badge Progress
-                                    if (c === 9 && cellVal !== '-') {
-                                        let lProg = cellVal.toLowerCase();
-                                        let progColor = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-                                        if (lProg.includes('paid') || lProg.includes('approved')) progColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25';
-                                        else if (lProg.includes('review') || lProg.includes('dirops')) progColor = 'bg-purple-500/10 text-purple-400 border-purple-500/25';
-                                        else if (lProg.includes('revisi')) progColor = 'bg-amber-500/10 text-amber-400 border-amber-500/25';
-                                        cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${progColor} inline-block whitespace-nowrap">${cellVal}</span>`;
-                                    }
-
-                                    if (c === 10 && cellVal !== '-') {
-                                        const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                        if (urlRegex.test(cellVal)) {
-                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
-                                        } else {
-                                            const safeName = cellVal.replace(/'/g, "\\'");
-                                            cellVal = `
-                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px]" title="${safeName}">
-                                                    <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                    <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${cellVal}</span>
-                                                </button>
-                                            `;
-                                        }
-                                    }
-
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 8 || c === 10) cellClasses += " min-w-[200px] whitespace-normal leading-relaxed";
-                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
-                                });
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${croVal}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${wilVal}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${pemStr}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${sisaStr}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${permStr}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${lpjHTML}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${ppcHTML}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed">${ketVal}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${progHTML}</td>`;
+                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${dokHTML}</td>`;
                                 rowHTML += '</tr>';
+                                
                                 allTableRowsHTML.push(rowHTML);
                             }
-                            
+
                             if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada pengajuan yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Semua pengajuan sudah lunas.</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Tidak ada pengajuan yang sedang di-review.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
