@@ -98,20 +98,20 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
+            <!-- PANEL STATUS LUNAS VS PENDING (DIGUNAKAN BERSAMA: PDO & PETTY CASH) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 id="paid-panel-title" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Task Sudah Paid (Lunas)
+                        Status Lunas (Paid)
                     </h3>
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
 
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 id="unpaid-panel-title" class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Task Belum Paid (Pending)
+                        Status Belum Lunas (Pending / Review)
                     </h3>
                     <div id="unpaid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
@@ -122,8 +122,8 @@
                 Sheet ini tidak memiliki ringkasan (Total/Summary).
             </div>
 
-            <!-- Tabel Data Utama -->
-            <div class="bg-[#12151c] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
+            <!-- CONTAINER 1: TABEL UMUM & PDO & MONITORING -->
+            <div id="table-view-container" class="bg-[#12151c] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
                 <div class="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase flex items-center gap-2">
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
@@ -147,6 +147,10 @@
                     <div id="pagination-container" class="flex items-center gap-2"></div>
                 </div>
             </div>
+
+            <!-- CONTAINER 2: KHUSUS PETTY CASH (MODULAR GRID CARDS) -->
+            <div id="petty-cash-view-container" class="hidden flex flex-col gap-6"></div>
+
         </div>
     </main>
 
@@ -196,10 +200,10 @@
                         <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                     </div>
                     <h2 class="text-xl font-bold text-white mb-2 tracking-wide">Dokumen Tersembunyi (Smart Chip)</h2>
-                    <p class="text-gray-400 mb-8 text-sm leading-relaxed max-w-md">Karena format di Google Sheets adalah <i>Smart Chip</i>, link aslinya disembunyikan. <br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
+                    <p class="text-gray-400 mb-8 text-sm leading-relaxed max-w-md">Format link asli disembunyikan dalam Smart Chip Google Sheets.<br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
                     <a href="${searchUrl}" target="_blank" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        Cari PDF ini di Google Drive
+                        Cari Dokumen di Google Drive
                     </a>
                 `;
                 modalOverlay.classList.remove('hidden');
@@ -366,11 +370,16 @@
                         const unpaidContainer = document.getElementById('unpaid-task-container');
                         const dashboardWidgets = document.getElementById('dashboard-widgets');
                         const noSummaryMsg = document.getElementById('no-summary-msg');
+                        const tableView = document.getElementById('table-view-container');
+                        const pettyView = document.getElementById('petty-cash-view-container');
 
                         // =========================================================
                         // KONDISI 1: PDO
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
+                            tableView.classList.remove('hidden');
+                            pettyView.classList.add('hidden');
+
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             paidContainer.innerHTML = '';
@@ -498,11 +507,14 @@
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
-
+                        
                         // =========================================================
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            tableView.classList.remove('hidden');
+                            pettyView.classList.add('hidden');
+
                             pdoBreakdown.classList.remove('grid');
                             pdoBreakdown.classList.add('hidden');
 
@@ -606,10 +618,15 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH
+                        // KONDISI 3: PETTY CASH (MODULAR CARDS ELEGAN & MODERN)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
-                            // TAMPILKAN PANEL LUNAS / PENDING
+                            // Sembunyikan tabel biasa, tampilkan container kartu
+                            tableView.classList.add('hidden');
+                            pettyView.classList.remove('hidden');
+                            pettyView.innerHTML = '';
+
+                            // Tampilkan panel Lunas vs Pending
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             paidContainer.innerHTML = '';
@@ -617,19 +634,6 @@
                             
                             dashboardWidgets.classList.add('hidden');
                             noSummaryMsg.classList.remove('hidden');
-
-                            const displayHeaders = [
-                                "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
-                                "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
-                                "Status LPJ", "Status Pengajuan", "Keterangan", "Progress", "Dokumen"
-                            ];
-                            
-                            let headHTML = '<tr>';
-                            displayHeaders.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
-                            });
-                            headHTML += '</tr>';
-                            thead.innerHTML = headHTML;
 
                             let headerRow = data[2] || [];
                             let colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 12, ppc: 13, ket: 14, prog: 15, dok: 16 };
@@ -650,6 +654,9 @@
                                 else if(str.includes('dokumen')) colIdx.dok = c;
                             }
 
+                            let currentMonthSection = null;
+                            let currentGrid = null;
+
                             for (let i = 17; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
@@ -657,33 +664,88 @@
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
+                                // Jika baris adalah Banner Pemisah Bulan (Agustus / September)
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
-                                    let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
-                                    allTableRowsHTML.push(rowHTML);
+                                    
+                                    currentMonthSection = document.createElement('div');
+                                    currentMonthSection.className = 'flex flex-col gap-4 mt-2';
+                                    
+                                    const headerBanner = `
+                                        <div class="bg-gradient-to-r from-emerald-500/20 via-emerald-500/5 to-transparent border-l-4 border-emerald-500 px-6 py-4 rounded-r-2xl flex items-center justify-between shadow-lg">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                </div>
+                                                <h2 class="text-emerald-400 font-bold text-sm tracking-wider uppercase">${title}</h2>
+                                            </div>
+                                            <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-widest bg-white/5 px-3 py-1 rounded-md border border-white/5">Rekap Periode</span>
+                                        </div>
+                                    `;
+                                    currentMonthSection.innerHTML = headerBanner;
+
+                                    currentGrid = document.createElement('div');
+                                    currentGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                                    currentMonthSection.appendChild(currentGrid);
+                                    pettyView.appendChild(currentMonthSection);
                                     continue;
                                 }
 
                                 if (colZero === '' || isNaN(colZero)) continue;
 
-                                // --- LOGIKA KOTAK PAID/BELUM PAID PETTY CASH ---
+                                // Parsing Data Tiap Baris
                                 let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
                                 let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
-                                let permValRaw = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm].toString() : '0';
                                 let ketVal = row[colIdx.ket] !== undefined && row[colIdx.ket] !== null ? row[colIdx.ket].toString().trim() : '-';
                                 let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
+                                let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
 
-                                let cleanPerm = permValRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
-                                let numPerm = parseInt(cleanPerm, 10);
-                                let permStr = isNaN(numPerm) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numPerm);
+                                let formatRupiah = (val) => {
+                                    if (!val || val === '-' || val === 'nan') return 'Rp 0';
+                                    let clean = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                    let num = parseInt(clean, 10);
+                                    return isNaN(num) ? 'Rp 0' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+                                };
 
-                                let isPaid = progVal.toLowerCase().includes('paid');
+                                let pemStr = formatRupiah(row[colIdx.pem]);
+                                let sisaStr = formatRupiah(row[colIdx.sisa]);
+                                let permStr = formatRupiah(row[colIdx.perm]);
 
+                                let isLpj = String(row[colIdx.slpj]).toUpperCase() === 'TRUE' || row[colIdx.slpj] === 1 || row[colIdx.slpj] === '1';
+                                let isPpc = String(row[colIdx.ppc]).toUpperCase() === 'TRUE' || row[colIdx.ppc] === 1 || row[colIdx.ppc] === '1';
+                                let isPaid = progVal.toLowerCase().includes('paid') || progVal.toLowerCase().includes('approved');
+
+                                // Warna Badge Progress
+                                let progColor = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+                                if (isPaid) progColor = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                                else if (progVal.toLowerCase().includes('review')) progColor = 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+                                else if (progVal.toLowerCase().includes('revisi')) progColor = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+
+                                // Render Button Dokumen
+                                let docButtonHTML = '';
+                                if (dokVal !== '-' && dokVal !== '') {
+                                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                    if (urlRegex.test(dokVal)) {
+                                        docButtonHTML = `<a href="${dokVal}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500/10 text-sky-400 border border-sky-500/25 hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`;
+                                    } else {
+                                        const safeName = dokVal.replace(/'/g, "\\'");
+                                        docButtonHTML = `
+                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-xs text-sky-300 font-medium hover:text-sky-200 focus:outline-none truncate max-w-[200px]" title="${safeName}">
+                                                <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${dokVal}</span>
+                                            </button>
+                                        `;
+                                    }
+                                } else {
+                                    docButtonHTML = `<span class="text-gray-600 text-xs italic">Tanpa Lampiran</span>`;
+                                }
+
+                                // 1. Panel Atas Paid / Belum Paid
                                 let taskItemHTML = `
                                     <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
                                         <div class="pr-2">
-                                            <p class="text-white font-medium text-xs mb-1 truncate max-w-[200px]" title="${croVal} - ${wilVal}">${croVal} - ${wilVal}</p>
-                                            <p class="text-[10px] text-gray-400">Ket: <span class="text-blue-400 font-semibold truncate max-w-[150px] inline-block align-bottom" title="${ketVal}">${ketVal}</span></p>
+                                            <p class="text-white font-medium text-xs mb-1 truncate max-w-[220px]" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500">(${wilVal})</span></p>
+                                            <p class="text-[10px] text-gray-400 truncate max-w-[220px]" title="${ketVal}">Ket: <span class="text-blue-400 font-semibold">${ketVal}</span></p>
                                             <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
                                         </div>
                                         <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap">
@@ -697,78 +759,82 @@
                                 } else {
                                     unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
                                 }
-                                // ---------------------------------------------
 
-                                let cellData = [
-                                    row[colIdx.no], row[colIdx.cro], row[colIdx.wil], row[colIdx.pem],
-                                    row[colIdx.sisa], row[colIdx.perm], row[colIdx.slpj], row[colIdx.ppc], 
-                                    row[colIdx.ket], row[colIdx.prog], row[colIdx.dok]
-                                ];
+                                // 2. Elegan Modular Card untuk Tiap Baris
+                                let cardHTML = `
+                                    <div class="bg-[#12151c] border border-white/5 hover:border-white/15 rounded-2xl p-5 shadow-2xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
+                                        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors pointer-events-none"></div>
 
-                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
-                                cellData.forEach((rawVal, c) => {
-                                    let cellVal = (rawVal !== undefined && rawVal !== null) ? rawVal : '-';
-                                    if (cellVal !== '-') cellVal = cellVal.toString().trim();
-                                    if (cellVal === 'nan' || cellVal === '') cellVal = '-';
+                                        <div>
+                                            <div class="flex items-start justify-between gap-3 mb-4">
+                                                <div>
+                                                    <div class="flex items-center gap-2 mb-1">
+                                                        <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-white/10 text-white border border-white/10">#${colZero}</span>
+                                                        <h3 class="text-white font-bold text-sm tracking-wide truncate max-w-[200px]" title="${croVal} - ${wilVal}">${croVal}</h3>
+                                                    </div>
+                                                    <p class="text-xs text-gray-400 flex items-center gap-1.5 font-medium">
+                                                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                        ${wilVal}
+                                                    </p>
+                                                </div>
+                                                <span class="px-3 py-1 rounded-lg text-[10px] font-extrabold tracking-wider uppercase border shadow-sm whitespace-nowrap ${progColor}">
+                                                    ${progVal}
+                                                </span>
+                                            </div>
 
-                                    if ((c === 3 || c === 4 || c === 5) && cellVal !== '-') {
-                                        let cleanStr = cellVal.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
-                                        let numVal = parseInt(cleanStr, 10);
-                                        if (!isNaN(numVal)) {
-                                            cellVal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
-                                        }
-                                    }
+                                            <div class="grid grid-cols-3 gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/5 mb-4">
+                                                <div class="flex flex-col">
+                                                    <span class="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-1">Pemakaian</span>
+                                                    <span class="text-xs font-semibold text-gray-300 truncate" title="${pemStr}">${pemStr}</span>
+                                                </div>
+                                                <div class="flex flex-col border-l border-white/5 pl-2">
+                                                    <span class="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-1">Sisa Kas</span>
+                                                    <span class="text-xs font-semibold text-cyan-400 truncate" title="${sisaStr}">${sisaStr}</span>
+                                                </div>
+                                                <div class="flex flex-col border-l border-white/5 pl-2">
+                                                    <span class="text-[9px] text-emerald-500 uppercase font-bold tracking-wider mb-1">Permintaan</span>
+                                                    <span class="text-xs font-bold text-emerald-400 truncate" title="${permStr}">${permStr}</span>
+                                                </div>
+                                            </div>
 
-                                    if (c === 6 || c === 7) {
-                                        let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true') {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
-                                        } else {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                        }
-                                    }
-                                    
-                                    // Badge Progress
-                                    if (c === 9 && cellVal !== '-') {
-                                        let lProg = cellVal.toLowerCase();
-                                        let progColor = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-                                        if (lProg.includes('paid') || lProg.includes('approved')) progColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25';
-                                        else if (lProg.includes('review') || lProg.includes('dirops')) progColor = 'bg-purple-500/10 text-purple-400 border-purple-500/25';
-                                        else if (lProg.includes('revisi')) progColor = 'bg-amber-500/10 text-amber-400 border-amber-500/25';
-                                        cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${progColor} inline-block whitespace-nowrap">${cellVal}</span>`;
-                                    }
+                                            <div class="mb-4">
+                                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Keterangan Pengajuan</p>
+                                                <p class="text-xs text-gray-300 leading-relaxed bg-white/[0.01] p-2 rounded-lg border border-white/5">${ketVal}</p>
+                                            </div>
+                                        </div>
 
-                                    if (c === 10 && cellVal !== '-') {
-                                        const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                        if (urlRegex.test(cellVal)) {
-                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
-                                        } else {
-                                            const safeName = cellVal.replace(/'/g, "\\'");
-                                            cellVal = `
-                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px]" title="${safeName}">
-                                                    <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                    <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${cellVal}</span>
-                                                </button>
-                                            `;
-                                        }
-                                    }
+                                        <div class="pt-3 border-t border-white/5 flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex items-center gap-1.5" title="Status LPJ">
+                                                    <div class="w-4 h-4 rounded flex items-center justify-center ${isLpj ? 'bg-blue-500 text-white' : 'bg-white/5 text-transparent border border-white/10'}">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                    </div>
+                                                    <span class="text-[10px] font-semibold text-gray-400">LPJ</span>
+                                                </div>
+                                                <div class="flex items-center gap-1.5" title="Pengajuan Petty Cash">
+                                                    <div class="w-4 h-4 rounded flex items-center justify-center ${isPpc ? 'bg-blue-500 text-white' : 'bg-white/5 text-transparent border border-white/10'}">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                    </div>
+                                                    <span class="text-[10px] font-semibold text-gray-400">Pengajuan</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                ${docButtonHTML}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
 
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 8 || c === 10) cellClasses += " min-w-[200px] whitespace-normal leading-relaxed";
-                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
-                                });
-                                rowHTML += '</tr>';
-                                allTableRowsHTML.push(rowHTML);
+                                if (currentGrid) {
+                                    currentGrid.insertAdjacentHTML('beforeend', cardHTML);
+                                } else {
+                                    pettyView.insertAdjacentHTML('beforeend', cardHTML);
+                                }
                             }
-                            
+
                             if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada pengajuan yang lunas.</p>`;
                             if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Semua pengajuan sudah lunas.</p>`;
-
-                            if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
-                            } else {
-                                renderTablePage();
-                            }
+                            
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
 
@@ -776,6 +842,9 @@
                         // KONDISI UMUM
                         // =========================================================
                         else {
+                            tableView.classList.remove('hidden');
+                            pettyView.classList.add('hidden');
+
                             pdoBreakdown.classList.remove('grid');
                             pdoBreakdown.classList.add('hidden');
                             dashboardWidgets.classList.add('hidden');
