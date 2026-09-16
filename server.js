@@ -14,14 +14,15 @@ app.get('/', (req, res) => {
 
 // Route API LIVE langsung mengambil dari Link Google Sheets Online
 app.get('/api/sheet/:sheetName', (req, res) => {
-    // 1. Ubah parameter yang dikirim frontend jadi huruf kecil semua biar aman
+    // Ubah jadi huruf kecil semua biar kebal error besar/kecil
     const sheetNameKey = req.params.sheetName.toLowerCase();
     
+    // KAMUS PINTAR TRANSLASI NAMA SHEET
     const sheetMap = {
         'monitoring_pembayaran': 'Monitoring Pembayaran',
         'pdo': 'PDO',
-        // 2. Key diubah jadi huruf kecil semua ("mandiri")
-        'monitoring_pembayaran_pengelolaan_mandiri': 'Monitoring Pembayaran Pengelolaan Mandiri',
+        // INI KUNCINYA: Web minta nama panjang, tapi kita arahin server buat nyari nama pendek (31 huruf limit Excel)
+        'monitoring_pembayaran_pengelolaan_mandiri': 'Monitoring Pembayaran Pengelola',
         'spk_lokal': 'SPK Lokal',
         'petty_cash': 'Petty Cash',
         'surat_masuk': 'Surat Masuk',
@@ -66,14 +67,14 @@ function processStream(stream, targetSheetName, res) {
             const buffer = Buffer.concat(chunks);
             const workbook = XLSX.read(buffer, { type: 'buffer' });
             
-            // 3. Cari sheet di Excel secara otomatis nggak peduli huruf besar/kecil (kebal typo)
+            // Cari nama sheet di dalam Excel tanpa peduli huruf besar/kecil
             const actualSheetName = workbook.SheetNames.find(
                 name => name.toLowerCase() === targetSheetName.toLowerCase()
             );
 
-            // Kalau sheet tetep ga ketemu di dalam file Excel-nya
+            // Kalau nama tab beneran nggak ada di file Excel
             if (!actualSheetName || !workbook.Sheets[actualSheetName]) {
-                return res.status(404).json({ error: `Sheet "${targetSheetName}" tidak ditemukan di Google Sheets. Pastikan nama tab di Excel sama persis.` });
+                return res.status(404).json({ error: `Sheet "${targetSheetName}" tidak ditemukan di Google Sheets. Cek limit 31 karakter Excel.` });
             }
 
             const worksheet = workbook.Sheets[actualSheetName];
