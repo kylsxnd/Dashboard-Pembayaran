@@ -78,13 +78,13 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD WIDGETS & CHARTS -->
-            <div id="dashboard-widgets" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 hidden">
+            <!-- DASHBOARD WIDGETS & CHARTS UMUM (PDO & MONITORING) -->
+            <div id="dashboard-widgets" class="hidden grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 <div class="col-span-2 bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-6 flex items-center gap-2">
                         <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        Distribusi Task 3D
+                        Distribusi Data
                     </h3>
                     <div class="relative w-full h-[300px]" id="barChartContainer"></div>
                 </div>
@@ -92,38 +92,33 @@
                 <div class="col-span-1 bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                        Summary Data
+                        Summary Box
                     </h3>
                     <div id="summaryCardsContainer" class="grid grid-cols-2 gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
             </div>
 
-            <!-- PANEL STATUS LUNAS VS PENDING (DIGUNAKAN BERSAMA: PDO & PETTY CASH) -->
+            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 id="paid-panel-title" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Status Lunas (Paid)
+                        Task Sudah Paid (Lunas)
                     </h3>
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
 
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 id="unpaid-panel-title" class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Status Belum Lunas (Pending / Review)
+                        Task Belum Paid (Pending)
                     </h3>
                     <div id="unpaid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
             </div>
 
-            <div id="no-summary-msg" class="hidden mb-8 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm px-6 py-4 rounded-xl flex items-center gap-3">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Sheet ini tidak memiliki ringkasan (Total/Summary).
-            </div>
-
-            <!-- CONTAINER 1: TABEL UMUM & PDO & MONITORING -->
-            <div id="table-view-container" class="bg-[#12151c] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
+            <!-- CONTAINER 1: TABEL DATA BIASA (UNTUK PDO & MONITORING SAJA) -->
+            <div id="table-view-container" class="hidden bg-[#12151c] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex-col">
                 <div class="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase flex items-center gap-2">
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
@@ -148,8 +143,61 @@
                 </div>
             </div>
 
-            <!-- CONTAINER 2: KHUSUS PETTY CASH (MODULAR GRID CARDS) -->
-            <div id="petty-cash-view-container" class="hidden flex flex-col gap-6"></div>
+            <!-- CONTAINER 2: KHUSUS PETTY CASH (PURE ANALYTICS DASHBOARD) -->
+            <div id="petty-cash-dashboard-container" class="hidden flex-col gap-6">
+                <!-- 3 Kotak Summary Uang -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-[#12151c] to-blue-900/20 border border-blue-500/20 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                        <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mb-4 text-blue-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-1">Total Permintaan Cash</p>
+                        <h2 id="pc-sum-permintaan" class="text-3xl font-black text-white">Rp 0</h2>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-[#12151c] to-emerald-900/20 border border-emerald-500/20 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4 text-emerald-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mb-1">Total Pemakaian</p>
+                        <h2 id="pc-sum-pemakaian" class="text-3xl font-black text-white">Rp 0</h2>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-[#12151c] to-cyan-900/20 border border-cyan-500/20 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                        <div class="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4 text-cyan-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                        </div>
+                        <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-1">Total Sisa Kas</p>
+                        <h2 id="pc-sum-sisa" class="text-3xl font-black text-white">Rp 0</h2>
+                    </div>
+                </div>
+
+                <!-- Grafik Batang Besar -->
+                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl">
+                    <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Grafik Permintaan per Wilayah / CRO
+                    </h3>
+                    <div id="pc-bar-chart" class="w-full h-[350px]"></div>
+                </div>
+
+                <!-- 2 Grafik Lingkaran (Pie Chart) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl">
+                        <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-4">Distribusi Progress Pengajuan</h3>
+                        <div id="pc-pie-progress" class="w-full h-[300px]"></div>
+                    </div>
+                    <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl">
+                        <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-4">Status Kelengkapan LPJ</h3>
+                        <div id="pc-pie-lpj" class="w-full h-[300px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="no-summary-msg" class="hidden mb-8 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm px-6 py-4 rounded-xl flex items-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Sheet ini tidak memiliki ringkasan (Total/Summary).
+            </div>
 
         </div>
     </main>
@@ -200,10 +248,10 @@
                         <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                     </div>
                     <h2 class="text-xl font-bold text-white mb-2 tracking-wide">Dokumen Tersembunyi (Smart Chip)</h2>
-                    <p class="text-gray-400 mb-8 text-sm leading-relaxed max-w-md">Format link asli disembunyikan dalam Smart Chip Google Sheets.<br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
+                    <p class="text-gray-400 mb-8 text-sm leading-relaxed max-w-md">Karena format di Google Sheets adalah <i>Smart Chip</i>, link aslinya disembunyikan. <br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
                     <a href="${searchUrl}" target="_blank" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        Cari Dokumen di Google Drive
+                        Cari PDF ini di Google Drive
                     </a>
                 `;
                 modalOverlay.classList.remove('hidden');
@@ -218,6 +266,9 @@
 
             let currentActiveSheet = sheetTabs[0];
             let barChartInstance = null; 
+            let pcBarChartInstance = null;
+            let pcPieProgressInstance = null;
+            let pcPieLpjInstance = null;
             let allTableRowsHTML = []; 
             let currentPage = 1;
             const rowsPerPage = 10;
@@ -284,6 +335,42 @@
                         </div>
                     `;
                 }
+            }
+
+            // FUNGSI RENDER DASHBOARD KHUSUS PETTY CASH
+            function renderPettyCashDashboard(croLabels, croValues, progData, lpjData) {
+                if (pcBarChartInstance) pcBarChartInstance.destroy();
+                if (pcPieProgressInstance) pcPieProgressInstance.destroy();
+                if (pcPieLpjInstance) pcPieLpjInstance.destroy();
+
+                pcBarChartInstance = Highcharts.chart('pc-bar-chart', {
+                    chart: { type: 'column', backgroundColor: 'transparent' },
+                    title: { text: null },
+                    xAxis: { categories: croLabels, labels: { style: { color: '#94a3b8', fontSize: '10px', fontFamily: 'Inter' } }, gridLineColor: 'rgba(255,255,255,0.05)', lineColor: 'rgba(255,255,255,0.1)' },
+                    yAxis: { title: { text: null }, labels: { style: { color: '#94a3b8' } }, gridLineColor: 'rgba(255,255,255,0.05)' },
+                    tooltip: { backgroundColor: 'rgba(18, 21, 28, 0.95)', style: { color: '#e2e8f0' }, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, pointFormat: '<span style="color:{point.color}">\u25CF</span> Permintaan: <b>Rp {point.y:,.0f}</b>' },
+                    plotOptions: { column: { colorByPoint: true, borderRadius: 4, borderColor: 'rgba(0,0,0,0.3)', borderWidth: 1 } },
+                    series: [{ name: 'Permintaan', data: croValues, showInLegend: false }],
+                    credits: { enabled: false }
+                });
+
+                pcPieProgressInstance = Highcharts.chart('pc-pie-progress', {
+                    chart: { type: 'pie', backgroundColor: 'transparent' },
+                    title: { text: null },
+                    tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b> ({point.y} Data)' },
+                    plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '<b>{point.name}</b><br>{point.y}', style: { color: '#e2e8f0', textOutline: 'none', fontSize: '10px' } }, borderWidth: 0 } },
+                    series: [{ name: 'Progress', colorByPoint: true, data: progData }],
+                    credits: { enabled: false }
+                });
+
+                pcPieLpjInstance = Highcharts.chart('pc-pie-lpj', {
+                    chart: { type: 'pie', backgroundColor: 'transparent' },
+                    title: { text: null },
+                    tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b> ({point.y} Data)' },
+                    plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '<b>{point.name}</b><br>{point.y}', style: { color: '#e2e8f0', textOutline: 'none', fontSize: '10px' } }, borderWidth: 0, innerSize: '50%' } },
+                    series: [{ name: 'LPJ', colorByPoint: true, data: lpjData }],
+                    credits: { enabled: false }
+                });
             }
 
             function renderPagination() {
@@ -368,20 +455,29 @@
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
                         const paidContainer = document.getElementById('paid-task-container');
                         const unpaidContainer = document.getElementById('unpaid-task-container');
+                        
                         const dashboardWidgets = document.getElementById('dashboard-widgets');
                         const noSummaryMsg = document.getElementById('no-summary-msg');
                         const tableView = document.getElementById('table-view-container');
-                        const pettyView = document.getElementById('petty-cash-view-container');
+                        const pcDashboardView = document.getElementById('petty-cash-dashboard-container');
+
+                        // Reset Visibility
+                        pdoBreakdown.classList.add('hidden');
+                        dashboardWidgets.classList.add('hidden');
+                        noSummaryMsg.classList.add('hidden');
+                        tableView.classList.add('hidden');
+                        pcDashboardView.classList.add('hidden');
+                        pcDashboardView.classList.remove('flex');
 
                         // =========================================================
                         // KONDISI 1: PDO
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
                             tableView.classList.remove('hidden');
-                            pettyView.classList.add('hidden');
-
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
+                            dashboardWidgets.classList.remove('hidden');
+
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
@@ -398,8 +494,6 @@
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRev, tDip];
                             let dateValue = data[4] ? formatCellDate(data[4][12]) : "-";
 
-                            dashboardWidgets.classList.remove('hidden');
-                            noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
                             const headers = [
@@ -513,10 +607,7 @@
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                             tableView.classList.remove('hidden');
-                            pettyView.classList.add('hidden');
-
-                            pdoBreakdown.classList.remove('grid');
-                            pdoBreakdown.classList.add('hidden');
+                            dashboardWidgets.classList.remove('hidden');
 
                             let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -530,8 +621,6 @@
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
                             let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
-                            dashboardWidgets.classList.remove('hidden');
-                            noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
                             const headers = [
@@ -618,22 +707,13 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH (MODULAR CARDS ELEGAN & MODERN)
+                        // KONDISI 3: PETTY CASH (PURE DASHBOARD ANALYTICS)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
-                            // Sembunyikan tabel biasa, tampilkan container kartu
-                            tableView.classList.add('hidden');
-                            pettyView.classList.remove('hidden');
-                            pettyView.innerHTML = '';
-
-                            // Tampilkan panel Lunas vs Pending
-                            pdoBreakdown.classList.remove('hidden');
-                            pdoBreakdown.classList.add('grid');
-                            paidContainer.innerHTML = '';
-                            unpaidContainer.innerHTML = '';
-                            
-                            dashboardWidgets.classList.add('hidden');
-                            noSummaryMsg.classList.remove('hidden');
+                            // TAMPILKAN PANEL PURE DASHBOARD, SEMBUNYIKAN TABEL
+                            pcDashboardView.classList.remove('hidden');
+                            pcDashboardView.classList.add('flex');
+                            noSummaryMsg.classList.add('hidden'); // Karena ada summary
 
                             let headerRow = data[2] || [];
                             let colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 12, ppc: 13, ket: 14, prog: 15, dok: 16 };
@@ -654,187 +734,86 @@
                                 else if(str.includes('dokumen')) colIdx.dok = c;
                             }
 
-                            let currentMonthSection = null;
-                            let currentGrid = null;
+                            // Variabel Kalkulasi Metrics
+                            let totalPemakaian = 0;
+                            let totalSisa = 0;
+                            let totalPermintaan = 0;
+
+                            let croPermintaanMap = {};
+                            let progressMap = { 'Paid / Approved': 0, 'Review Dirops': 0, 'Revisi / Lainnya': 0 };
+                            let lpjMap = { 'Sudah LPJ': 0, 'Belum LPJ': 0 };
 
                             for (let i = 17; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
-                                let fullText = row.join(' ').replace(/,/g, '').trim();
+                                if (colZero === '' || isNaN(colZero)) continue; // Abaikan baris bulan (hanya hitung data angka)
 
-                                // Jika baris adalah Banner Pemisah Bulan (Agustus / September)
-                                if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
-                                    let title = row.find(v => v !== null && v !== '') || fullText;
-                                    
-                                    currentMonthSection = document.createElement('div');
-                                    currentMonthSection.className = 'flex flex-col gap-4 mt-2';
-                                    
-                                    const headerBanner = `
-                                        <div class="bg-gradient-to-r from-emerald-500/20 via-emerald-500/5 to-transparent border-l-4 border-emerald-500 px-6 py-4 rounded-r-2xl flex items-center justify-between shadow-lg">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                                                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                                </div>
-                                                <h2 class="text-emerald-400 font-bold text-sm tracking-wider uppercase">${title}</h2>
-                                            </div>
-                                            <span class="text-[10px] text-gray-500 font-semibold uppercase tracking-widest bg-white/5 px-3 py-1 rounded-md border border-white/5">Rekap Periode</span>
-                                        </div>
-                                    `;
-                                    currentMonthSection.innerHTML = headerBanner;
+                                let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : 'Unknown';
+                                let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '';
+                                let croLabel = croVal; 
 
-                                    currentGrid = document.createElement('div');
-                                    currentGrid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
-                                    currentMonthSection.appendChild(currentGrid);
-                                    pettyView.appendChild(currentMonthSection);
-                                    continue;
-                                }
-
-                                if (colZero === '' || isNaN(colZero)) continue;
-
-                                // Parsing Data Tiap Baris
-                                let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
-                                let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
-                                let ketVal = row[colIdx.ket] !== undefined && row[colIdx.ket] !== null ? row[colIdx.ket].toString().trim() : '-';
-                                let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
-                                let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
-
-                                let formatRupiah = (val) => {
-                                    if (!val || val === '-' || val === 'nan') return 'Rp 0';
+                                // Parse Angka Rupiah
+                                let parseRupiah = (val) => {
+                                    if (!val || val === '-' || val === 'nan') return 0;
                                     let clean = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
                                     let num = parseInt(clean, 10);
-                                    return isNaN(num) ? 'Rp 0' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+                                    return isNaN(num) ? 0 : num;
                                 };
 
-                                let pemStr = formatRupiah(row[colIdx.pem]);
-                                let sisaStr = formatRupiah(row[colIdx.sisa]);
-                                let permStr = formatRupiah(row[colIdx.perm]);
+                                let pemVal = parseRupiah(row[colIdx.pem]);
+                                let sisaVal = parseRupiah(row[colIdx.sisa]);
+                                let permVal = parseRupiah(row[colIdx.perm]);
 
-                                let isLpj = String(row[colIdx.slpj]).toUpperCase() === 'TRUE' || row[colIdx.slpj] === 1 || row[colIdx.slpj] === '1';
-                                let isPpc = String(row[colIdx.ppc]).toUpperCase() === 'TRUE' || row[colIdx.ppc] === 1 || row[colIdx.ppc] === '1';
-                                let isPaid = progVal.toLowerCase().includes('paid') || progVal.toLowerCase().includes('approved');
+                                totalPemakaian += pemVal;
+                                totalSisa += sisaVal;
+                                totalPermintaan += permVal;
 
-                                // Warna Badge Progress
-                                let progColor = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-                                if (isPaid) progColor = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-                                else if (progVal.toLowerCase().includes('review')) progColor = 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-                                else if (progVal.toLowerCase().includes('revisi')) progColor = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                                // Aggregation untuk Bar Chart (Gabungkan berdasarkan CRO)
+                                if (!croPermintaanMap[croLabel]) croPermintaanMap[croLabel] = 0;
+                                croPermintaanMap[croLabel] += permVal;
 
-                                // Render Button Dokumen
-                                let docButtonHTML = '';
-                                if (dokVal !== '-' && dokVal !== '') {
-                                    const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                    if (urlRegex.test(dokVal)) {
-                                        docButtonHTML = `<a href="${dokVal}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-500/10 text-sky-400 border border-sky-500/25 hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`;
-                                    } else {
-                                        const safeName = dokVal.replace(/'/g, "\\'");
-                                        docButtonHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-xs text-sky-300 font-medium hover:text-sky-200 focus:outline-none truncate max-w-[200px]" title="${safeName}">
-                                                <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                                <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${dokVal}</span>
-                                            </button>
-                                        `;
-                                    }
-                                } else {
-                                    docButtonHTML = `<span class="text-gray-600 text-xs italic">Tanpa Lampiran</span>`;
+                                // Aggregation Progress (Pie Chart)
+                                let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().toLowerCase() : '';
+                                if (progVal.includes('paid') || progVal.includes('approved')) {
+                                    progressMap['Paid / Approved']++;
+                                } else if (progVal.includes('review') || progVal.includes('dirops')) {
+                                    progressMap['Review Dirops']++;
+                                } else if (progVal !== '' && progVal !== '-') {
+                                    progressMap['Revisi / Lainnya']++;
                                 }
 
-                                // 1. Panel Atas Paid / Belum Paid
-                                let taskItemHTML = `
-                                    <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
-                                        <div class="pr-2">
-                                            <p class="text-white font-medium text-xs mb-1 truncate max-w-[220px]" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500">(${wilVal})</span></p>
-                                            <p class="text-[10px] text-gray-400 truncate max-w-[220px]" title="${ketVal}">Ket: <span class="text-blue-400 font-semibold">${ketVal}</span></p>
-                                            <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
-                                        </div>
-                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap">
-                                            ${isPaid ? 'PAID' : 'BELUM PAID'}
-                                        </span>
-                                    </div>
-                                `;
-
-                                if (isPaid) {
-                                    paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                } else {
-                                    unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                }
-
-                                // 2. Elegan Modular Card untuk Tiap Baris
-                                let cardHTML = `
-                                    <div class="bg-[#12151c] border border-white/5 hover:border-white/15 rounded-2xl p-5 shadow-2xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
-                                        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-colors pointer-events-none"></div>
-
-                                        <div>
-                                            <div class="flex items-start justify-between gap-3 mb-4">
-                                                <div>
-                                                    <div class="flex items-center gap-2 mb-1">
-                                                        <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-white/10 text-white border border-white/10">#${colZero}</span>
-                                                        <h3 class="text-white font-bold text-sm tracking-wide truncate max-w-[200px]" title="${croVal} - ${wilVal}">${croVal}</h3>
-                                                    </div>
-                                                    <p class="text-xs text-gray-400 flex items-center gap-1.5 font-medium">
-                                                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                                        ${wilVal}
-                                                    </p>
-                                                </div>
-                                                <span class="px-3 py-1 rounded-lg text-[10px] font-extrabold tracking-wider uppercase border shadow-sm whitespace-nowrap ${progColor}">
-                                                    ${progVal}
-                                                </span>
-                                            </div>
-
-                                            <div class="grid grid-cols-3 gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/5 mb-4">
-                                                <div class="flex flex-col">
-                                                    <span class="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-1">Pemakaian</span>
-                                                    <span class="text-xs font-semibold text-gray-300 truncate" title="${pemStr}">${pemStr}</span>
-                                                </div>
-                                                <div class="flex flex-col border-l border-white/5 pl-2">
-                                                    <span class="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-1">Sisa Kas</span>
-                                                    <span class="text-xs font-semibold text-cyan-400 truncate" title="${sisaStr}">${sisaStr}</span>
-                                                </div>
-                                                <div class="flex flex-col border-l border-white/5 pl-2">
-                                                    <span class="text-[9px] text-emerald-500 uppercase font-bold tracking-wider mb-1">Permintaan</span>
-                                                    <span class="text-xs font-bold text-emerald-400 truncate" title="${permStr}">${permStr}</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="mb-4">
-                                                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Keterangan Pengajuan</p>
-                                                <p class="text-xs text-gray-300 leading-relaxed bg-white/[0.01] p-2 rounded-lg border border-white/5">${ketVal}</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="pt-3 border-t border-white/5 flex items-center justify-between">
-                                            <div class="flex items-center gap-3">
-                                                <div class="flex items-center gap-1.5" title="Status LPJ">
-                                                    <div class="w-4 h-4 rounded flex items-center justify-center ${isLpj ? 'bg-blue-500 text-white' : 'bg-white/5 text-transparent border border-white/10'}">
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                                    </div>
-                                                    <span class="text-[10px] font-semibold text-gray-400">LPJ</span>
-                                                </div>
-                                                <div class="flex items-center gap-1.5" title="Pengajuan Petty Cash">
-                                                    <div class="w-4 h-4 rounded flex items-center justify-center ${isPpc ? 'bg-blue-500 text-white' : 'bg-white/5 text-transparent border border-white/10'}">
-                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                                    </div>
-                                                    <span class="text-[10px] font-semibold text-gray-400">Pengajuan</span>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                ${docButtonHTML}
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-
-                                if (currentGrid) {
-                                    currentGrid.insertAdjacentHTML('beforeend', cardHTML);
-                                } else {
-                                    pettyView.insertAdjacentHTML('beforeend', cardHTML);
-                                }
+                                // Aggregation LPJ (Pie Chart)
+                                let slpjVal = row[colIdx.slpj];
+                                let isLpj = String(slpjVal).toUpperCase() === 'TRUE' || slpjVal === 1 || slpjVal === '1';
+                                if (isLpj) lpjMap['Sudah LPJ']++;
+                                else lpjMap['Belum LPJ']++;
                             }
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada pengajuan yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Semua pengajuan sudah lunas.</p>`;
+                            // Inject Hasil ke Summary Box
+                            let formatToRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
                             
+                            document.getElementById('pc-sum-pemakaian').innerText = formatToRp(totalPemakaian);
+                            document.getElementById('pc-sum-sisa').innerText = formatToRp(totalSisa);
+                            document.getElementById('pc-sum-permintaan').innerText = formatToRp(totalPermintaan);
+
+                            // Siapkan data array untuk chart
+                            let barLabels = Object.keys(croPermintaanMap);
+                            let barValues = Object.values(croPermintaanMap);
+
+                            let pieProgData = [
+                                { name: 'Paid / Approved', y: progressMap['Paid / Approved'], color: '#10b981' },
+                                { name: 'Review Dirops', y: progressMap['Review Dirops'], color: '#8b5cf6' },
+                                { name: 'Revisi / Lainnya', y: progressMap['Revisi / Lainnya'], color: '#f59e0b' }
+                            ].filter(d => d.y > 0);
+
+                            let pieLpjData = [
+                                { name: 'Sudah LPJ', y: lpjMap['Sudah LPJ'], color: '#3b82f6' },
+                                { name: 'Belum LPJ', y: lpjMap['Belum LPJ'], color: '#ef4444' }
+                            ];
+
+                            renderPettyCashDashboard(barLabels, barValues, pieProgData, pieLpjData);
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
 
@@ -843,12 +822,6 @@
                         // =========================================================
                         else {
                             tableView.classList.remove('hidden');
-                            pettyView.classList.add('hidden');
-
-                            pdoBreakdown.classList.remove('grid');
-                            pdoBreakdown.classList.add('hidden');
-                            dashboardWidgets.classList.add('hidden');
-                            noSummaryMsg.classList.remove('hidden');
 
                             let tableHeadIdx = 2; 
                             let dataStartIdx = tableHeadIdx + 1;
