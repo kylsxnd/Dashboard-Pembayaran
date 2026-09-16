@@ -340,13 +340,12 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                // ROUTING PERSIS SESUAI SHEETMAP DI SERVER.JS (MANDIRI PAKAI M BESAR)
-                let apiEndpoint = '';
+                let fetchSheetName = currentActiveSheet;
                 if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
-                } else {
-                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+                    fetchSheetName = 'monitoring_pembayaran';
                 }
+
+                const apiEndpoint = `/api/sheet/${fetchSheetName.toLowerCase().replace(/ /g, '_')}`;
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -499,7 +498,7 @@
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
-                        
+
                         // =========================================================
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
@@ -610,15 +609,19 @@
                         // KONDISI 3: PETTY CASH
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
-                            pdoBreakdown.classList.remove('grid');
-                            pdoBreakdown.classList.add('hidden');
+                            // TAMPILKAN PANEL LUNAS / PENDING
+                            pdoBreakdown.classList.remove('hidden');
+                            pdoBreakdown.classList.add('grid');
+                            paidContainer.innerHTML = '';
+                            unpaidContainer.innerHTML = '';
+                            
                             dashboardWidgets.classList.add('hidden');
                             noSummaryMsg.classList.remove('hidden');
 
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
-                                "Status LPJ", "Pengajuan Petty Cash", "Keterangan", "Dokumen"
+                                "Status LPJ", "Status Pengajuan", "Keterangan", "Progress", "Dokumen"
                             ];
                             
                             let headHTML = '<tr>';
@@ -629,7 +632,7 @@
                             thead.innerHTML = headHTML;
 
                             let headerRow = data[2] || [];
-                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 12, ppc: 13, ket: 14, dok: 15 };
+                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 12, ppc: 13, ket: 14, prog: 15, dok: 16 };
                             
                             for(let c = 0; c < headerRow.length; c++) {
                                 if(!headerRow[c]) continue;
@@ -641,8 +644,9 @@
                                 else if(str.includes('sisa')) colIdx.sisa = c;
                                 else if(str.includes('permintaan')) colIdx.perm = c;
                                 else if(str.includes('status lpj')) colIdx.slpj = c;
-                                else if(str.includes('pengajuan petty')) colIdx.ppc = c;
+                                else if(str.includes('pengajuan') || str.includes('status pengajuan')) colIdx.ppc = c;
                                 else if(str.includes('keterangan')) colIdx.ket = c;
+                                else if(str.includes('progress')) colIdx.prog = c;
                                 else if(str.includes('dokumen')) colIdx.dok = c;
                             }
 
@@ -655,17 +659,50 @@
 
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
-                                    let rowHTML = `<tr><td colspan="10" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
 
                                 if (colZero === '' || isNaN(colZero)) continue;
 
+                                // --- LOGIKA KOTAK PAID/BELUM PAID PETTY CASH ---
+                                let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
+                                let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
+                                let permValRaw = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm].toString() : '0';
+                                let ketVal = row[colIdx.ket] !== undefined && row[colIdx.ket] !== null ? row[colIdx.ket].toString().trim() : '-';
+                                let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
+
+                                let cleanPerm = permValRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                let numPerm = parseInt(cleanPerm, 10);
+                                let permStr = isNaN(numPerm) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numPerm);
+
+                                let isPaid = progVal.toLowerCase().includes('paid');
+
+                                let taskItemHTML = `
+                                    <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
+                                        <div class="pr-2">
+                                            <p class="text-white font-medium text-xs mb-1 truncate max-w-[200px]" title="${croVal} - ${wilVal}">${croVal} - ${wilVal}</p>
+                                            <p class="text-[10px] text-gray-400">Ket: <span class="text-blue-400 font-semibold truncate max-w-[150px] inline-block align-bottom" title="${ketVal}">${ketVal}</span></p>
+                                            <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
+                                        </div>
+                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap">
+                                            ${isPaid ? 'PAID' : 'BELUM PAID'}
+                                        </span>
+                                    </div>
+                                `;
+
+                                if (isPaid) {
+                                    paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                } else {
+                                    unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                }
+                                // ---------------------------------------------
+
                                 let cellData = [
                                     row[colIdx.no], row[colIdx.cro], row[colIdx.wil], row[colIdx.pem],
                                     row[colIdx.sisa], row[colIdx.perm], row[colIdx.slpj], row[colIdx.ppc], 
-                                    row[colIdx.ket], row[colIdx.dok]
+                                    row[colIdx.ket], row[colIdx.prog], row[colIdx.dok]
                                 ];
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
@@ -690,8 +727,18 @@
                                             cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                         }
                                     }
-
+                                    
+                                    // Badge Progress
                                     if (c === 9 && cellVal !== '-') {
+                                        let lProg = cellVal.toLowerCase();
+                                        let progColor = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+                                        if (lProg.includes('paid') || lProg.includes('approved')) progColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25';
+                                        else if (lProg.includes('review') || lProg.includes('dirops')) progColor = 'bg-purple-500/10 text-purple-400 border-purple-500/25';
+                                        else if (lProg.includes('revisi')) progColor = 'bg-amber-500/10 text-amber-400 border-amber-500/25';
+                                        cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${progColor} inline-block whitespace-nowrap">${cellVal}</span>`;
+                                    }
+
+                                    if (c === 10 && cellVal !== '-') {
                                         const urlRegex = /(https?:\/\/[^\s]+)/g;
                                         if (urlRegex.test(cellVal)) {
                                             cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
@@ -707,15 +754,18 @@
                                     }
 
                                     let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 8 || c === 9) cellClasses += " min-w-[200px] whitespace-normal leading-relaxed";
+                                    if (c === 8 || c === 10) cellClasses += " min-w-[200px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
+                            
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada pengajuan yang lunas.</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Semua pengajuan sudah lunas.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
