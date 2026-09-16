@@ -98,12 +98,12 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK (DIPAKAI OLEH PDO & MONITORING) -->
+            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Data Lunas (Paid)
+                        Task Sudah Paid (Lunas)
                     </h3>
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
@@ -111,7 +111,7 @@
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Data Belum Lunas (Pending)
+                        Task Belum Paid (Pending)
                     </h3>
                     <div id="unpaid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
@@ -340,13 +340,13 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                let fetchSheetName = currentActiveSheet;
+                // ROUTING PERSIS SESUAI SHEETMAP DI SERVER.JS (MANDIRI PAKAI M BESAR)
+                let apiEndpoint = '';
                 if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    // Berkat JSON asli, kita tau nama tab aslinya cuma ini:
-                    fetchSheetName = 'monitoring_pembayaran';
+                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
+                } else {
+                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
                 }
-
-                const apiEndpoint = `/api/sheet/${fetchSheetName.toLowerCase().replace(/ /g, '_')}`;
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -504,11 +504,8 @@
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                            // TAMBAHKAN PANEL BREAKDOWN LUNAS / PENDING
-                            pdoBreakdown.classList.remove('hidden');
-                            pdoBreakdown.classList.add('grid');
-                            paidContainer.innerHTML = '';
-                            unpaidContainer.innerHTML = '';
+                            pdoBreakdown.classList.remove('grid');
+                            pdoBreakdown.classList.add('hidden');
 
                             let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -546,40 +543,8 @@
                                 let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
                                 if (colZero === '' || isNaN(colZero)) continue;
 
-                                let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
+                                let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
                                 if (vendorCol === '' || vendorCol === 'nan') continue;
-
-                                // -- LOGIKA KOTAK PAID/BELUM PAID UNTUK MONITORING --
-                                let kebunCol = row[5] ? row[5].toString().trim() : '-';
-                                let invoiceCol = row[6] ? row[6].toString().trim() : '-';
-                                let nominalCol = row[8] ? row[8].toString() : '0';
-                                
-                                let cleanStr = nominalCol.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '');
-                                let numVal = parseFloat(cleanStr);
-                                let nominalStr = isNaN(numVal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
-
-                                let paidCell = row[13];
-                                let isPaid = paidCell === true || paidCell === '1' || paidCell === 1 || String(paidCell).toUpperCase() === 'TRUE';
-
-                                let taskItemHTML = `
-                                    <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
-                                        <div class="pr-2">
-                                            <p class="text-white font-medium text-xs mb-1 truncate max-w-[200px]" title="${vendorCol}">${vendorCol}</p>
-                                            <p class="text-[10px] text-gray-400">Kebun: <span class="text-blue-400 font-semibold">${kebunCol}</span> | Inv: <span class="text-purple-400 font-semibold">${invoiceCol}</span></p>
-                                            <p class="text-[10px] font-bold text-emerald-400 mt-1">${nominalStr}</p>
-                                        </div>
-                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap">
-                                            ${isPaid ? 'PAID' : 'BELUM PAID'}
-                                        </span>
-                                    </div>
-                                `;
-
-                                if (isPaid) {
-                                    paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                } else {
-                                    unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                }
-                                // ---------------------------------------------------
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
                                 for (let c = 0; c < 16; c++) {
@@ -632,9 +597,6 @@
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
-
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada tagihan yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Semua tagihan belum lunas.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
