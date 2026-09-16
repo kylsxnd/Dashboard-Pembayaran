@@ -14,11 +14,14 @@ app.get('/', (req, res) => {
 
 // Route API LIVE langsung mengambil dari Link Google Sheets Online
 app.get('/api/sheet/:sheetName', (req, res) => {
-    const sheetNameKey = req.params.sheetName;
+    // 1. Ubah parameter yang dikirim frontend jadi huruf kecil semua biar aman
+    const sheetNameKey = req.params.sheetName.toLowerCase();
+    
     const sheetMap = {
         'monitoring_pembayaran': 'Monitoring Pembayaran',
         'pdo': 'PDO',
-        'monitoring_pembayaran_pengelolaan_Mandiri': 'Monitoring Pembayaran Pengelolaan Mandiri',
+        // 2. Key diubah jadi huruf kecil semua ("mandiri")
+        'monitoring_pembayaran_pengelolaan_mandiri': 'Monitoring Pembayaran Pengelolaan Mandiri',
         'spk_lokal': 'SPK Lokal',
         'petty_cash': 'Petty Cash',
         'surat_masuk': 'Surat Masuk',
@@ -32,7 +35,7 @@ app.get('/api/sheet/:sheetName', (req, res) => {
         'crash_program': 'Crash Program'
     };
 
-    const actualSheetName = sheetMap[sheetNameKey] || sheetNameKey.replace(/_/g, ' ');
+    const targetSheetName = sheetMap[sheetNameKey] || sheetNameKey.replace(/_/g, ' ');
     // URL Export langsung dari Google Sheets kamu
     const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/1IcxrVgQm-WXCHyLebJKcRYyNdkG0ahaTBmTXAUhqMbA/export?format=xlsx';
 
@@ -40,7 +43,7 @@ app.get('/api/sheet/:sheetName', (req, res) => {
         // Tangani redirect jika ada
         if (googleRes.statusCode >= 300 && googleRes.statusCode < 400 && googleRes.headers.location) {
             https.get(googleRes.headers.location, (redirectRes) => {
-                processStream(redirectRes, actualSheetName, res);
+                processStream(redirectRes, targetSheetName, res);
             }).on('error', (err) => {
                 console.error(err);
                 res.status(500).json({ error: "Gagal mengunduh dari Google Sheets." });
@@ -48,26 +51,32 @@ app.get('/api/sheet/:sheetName', (req, res) => {
             return;
         }
 
-        processStream(googleRes, actualSheetName, res);
+        processStream(googleRes, targetSheetName, res);
     }).on('error', (err) => {
         console.error(err);
         res.status(500).json({ error: "Gagal terhubung ke Google Sheets." });
     });
 });
 
-function processStream(stream, actualSheetName, res) {
+function processStream(stream, targetSheetName, res) {
     const chunks = [];
     stream.on('data', (chunk) => chunks.push(chunk));
     stream.on('end', () => {
         try {
             const buffer = Buffer.concat(chunks);
             const workbook = XLSX.read(buffer, { type: 'buffer' });
-            const worksheet = workbook.Sheets[actualSheetName];
+            
+            // 3. Cari sheet di Excel secara otomatis nggak peduli huruf besar/kecil (kebal typo)
+            const actualSheetName = workbook.SheetNames.find(
+                name => name.toLowerCase() === targetSheetName.toLowerCase()
+            );
 
-            if (!worksheet) {
-                return res.status(404).json({ error: `Sheet "${actualSheetName}" tidak ditemukan di Google Sheets.` });
+            // Kalau sheet tetep ga ketemu di dalam file Excel-nya
+            if (!actualSheetName || !workbook.Sheets[actualSheetName]) {
+                return res.status(404).json({ error: `Sheet "${targetSheetName}" tidak ditemukan di Google Sheets. Pastikan nama tab di Excel sama persis.` });
             }
 
+            const worksheet = workbook.Sheets[actualSheetName];
             const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
             res.json({ rows });
         } catch (error) {
