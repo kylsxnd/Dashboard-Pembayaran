@@ -340,13 +340,8 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                // --- INI SOLUSI HACK-NYA: PAKSA URL HURUF BESAR UNTUK MANDIRI ---
-                let apiEndpoint = '';
-                if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
-                } else {
-                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
-                }
+                // --- INI SOLUSI MUTLAK: KIRIM NAMA PERSIS SESUAI SHEET TANPA DIUBAH ---
+                const apiEndpoint = `/api/sheet/${encodeURIComponent(currentActiveSheet)}`;
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -499,7 +494,7 @@
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
-                        
+
                         // =========================================================
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
