@@ -340,12 +340,8 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                let fetchSheetName = currentActiveSheet;
-                if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    fetchSheetName = 'Monitoring Pembayaran Pengelola';
-                }
-
-                const apiEndpoint = `/api/sheet/${fetchSheetName.toLowerCase().replace(/ /g, '_')}`;
+                // MURNI PAKAI NAMA SHEET ASLI DARI TOMBOL (Tidak dipotong/diubah)
+                const apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -364,11 +360,14 @@
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
                         const paidContainer = document.getElementById('paid-task-container');
                         const unpaidContainer = document.getElementById('unpaid-task-container');
+                        const dashboardWidgets = document.getElementById('dashboard-widgets');
+                        const noSummaryMsg = document.getElementById('no-summary-msg');
 
                         // =========================================================
                         // KONDISI 1: PDO
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
+                            // Tampilkan panel breakdown khusus PDO
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             paidContainer.innerHTML = '';
@@ -387,8 +386,8 @@
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRev, tDip];
                             let dateValue = data[4] ? formatCellDate(data[4][12]) : "-";
 
-                            document.getElementById('dashboard-widgets').classList.remove('hidden');
-                            document.getElementById('no-summary-msg').classList.add('hidden');
+                            dashboardWidgets.classList.remove('hidden');
+                            noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
                             const headers = [
@@ -495,16 +494,16 @@
                                 renderTablePage();
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
-                            return; 
                         }
-
-                        pdoBreakdown.classList.remove('grid');
-                        pdoBreakdown.classList.add('hidden');
-
+                        
                         // =========================================================
-                        // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI (MURNI 15 KOLOM TANPA PANEL)
+                        // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
-                        if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                        else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            // PASTIKAN PANEL PDO DISEMBUNYIKAN
+                            pdoBreakdown.classList.remove('grid');
+                            pdoBreakdown.classList.add('hidden');
+
                             let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
                             let tPajak = data[4] && data[4][4] !== undefined ? data[4][4] : 0;
@@ -516,8 +515,8 @@
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid];
                             let dateValue = data[4] && data[4][12] !== undefined ? formatCellDate(data[4][12]) : "-";
 
-                            document.getElementById('dashboard-widgets').classList.remove('hidden');
-                            document.getElementById('no-summary-msg').classList.add('hidden');
+                            dashboardWidgets.classList.remove('hidden');
+                            noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
                             const headers = [
@@ -558,7 +557,7 @@
 
                                     if (c >= 9 && c <= 13) {
                                         let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0') {
+                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true') {
                                             cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                         } else {
                                             cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
@@ -601,15 +600,16 @@
                                 renderTablePage();
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
-                            return; 
                         }
 
                         // =========================================================
                         // KONDISI 3: PETTY CASH
                         // =========================================================
-                        if (currentActiveSheet === 'Petty Cash') {
-                            document.getElementById('dashboard-widgets').classList.add('hidden');
-                            document.getElementById('no-summary-msg').classList.remove('hidden');
+                        else if (currentActiveSheet === 'Petty Cash') {
+                            pdoBreakdown.classList.remove('grid');
+                            pdoBreakdown.classList.add('hidden');
+                            dashboardWidgets.classList.add('hidden');
+                            noSummaryMsg.classList.remove('hidden');
 
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
@@ -716,66 +716,70 @@
                                 renderTablePage();
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
-                            return; 
                         }
 
                         // =========================================================
                         // KONDISI UMUM
                         // =========================================================
-                        document.getElementById('dashboard-widgets').classList.add('hidden');
-                        document.getElementById('no-summary-msg').classList.remove('hidden');
+                        else {
+                            pdoBreakdown.classList.remove('grid');
+                            pdoBreakdown.classList.add('hidden');
+                            dashboardWidgets.classList.add('hidden');
+                            noSummaryMsg.classList.remove('hidden');
 
-                        let tableHeadIdx = 2; 
-                        let dataStartIdx = tableHeadIdx + 1;
-                        while (dataStartIdx < data.length) {
-                            let col0 = data[dataStartIdx][0] ? data[dataStartIdx][0].toString().trim() : "";
-                            let col1 = data[dataStartIdx][1] ? data[dataStartIdx][1].toString().trim() : "";
-                            if (/^\d+$/.test(col0) || /\d{1,2}\s[a-zA-Z]+\s\d{4}/.test(col1) || col1.includes('00:00:00')) break;
-                            dataStartIdx++;
-                        }
-                        if (dataStartIdx >= data.length) dataStartIdx = tableHeadIdx + 1;
-
-                        let validColIndices = [];
-                        let headHTML = '<tr>';
-                        for (let c = 0; c < data[tableHeadIdx].length; c++) {
-                            let headerText = data[tableHeadIdx][c] ? data[tableHeadIdx][c].toString().trim() : "";
-                            if (headerText !== "") {
-                                validColIndices.push(c);
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
+                            let tableHeadIdx = 2; 
+                            let dataStartIdx = tableHeadIdx + 1;
+                            while (dataStartIdx < data.length) {
+                                let col0 = data[dataStartIdx][0] ? data[dataStartIdx][0].toString().trim() : "";
+                                let col1 = data[dataStartIdx][1] ? data[dataStartIdx][1].toString().trim() : "";
+                                if (/^\d+$/.test(col0) || /\d{1,2}\s[a-zA-Z]+\s\d{4}/.test(col1) || col1.includes('00:00:00')) break;
+                                dataStartIdx++;
                             }
-                        }
-                        headHTML += '</tr>';
-                        thead.innerHTML = headHTML;
+                            if (dataStartIdx >= data.length) dataStartIdx = tableHeadIdx + 1;
 
-                        for (let i = dataStartIdx; i < data.length; i++) {
-                            let row = data[i];
-                            let rowStr = row.join('').trim();
-                            if (rowStr === '' || !rowStr.match(/[a-zA-Z0-9]/)) continue;
+                            let validColIndices = [];
+                            let headHTML = '<tr>';
+                            for (let c = 0; c < data[tableHeadIdx].length; c++) {
+                                let headerText = data[tableHeadIdx][c] ? data[tableHeadIdx][c].toString().trim() : "";
+                                if (headerText !== "") {
+                                    validColIndices.push(c);
+                                    headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
+                                }
+                            }
+                            headHTML += '</tr>';
+                            thead.innerHTML = headHTML;
 
-                            let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
-                            validColIndices.forEach((colIndex) => {
-                                let cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? row[colIndex] : '-';
-                                if (cellVal !== '-') cellVal = formatCellDate(cellVal);
-                                if (cellVal === 'nan' || cellVal === '') cellVal = '-';
-                                rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${cellVal}</td>`;
-                            });
-                            rowHTML += '</tr>';
-                            allTableRowsHTML.push(rowHTML);
-                        }
+                            for (let i = dataStartIdx; i < data.length; i++) {
+                                let row = data[i];
+                                let rowStr = row.join('').trim();
+                                if (rowStr === '' || !rowStr.match(/[a-zA-Z0-9]/)) continue;
 
-                        if (allTableRowsHTML.length === 0) {
-                            document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
-                            document.getElementById('pagination-container').innerHTML = '';
-                        } else {
-                            renderTablePage();
+                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
+                                validColIndices.forEach((colIndex) => {
+                                    let cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? row[colIndex] : '-';
+                                    if (cellVal !== '-') cellVal = formatCellDate(cellVal);
+                                    if (cellVal === 'nan' || cellVal === '') cellVal = '-';
+                                    rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${cellVal}</td>`;
+                                });
+                                rowHTML += '</tr>';
+                                allTableRowsHTML.push(rowHTML);
+                            }
+
+                            if (allTableRowsHTML.length === 0) {
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
+                            } else {
+                                renderTablePage();
+                            }
+                            document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
-                        document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                     })
                     .catch(err => {
                         console.error(err);
                         document.getElementById('table-head').innerHTML = '';
                         document.getElementById('table-body').innerHTML = `<tr><td colspan="15" class="px-6 py-12 text-center text-red-500">Gagal memuat data dari server. Pastikan nama sheet benar.</td></tr>`;
                         document.getElementById('dashboard-widgets').classList.add('hidden');
+                        document.getElementById('pdo-status-breakdown').classList.add('hidden');
                     });
             }
 
