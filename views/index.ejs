@@ -340,13 +340,13 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                // MURNI MANGGIL API 'monitoring_pembayaran' KARENA INI NAMA SHEET ASLINYA DI EXCEL
-                let fetchSheetName = currentActiveSheet;
+                // ROUTING PERSIS SESUAI SHEETMAP DI SERVER.JS (MANDIRI PAKAI M BESAR)
+                let apiEndpoint = '';
                 if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    fetchSheetName = 'monitoring_pembayaran';
+                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
+                } else {
+                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
                 }
-
-                const apiEndpoint = `/api/sheet/${fetchSheetName.toLowerCase().replace(/ /g, '_')}`;
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -504,29 +504,25 @@
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                            // PASTIKAN PANEL PDO DISEMBUNYIKAN
                             pdoBreakdown.classList.remove('grid');
                             pdoBreakdown.classList.add('hidden');
 
-                            // AMBIL SUMMARY BARI KE-5 (Index 4) SESUAI GAMBAR
                             let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
                             let tPajak = data[4] && data[4][4] !== undefined ? data[4][4] : 0;
                             let tUmum = data[4] && data[4][6] !== undefined ? data[4][6] : 0;
                             let tKeu = data[4] && data[4][8] !== undefined ? data[4][8] : 0;
                             let tPaid = data[4] && data[4][10] !== undefined ? data[4][10] : 0;
-                            let tRevReg = data[4] && data[4][12] !== undefined ? data[4][12] : 0; // TAMBAHAN REVISI REGIONAL DARI EXCEL
+                            let tRevReg = data[4] && data[4][12] !== undefined ? data[4][12] : 0;
 
                             let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
-                            // SESUAI DATA JSON TERBARU, DATE ADA DI INDEX KE-14
                             let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
                             noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
-                            // SESUAI GAMBAR EXCEL, ADA 16 KOLOM (TERMASUK KETERANGAN)
                             const headers = [
                                 "No", "Date (after diproses QC)", "Regional", "Kelengkapan Dokumen", 
                                 "Vendor", "Nama Kebun", "Nomor Invoice", "Tanggal Invoice", 
@@ -551,7 +547,6 @@
                                 if (vendorCol === '' || vendorCol === 'nan') continue;
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
-                                // LOOP HINGGA 16 KOLOM SESUAI EXCEL
                                 for (let c = 0; c < 16; c++) {
                                     let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
                                     
@@ -564,7 +559,6 @@
                                     }
                                     if (cellVal === 'nan' || cellVal === '') cellVal = '-';
 
-                                    // CHECKBOXES ADA DI INDEX 9, 10, 11, 12, 13
                                     if (c >= 9 && c <= 13) {
                                         let upper = cellVal.toString().toUpperCase();
                                         if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0') {
@@ -574,7 +568,6 @@
                                         }
                                     }
 
-                                    // BADGE LENGKAP ADA DI INDEX 3
                                     if (c === 3 && cellVal !== '-') {
                                         let lKel = cellVal.toLowerCase();
                                         let kelColor = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
@@ -586,7 +579,6 @@
                                         cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
                                     }
 
-                                    // FORMAT RUPIAH ADA DI INDEX 8
                                     if (c === 8 && cellVal !== '-') {
                                         let cleanStr = cellVal.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '');
                                         let numVal = parseFloat(cleanStr);
@@ -596,7 +588,6 @@
                                     }
 
                                     let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    // KOLOM KETERANGAN (INDEX 15) DIBIKIN LEBAR BIAR GAK KEPOTONG
                                     if (c >= 4 && c <= 6 || c === 15) { 
                                         cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
                                     }
