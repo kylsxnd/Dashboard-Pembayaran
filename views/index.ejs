@@ -340,8 +340,13 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                // MURNI PAKAI NAMA SHEET ASLI DARI TOMBOL (Tidak dipotong/diubah)
-                const apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+                // --- INI SOLUSI HACK-NYA: PAKSA URL HURUF BESAR UNTUK MANDIRI ---
+                let apiEndpoint = '';
+                if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
+                } else {
+                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+                }
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -367,7 +372,6 @@
                         // KONDISI 1: PDO
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
-                            // Tampilkan panel breakdown khusus PDO
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             paidContainer.innerHTML = '';
@@ -500,7 +504,6 @@
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                            // PASTIKAN PANEL PDO DISEMBUNYIKAN
                             pdoBreakdown.classList.remove('grid');
                             pdoBreakdown.classList.add('hidden');
 
@@ -557,7 +560,7 @@
 
                                     if (c >= 9 && c <= 13) {
                                         let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true') {
+                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0') {
                                             cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                         } else {
                                             cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
