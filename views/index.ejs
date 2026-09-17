@@ -98,7 +98,7 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK (DIGUNAKAN BERSAMA OLEH PDO & PETTY CASH) -->
+            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -364,7 +364,6 @@
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
                         const paidContainer = document.getElementById('paid-task-container');
                         const unpaidContainer = document.getElementById('unpaid-task-container');
-                        
                         const dashboardWidgets = document.getElementById('dashboard-widgets');
                         const noSummaryMsg = document.getElementById('no-summary-msg');
                         const titlePaidPanel = document.getElementById('panel-title-paid');
@@ -674,13 +673,14 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH (FIXED INDEXING & SCANNER)
+                        // KONDISI 3: PETTY CASH (FIXED INDEXING)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             noSummaryMsg.classList.remove('hidden');
 
+                            // Kembalikan ke layout 2 kotak (Paid vs Unpaid)
                             document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
                             document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
                             document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
@@ -705,54 +705,21 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // 1. DYNAMIC HEADER SCANNER YANG LEBIH PINTAR
-                            // Scanner ini akan mencari judul kolom di 10 baris pertama
-                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 }; // Default Fallback
-
-                            for (let r = 0; r < Math.min(10, data.length); r++) {
-                                if (!data[r]) continue;
-                                let rowStr = data[r].join('').toLowerCase();
-                                // Deteksi baris yang berisi header utama
-                                if (rowStr.includes('cro') && rowStr.includes('wilayah') && rowStr.includes('keterangan')) {
-                                    let headerRow = data[r];
-                                    for(let c = 0; c < headerRow.length; c++) {
-                                        let str = (headerRow[c] || '').toString().toLowerCase().trim();
-                                        if(!str) continue;
-                                        if(str === 'no') colIdx.no = c;
-                                        else if(str === 'cro') colIdx.cro = c;
-                                        else if(str === 'wilayah') colIdx.wil = c;
-                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c; // Kolom Permintaan Petty Cash
-                                        else if(str.includes('status lpj')) colIdx.slpj = c;
-                                        else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
-                                        else if(str === 'keterangan' || str.includes('keterangan')) colIdx.ket = c;
-                                        else if(str === 'progress' || str.includes('progress')) colIdx.prog = c;
-                                        else if(str === 'dokumen' || str.includes('dokumen')) colIdx.dok = c;
-                                    }
-                                    
-                                    // Pemakaian dan Sisa ada di baris tepat di bawahnya (karena header di-merge di Excel)
-                                    if (data[r+1]) {
-                                        let subHeaderRow = data[r+1];
-                                        for(let c = 0; c < subHeaderRow.length; c++) {
-                                            let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
-                                            if (str.includes('pemakaian')) colIdx.pem = c;
-                                            else if (str.includes('sisa')) colIdx.sisa = c;
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
+                            // INDEX MUTLAK UNTUK PETTY CASH BERDASARKAN URUTAN KOLOM EXCEL
+                            // A(0)=No, B(1)=CRO, C(2)=Wilayah, D(3)=Pemakaian, E(4)=Sisa, F(5)=Permintaan
+                            // G(6)=Status LPJ, H(7)=Status Permintaan, I(8)=Keterangan, J(9)=Progress, K(10)=Dokumen
+                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 6, sreq: 7, ket: 8, prog: 9, dok: 10 };
 
                             let skipSection = false;
 
-                            // Mulai parsing dari baris ke-4 (karena baris 0-3 biasanya header)
-                            for (let i = 4; i < data.length; i++) {
+                            for (let i = 3; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                // CEK BANNER BULAN (FILTER JUNI / JULI)
+                                // CEK BANNER BULAN (OTOMATIS MENGABAIKAN DATA BULAN LALU YANG DI-HIDE)
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
@@ -786,6 +753,7 @@
                                 let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
                                 let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
 
+                                // Fungsi memformat Rupiah
                                 let formatRp = (val) => {
                                     if (val === '-' || val === '' || val === null || val === undefined) return '-';
                                     let cleanStr = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
@@ -798,6 +766,7 @@
                                 let sisaStr = formatRp(sisaVal);
                                 let permStr = formatRp(permVal);
 
+                                // Fungsi merender Checkbox Biru
                                 let formatCheck = (val) => {
                                     if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                     let strVal = String(val).toUpperCase();
@@ -812,6 +781,7 @@
                                 let lpjHTML = formatCheck(lpjVal);
                                 let sreqHTML = formatCheck(sreqVal);
 
+                                // Fungsi merender Badge Progress
                                 let rawProg = (progVal || '').toString().toLowerCase();
                                 let isPaid = rawProg.includes('paid');
                                 let isReview = rawProg.includes('review') || rawProg.includes('dirops');
@@ -825,6 +795,7 @@
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-slate-500/10 text-slate-400 border border-slate-500/20 inline-block whitespace-nowrap">${progVal}</span>`;
                                 }
 
+                                // Fungsi merender Link Dokumen Smart Chip
                                 let dokHTML = '-';
                                 if (dokVal !== '-' && dokVal !== '') {
                                     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -841,7 +812,7 @@
                                     }
                                 }
 
-                                // KOTAK PAID/PENDING KHUSUS PETTY CASH
+                                // LOGIKA MEMASUKKAN DATA KE KOTAK PAID/PENDING KHUSUS PETTY CASH
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
@@ -879,7 +850,7 @@
                             if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di Petty Cash ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
