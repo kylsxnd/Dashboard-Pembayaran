@@ -674,7 +674,7 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH (FIXED INDEXING & SCANNER)
+                        // KONDISI 3: PETTY CASH (YANG DIBENERIN SISA PETTY CASH)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
@@ -692,6 +692,7 @@
                             unpaidContainer.innerHTML = '';
                             paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
 
+                            // Header tabel sudah sesuai web lu yang dibilang bener
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
@@ -705,14 +706,13 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // 1. DYNAMIC HEADER SCANNER YANG LEBIH PINTAR
-                            // Scanner ini akan mencari judul kolom di 10 baris pertama
-                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 }; // Default Fallback
+                            let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
 
+                            // PERBAIKAN: SCANNER KOLOM YANG SPESIFIK AGAR TIDAK NABRAK KOLOM KOSONG
                             for (let r = 0; r < Math.min(10, data.length); r++) {
                                 if (!data[r]) continue;
                                 let rowStr = data[r].join('').toLowerCase();
-                                // Deteksi baris yang berisi header utama
+                                
                                 if (rowStr.includes('cro') && rowStr.includes('wilayah') && rowStr.includes('keterangan')) {
                                     let headerRow = data[r];
                                     for(let c = 0; c < headerRow.length; c++) {
@@ -721,7 +721,7 @@
                                         if(str === 'no') colIdx.no = c;
                                         else if(str === 'cro') colIdx.cro = c;
                                         else if(str === 'wilayah') colIdx.wil = c;
-                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c; // Kolom Permintaan Petty Cash
+                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c;
                                         else if(str.includes('status lpj')) colIdx.slpj = c;
                                         else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
                                         else if(str === 'keterangan' || str.includes('keterangan')) colIdx.ket = c;
@@ -729,13 +729,13 @@
                                         else if(str === 'dokumen' || str.includes('dokumen')) colIdx.dok = c;
                                     }
                                     
-                                    // Pemakaian dan Sisa ada di baris tepat di bawahnya (karena header di-merge di Excel)
                                     if (data[r+1]) {
                                         let subHeaderRow = data[r+1];
                                         for(let c = 0; c < subHeaderRow.length; c++) {
                                             let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
                                             if (str.includes('pemakaian')) colIdx.pem = c;
-                                            else if (str.includes('sisa')) colIdx.sisa = c;
+                                            // FIX DISINI: Harus spesifik 'sisa petty' biar nggak nimpa kolom 'petty cash sisa' yang kosong (index 10)
+                                            else if (str.includes('sisa petty')) colIdx.sisa = c; 
                                         }
                                     }
                                     break;
@@ -744,7 +744,6 @@
 
                             let skipSection = false;
 
-                            // Mulai parsing dari baris ke-4 (karena baris 0-3 biasanya header)
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
@@ -752,7 +751,6 @@
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                // CEK BANNER BULAN (FILTER JUNI / JULI)
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
@@ -775,9 +773,9 @@
                                 let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
                                 let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
                                 
-                                let pemVal = row[colIdx.pem] !== undefined && row[colIdx.pem] !== null ? row[colIdx.pem] : 0;
-                                let sisaVal = row[colIdx.sisa] !== undefined && row[colIdx.sisa] !== null ? row[colIdx.sisa] : 0;
-                                let permVal = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm] : 0;
+                                let pemVal = row[colIdx.pem] !== undefined && row[colIdx.pem] !== null ? row[colIdx.pem] : '-';
+                                let sisaVal = row[colIdx.sisa] !== undefined && row[colIdx.sisa] !== null ? row[colIdx.sisa] : '-';
+                                let permVal = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm] : '-';
                                 
                                 let lpjVal = row[colIdx.slpj];
                                 let sreqVal = row[colIdx.sreq];
@@ -841,7 +839,6 @@
                                     }
                                 }
 
-                                // KOTAK PAID/PENDING KHUSUS PETTY CASH
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
