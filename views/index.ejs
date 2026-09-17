@@ -98,7 +98,7 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
+            <!-- PANEL BREAKDOWN STATUS TASK (DIGUNAKAN BERSAMA OLEH PDO & PETTY CASH) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -340,12 +340,12 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                let apiEndpoint = '';
+                let fetchSheetName = currentActiveSheet;
                 if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
-                } else {
-                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+                    fetchSheetName = 'monitoring_pembayaran';
                 }
+
+                const apiEndpoint = `/api/sheet/${fetchSheetName.toLowerCase().replace(/ /g, '_')}`;
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -364,6 +364,7 @@
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
                         const paidContainer = document.getElementById('paid-task-container');
                         const unpaidContainer = document.getElementById('unpaid-task-container');
+                        
                         const dashboardWidgets = document.getElementById('dashboard-widgets');
                         const noSummaryMsg = document.getElementById('no-summary-msg');
                         const titlePaidPanel = document.getElementById('panel-title-paid');
@@ -400,6 +401,7 @@
                             let dateValue = data[4] ? formatCellDate(data[4][12]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
+                            noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
                             const headers = [
@@ -507,167 +509,9 @@
                             }
                             document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
-                        
-                        // =========================================================
-                        // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
-                        // =========================================================
-                        else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                            pdoBreakdown.classList.remove('hidden');
-                            pdoBreakdown.classList.add('grid');
-
-                            // Menyembunyikan Unpaid Panel
-                            document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
-                            
-                            // Mengubah Tampilan Panel Kiri Menjadi Lebar Penuh (Span 2 Kolom)
-                            let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
-                            pdoBreakdownContainer.classList.remove('md:grid-cols-2');
-                            pdoBreakdownContainer.classList.add('grid-cols-1');
-
-                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid)`;
-
-                            paidContainer.innerHTML = '';
-                            paidContainer.classList.remove('flex', 'flex-col');
-                            paidContainer.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-3');
-
-                            let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
-                            let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
-                            let tPajak = data[4] && data[4][4] !== undefined ? data[4][4] : 0;
-                            let tUmum = data[4] && data[4][6] !== undefined ? data[4][6] : 0;
-                            let tKeu = data[4] && data[4][8] !== undefined ? data[4][8] : 0;
-                            let tPaid = data[4] && data[4][10] !== undefined ? data[4][10] : 0;
-                            let tRevReg = data[4] && data[4][12] !== undefined ? data[4][12] : 0;
-
-                            let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
-                            let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
-                            let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
-
-                            dashboardWidgets.classList.remove('hidden');
-                            renderChartsAndCards(chartLabels, chartValues, dateValue);
-
-                            const headers = [
-                                "No", "Date (after diproses QC)", "Regional", "Kelengkapan Dokumen", 
-                                "Vendor", "Nama Kebun", "Nomor Invoice", "Tanggal Invoice", 
-                                "Jumlah Pembayaran", "Dokumen Asli Diterima", "Pajak", 
-                                "Diserahkan Umum ( Khusus SP2)", "Diserahkan Keuangan", "Paid", "Tanggal Pembayaran", "Keterangan"
-                            ];
-
-                            let headHTML = '<tr>';
-                            headers.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
-                            });
-                            headHTML += '</tr>';
-                            thead.innerHTML = headHTML;
-
-                            for (let i = 7; i < data.length; i++) {
-                                let row = data[i];
-                                if (!row || row.every(val => val === null || val === '')) continue;
-                                let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
-                                if (colZero === '' || isNaN(colZero)) continue;
-
-                                let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
-                                if (vendorCol === '' || vendorCol === 'nan') continue;
-
-                                // --- LOGIKA MENGISI KOTAK PAID (HANYA JIKA LUNAS) ---
-                                let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
-                                let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
-                                let invName = row[6] !== undefined && row[6] !== null ? row[6].toString().trim() : '-';
-                                
-                                let nominalRaw = row[8] !== undefined && row[8] !== null ? row[8].toString() : '0';
-                                let cleanNominal = nominalRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
-                                let numNominal = parseFloat(cleanNominal);
-                                let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
-
-                                let paidCellMon = row[13];
-                                let isPaidMon = false;
-                                if (paidCellMon !== undefined && paidCellMon !== null) {
-                                    let upperPaid = paidCellMon.toString().toUpperCase();
-                                    isPaidMon = (upperPaid === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon === 1 || paidCellMon === true || paidCellMon.toString().includes('☑'));
-                                }
-
-                                if (isPaidMon && vendorName !== '-' && vendorName !== '') {
-                                    let paidItemHTML = `
-                                        <div class="bg-white/[0.02] border border-emerald-500/20 rounded-xl p-4 flex flex-col gap-2 hover:bg-emerald-500/5 transition-colors">
-                                            <div class="flex justify-between items-start">
-                                                <p class="text-white font-bold text-sm truncate max-w-[200px]" title="${vendorName}">${vendorName}</p>
-                                                <span class="px-2 py-1 rounded-md text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">PAID</span>
-                                            </div>
-                                            <div class="flex flex-col gap-0.5">
-                                                <p class="text-[11px] text-gray-400 truncate" title="${kebunName}"><span class="text-gray-500">Kebun:</span> ${kebunName}</p>
-                                                <p class="text-[11px] text-gray-400 truncate" title="${invName}"><span class="text-gray-500">Inv:</span> ${invName}</p>
-                                            </div>
-                                            <p class="text-xs font-black text-emerald-400 mt-1">${nominalFmt}</p>
-                                        </div>
-                                    `;
-                                    paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
-                                }
-                                // ---------------------------------------------------
-
-                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
-                                for (let c = 0; c < 16; c++) {
-                                    let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
-                                    
-                                    if (cellVal !== '-') {
-                                        if (c === 1 || c === 7 || c === 14) {
-                                            cellVal = formatCellDate(cellVal);
-                                        } else {
-                                            cellVal = cellVal.toString().trim();
-                                        }
-                                    }
-                                    if (cellVal === 'nan' || cellVal === '') cellVal = '-';
-
-                                    if (c >= 9 && c <= 13) {
-                                        let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || cellVal.toString().includes('☑')) {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
-                                        } else {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                        }
-                                    }
-
-                                    if (c === 3 && cellVal !== '-') {
-                                        let lKel = cellVal.toLowerCase();
-                                        let kelColor = 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-                                        if (lKel.includes('lengkap') && !lKel.includes('tidak') && !lKel.includes('kurang')) {
-                                            kelColor = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-                                        } else if (lKel.includes('tidak') || lKel.includes('kurang')) {
-                                            kelColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
-                                        }
-                                        cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
-                                    }
-
-                                    if (c === 8 && cellVal !== '-') {
-                                        let cleanStr = cellVal.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '');
-                                        let numVal = parseFloat(cleanStr);
-                                        if (!isNaN(numVal)) {
-                                            cellVal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
-                                        }
-                                    }
-
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c >= 4 && c <= 6 || c === 15) { 
-                                        cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
-                                    }
-                                    
-                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
-                                }
-                                rowHTML += '</tr>';
-                                allTableRowsHTML.push(rowHTML);
-                            }
-
-                            if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
-                            }
-
-                            if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
-                            } else {
-                                renderTablePage();
-                            }
-                            document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
-                        }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH
+                        // KONDISI 2: PETTY CASH (KODE YANG BARU DIPERBAIKI)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
@@ -680,16 +524,10 @@
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
-                            // Pastikan container class disesuaikan untuk petty cash (list memanjang)
-                            paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
-                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
-                            document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
-                            document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
-
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
-                                "Status LPJ", "Pengajuan Petty Cash", "Keterangan", "Dokumen"
+                                "Status LPJ", "Status Pengajuan", "Keterangan", "Progress", "Dokumen"
                             ];
                             
                             let headHTML = '<tr>';
@@ -699,32 +537,42 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // Dynamic column matching based on top 5 rows
+                            // 1. DYNAMIC HEADER SCANNER UNTUK MENCEGAH MISALIGNED COLUMNS
+                            let headerRowIdx = -1;
                             let colIdx = { no: -1, cro: -1, wil: -1, pem: -1, sisa: -1, perm: -1, slpj: -1, sreq: -1, ket: -1, prog: -1, dok: -1 };
-                            
-                            for(let r = 0; r < 5; r++) {
-                                if(!data[r]) continue;
-                                for(let c = 0; c < data[r].length; c++) {
-                                    let str = (data[r][c] || '').toString().toLowerCase().trim();
-                                    if(!str) continue;
-                                    if(str === 'no') colIdx.no = c;
-                                    else if(str === 'cro') colIdx.cro = c;
-                                    else if(str === 'wilayah') colIdx.wil = c;
-                                    else if(str.includes('pemakaian')) colIdx.pem = c;
-                                    else if(str.includes('sisa')) colIdx.sisa = c;
-                                    else if(str.includes('permintaan')) colIdx.perm = c;
-                                    else if(str.includes('status lpj')) colIdx.slpj = c;
-                                    else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
-                                    else if(str.includes('keterangan')) colIdx.ket = c;
-                                    else if(str.includes('progress')) colIdx.prog = c;
-                                    else if(str.includes('dokumen')) colIdx.dok = c;
+
+                            for (let r = 0; r < Math.min(20, data.length); r++) {
+                                if (!data[r]) continue;
+                                let rowStr = data[r].join('').toLowerCase();
+                                if (rowStr.includes('cro') && rowStr.includes('wilayah') && (rowStr.includes('pemakaian') || rowStr.includes('keterangan'))) {
+                                    headerRowIdx = r;
+                                    let headerRow = data[r];
+                                    for(let c = 0; c < headerRow.length; c++) {
+                                        if(!headerRow[c]) continue;
+                                        let str = headerRow[c].toString().toLowerCase().trim();
+                                        if (str === 'no') colIdx.no = c;
+                                        else if (str === 'cro') colIdx.cro = c;
+                                        else if (str.includes('wilayah')) colIdx.wil = c;
+                                        else if (str.includes('pemakaian')) colIdx.pem = c;
+                                        else if (str.includes('sisa')) colIdx.sisa = c;
+                                        else if (str.includes('permintaan')) colIdx.perm = c;
+                                        else if (str.includes('status lpj')) colIdx.slpj = c;
+                                        else if (str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
+                                        else if (str.includes('keterangan')) colIdx.ket = c;
+                                        else if (str.includes('progress')) colIdx.prog = c;
+                                        else if (str.includes('dokumen')) colIdx.dok = c;
+                                    }
+                                    break;
                                 }
                             }
 
-                            // Fallback jika tidak ditemukan (index standar)
-                            if (colIdx.cro === -1) colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 7, sreq: 8, ket: 9, prog: 10, dok: 11 };
+                            if (headerRowIdx === -1) {
+                                // Fallback mapping A to K if specific headers are somehow missing
+                                colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 6, sreq: 7, ket: 8, prog: 9, dok: 10 };
+                                headerRowIdx = 1; 
+                            }
 
-                            for (let i = 4; i < data.length; i++) {
+                            for (let i = headerRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
@@ -733,7 +581,7 @@
 
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
-                                    let rowHTML = `<tr><td colspan="10" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
@@ -774,10 +622,13 @@
                                 let sreqHTML = formatCheck(sreqVal);
 
                                 let rawProg = progVal.toLowerCase();
+                                let isPaid = rawProg.includes('paid');
+                                let isReview = rawProg.includes('review') || rawProg.includes('dirops');
                                 let progHTML = '-';
-                                if (rawProg.includes('paid')) {
+
+                                if (isPaid) {
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
-                                } else if (rawProg.includes('review') || rawProg.includes('dirops')) {
+                                } else if (isReview) {
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-purple-500/20 text-purple-400 border border-purple-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
                                 } else if (rawProg !== '-' && rawProg !== '') {
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-slate-500/10 text-slate-400 border border-slate-500/20 inline-block whitespace-nowrap">${progVal}</span>`;
@@ -799,9 +650,9 @@
                                     }
                                 }
 
-                                // --- LOGIKA KOTAK PAID/BELUM PAID PETTY CASH ---
-                                if (rawProg.includes('paid') || rawProg.includes('review') || rawProg.includes('dirops')) {
-                                    let isPaid = rawProg.includes('paid');
+                                // --- LOGIKA KOTAK PAID & PENDING ---
+                                // PENTING: Hanya memasukkan ke kotak jika benar-benar PAID atau REVIEW. Jika kosong ('-'), lewati saja.
+                                if (isPaid || isReview) {
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
                                             <div class="pr-2">
@@ -810,7 +661,7 @@
                                                 <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
                                             </div>
                                             <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase">
-                                                ${isPaid ? 'PAID' : progVal}
+                                                ${progVal}
                                             </span>
                                         </div>
                                     `;
@@ -822,12 +673,12 @@
                                     }
                                 }
 
-                                let cellData = [ croVal, wilVal, pemStr, sisaStr, permStr, lpjHTML, sreqHTML, ketVal, progHTML, dokHTML ];
+                                let cellData = [ colZero, croVal, wilVal, pemStr, sisaStr, permStr, lpjHTML, sreqHTML, ketVal, progHTML, dokHTML ];
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
                                 cellData.forEach((cellVal, c) => {
                                     let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 7) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
+                                    if (c === 8) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
@@ -838,7 +689,7 @@
                             if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Tidak ada pengajuan yang sedang di-review.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
