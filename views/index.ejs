@@ -24,7 +24,7 @@
         .delay-200 { animation-delay: 200ms; }
 
         /* ========================================================
-           TEMA SOFT PINK & CREAM (Gak Silau & Tetap Elegan)
+           TEMA SOFT PINK & CREAM (Gak Silau)
            ======================================================== */
         body.theme-pink {
             background-color: #fdf2f8 !important;
@@ -75,12 +75,24 @@
         body.theme-pink td { border-bottom-color: #fdf2f8 !important; }
         body.theme-pink .bg-emerald-600\/10, body.theme-pink .bg-zinc-500\/5 { background-color: rgba(244, 114, 182, 0.1) !important; }
         
+        /* Pewarnaan Identitas Sidebar di Tema Pink */
         body.theme-pink .border-l-4.border-transparent:hover { color: #be185d !important; background-color: #fce7f3 !important; }
-        body.theme-pink .border-l-4.border-emerald-500 {
+        body.theme-pink .border-sky-500 {
+            border-color: #0ea5e9 !important;
+            background: linear-gradient(to right, rgba(14,165,233,0.1), transparent) !important;
+            color: #0369a1 !important;
+        }
+        body.theme-pink .border-emerald-500 {
+            border-color: #10b981 !important;
+            background: linear-gradient(to right, rgba(16,185,129,0.1), transparent) !important;
+            color: #047857 !important;
+        }
+        body.theme-pink .border-pink-500 {
             border-color: #ec4899 !important;
             background: linear-gradient(to right, rgba(244,114,182,0.1), transparent) !important;
             color: #be185d !important;
         }
+
         body.theme-pink h2.bg-gradient-to-r {
             background-image: linear-gradient(to right, #9d174d, #ec4899) !important;
             color: transparent !important;
@@ -179,7 +191,7 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD WIDGETS (SUMMARY CARDS) -->
+            <!-- DASHBOARD WIDGETS (SUMMARY CARDS, FULL WIDTH) -->
             <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
                 <div class="bg-gradient-to-br from-zinc-900/90 to-zinc-950/90 backdrop-blur-xl border border-white/5 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                     <div class="absolute -top-24 -right-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl group-hover:bg-zinc-500/10 transition-all duration-700"></div>
@@ -206,7 +218,6 @@
                         <div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         Task Sudah Paid
                     </h3>
-                    <!-- max-height ditinggikan, pr-3 untuk scrollbar space -->
                     <div id="paid-task-container" class="flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10"></div>
                 </div>
 
@@ -365,12 +376,27 @@
                 menuContainer.innerHTML = '';
                 sheetTabs.forEach(sheetName => {
                     const isActive = sheetName === currentActiveSheet;
+                    
+                    let activeClassesStr = '';
+                    let activeIconStr = '';
+
+                    if (sheetName === 'PDO') {
+                        activeClassesStr = 'bg-gradient-to-r from-sky-500/20 to-transparent text-white border-l-4 border-sky-500 theme-pink:border-sky-500 theme-pink:from-sky-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-sky-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                        activeClassesStr = 'bg-gradient-to-r from-emerald-500/20 to-transparent text-white border-l-4 border-emerald-500 theme-pink:border-emerald-500 theme-pink:from-emerald-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-emerald-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Petty Cash') {
+                        activeClassesStr = 'bg-gradient-to-r from-pink-500/20 to-transparent text-white border-l-4 border-pink-500 theme-pink:border-pink-500 theme-pink:from-pink-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-pink-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(244,114,182,0.6)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    }
+
                     const iconSvg = isActive 
-                        ? `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-emerald-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`
+                        ? activeIconStr
                         : `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-gray-500 group-hover:text-gray-300 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`;
 
                     const activeClass = isActive 
-                        ? 'bg-gradient-to-r from-emerald-500/20 to-transparent text-white border-l-4 border-emerald-500 theme-pink:border-pink-500 theme-pink:bg-pink-50' 
+                        ? activeClassesStr
                         : 'text-gray-400 hover:text-gray-200 hover:bg-white/5 group border-l-4 border-transparent';
                     
                     const btn = document.createElement('button');
@@ -401,11 +427,10 @@
                     cardsContainer.innerHTML += `
                         <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-zinc-700/60 hover:border-${color}-500/40 hover:-translate-y-1.5 hover:shadow-[0_12px_25px_rgba(0,0,0,0.2)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
                             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${color}-500/0 via-${color}-500/50 to-${color}-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            
                             <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-${color}-500/5 rounded-full blur-2xl group-hover:bg-${color}-500/15 transition-colors duration-500"></div>
                             
-                            <p class="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1.5 truncate group-hover:text-${color}-400 transition-colors duration-300 relative z-10" title="${label}">${label}</p>
-                            <p class="text-2xl md:text-3xl font-black text-white group-hover:scale-110 transform origin-left transition-transform duration-300 relative z-10 drop-shadow-sm">${dataValues[i]}</p>
+                            <p class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest mb-2 truncate group-hover:text-${color}-400 transition-colors duration-300 relative z-10" title="${label}">${label}</p>
+                            <p class="text-3xl md:text-4xl font-black text-white group-hover:scale-110 transform origin-left transition-transform duration-300 relative z-10 drop-shadow-sm">${dataValues[i]}</p>
                         </div>
                     `;
                 });
@@ -491,7 +516,6 @@
                         const tbody = document.getElementById('table-body');
                         
                         if (!isSilent) tbody.innerHTML = '';
-                        
                         allTableRowsHTML = [];
 
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
@@ -516,10 +540,7 @@
                             
                             pdoBreakdown.classList.remove('grid-cols-1');
                             pdoBreakdown.classList.add('md:grid-cols-2');
-                            
-                            // Tampilkan panel unpaid (merah) buat PDO
-                            document.getElementById('unpaid-panel-wrapper').classList.remove('hidden');
-                            
+                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
                             paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
 
                             paidContainer.innerHTML = '';
@@ -632,7 +653,7 @@
                                         if (lProg.includes('approved')) progColor = 'bg-purple-500/10 text-purple-400 border-purple-500/30';
                                         else if (lProg.includes('revisi')) progColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
                                         else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/10 text-rose-400 border-rose-500/30';
-                                        cellVal = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${progColor} inline-block">${cellVal}</span>`;
+                                        cellVal = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold tracking-wide ${progColor} inline-block">${cellVal}</span>`;
                                     }
 
                                     let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
@@ -676,10 +697,8 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Sembunyikan Unpaid Panel
-                            document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
+                            document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
                             
-                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -972,7 +991,7 @@
                                     let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
                                     
                                     if (isTrue) {
-                                        return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-indigo-600 border border-indigo-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                        return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-emerald-600 border border-emerald-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                     } else {
                                         return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-black/20 border border-white/10 mx-auto"></div>`;
                                     }
@@ -997,13 +1016,13 @@
                                 if (dokVal !== '-' && dokVal !== '') {
                                     const urlRegex = /(https?:\/\/[^\s]+)/g;
                                     if (urlRegex.test(dokVal)) {
-                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold tracking-wide bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 shadow-sm hover:bg-indigo-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold tracking-wide bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm hover:bg-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
                                     } else {
                                         const safeName = dokVal.replace(/'/g, "\\'");
                                         dokHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-indigo-400 font-medium hover:text-indigo-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px] md:max-w-[250px] hover:-translate-y-0.5" title="${safeName}">
-                                                <svg class="w-4 h-4 md:w-5 md:h-5 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                <span class="underline decoration-indigo-500/30 underline-offset-4 truncate">${dokVal}</span>
+                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-emerald-400 font-medium hover:text-emerald-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px] md:max-w-[250px] hover:-translate-y-0.5" title="${safeName}">
+                                                <svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                <span class="underline decoration-emerald-500/30 underline-offset-4 truncate">${dokVal}</span>
                                             </button>
                                         `;
                                     }
@@ -1014,8 +1033,8 @@
                                         <div class="flex-shrink-0 bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-zinc-700/60 hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 gap-4 cursor-default group relative overflow-hidden">
                                             <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-purple-500'}"></div>
                                             <div class="flex-1 min-w-0 pl-3">
-                                                <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-indigo-200 transition-colors truncate" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500 font-normal ml-1">(${wilVal})</span></p>
-                                                <p class="text-[10px] md:text-xs text-gray-400 mb-2 truncate" title="${ketVal}">Ket: <span class="text-indigo-400 font-semibold">${ketVal}</span></p>
+                                                <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-emerald-200 transition-colors truncate" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500 font-normal ml-1">(${wilVal})</span></p>
+                                                <p class="text-[10px] md:text-xs text-gray-400 mb-2 truncate" title="${ketVal}">Ket: <span class="text-emerald-400 font-semibold">${ketVal}</span></p>
                                                 <p class="text-[11px] md:text-sm font-black text-emerald-400">${permStr}</p>
                                             </div>
                                             <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
@@ -1052,7 +1071,7 @@
                             if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-purple-500/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-500/50 italic font-medium">Tidak ada pengajuan yang sedang di-review.</p></div>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-500 font-medium text-sm md:text-base">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-500 font-medium text-sm md:text-base">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
