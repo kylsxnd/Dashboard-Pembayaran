@@ -98,19 +98,7 @@
                 </div>
             </div>
 
-            <!-- PANEL PAID KHUSUS MONITORING -->
-            <div id="monitoring-paid-breakdown" class="hidden mb-8">
-                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
-                    <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Data Pembayaran Lunas (Paid)
-                    </h3>
-                    <div id="monitoring-paid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1 relative z-10"></div>
-                </div>
-            </div>
-
-            <!-- PANEL BREAKDOWN STATUS TASK (DIGUNAKAN BERSAMA OLEH PDO & PETTY CASH) -->
+            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -376,10 +364,6 @@
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
                         const paidContainer = document.getElementById('paid-task-container');
                         const unpaidContainer = document.getElementById('unpaid-task-container');
-                        
-                        const monitoringPaidBreakdown = document.getElementById('monitoring-paid-breakdown');
-                        const monitoringPaidContainer = document.getElementById('monitoring-paid-container');
-                        
                         const dashboardWidgets = document.getElementById('dashboard-widgets');
                         const noSummaryMsg = document.getElementById('no-summary-msg');
                         const titlePaidPanel = document.getElementById('panel-title-paid');
@@ -387,7 +371,6 @@
 
                         // Reset Visibility di Awal Fetch
                         pdoBreakdown.classList.add('hidden');
-                        if(monitoringPaidBreakdown) monitoringPaidBreakdown.classList.add('hidden');
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
 
@@ -529,10 +512,22 @@
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                            if (monitoringPaidBreakdown) {
-                                monitoringPaidBreakdown.classList.remove('hidden');
-                                monitoringPaidContainer.innerHTML = '';
-                            }
+                            pdoBreakdown.classList.remove('hidden');
+                            pdoBreakdown.classList.add('grid');
+
+                            // Menyembunyikan Unpaid Panel
+                            document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
+                            
+                            // Mengubah Tampilan Panel Kiri Menjadi Lebar Penuh (Span 2 Kolom)
+                            let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
+                            pdoBreakdownContainer.classList.remove('md:grid-cols-2');
+                            pdoBreakdownContainer.classList.add('grid-cols-1');
+
+                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid)`;
+
+                            paidContainer.innerHTML = '';
+                            paidContainer.classList.remove('flex', 'flex-col');
+                            paidContainer.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-3');
 
                             let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -572,6 +567,7 @@
                                 let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
                                 if (vendorCol === '' || vendorCol === 'nan') continue;
 
+                                // --- LOGIKA MENGISI KOTAK PAID (HANYA JIKA LUNAS) ---
                                 let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
                                 let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
                                 let invName = row[6] !== undefined && row[6] !== null ? row[6].toString().trim() : '-';
@@ -602,8 +598,9 @@
                                             <p class="text-xs font-black text-emerald-400 mt-1">${nominalFmt}</p>
                                         </div>
                                     `;
-                                    monitoringPaidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
+                                    paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
                                 }
+                                // ---------------------------------------------------
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
                                 for (let c = 0; c < 16; c++) {
@@ -657,8 +654,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (monitoringPaidContainer && monitoringPaidContainer.innerHTML === '') {
-                                monitoringPaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
+                            if (paidContainer.innerHTML === '') {
+                                paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
@@ -683,10 +680,16 @@
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
+                            // Pastikan container class disesuaikan untuk petty cash (list memanjang)
+                            paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
+                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
+                            document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
+                            document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
+
                             const displayHeaders = [
-                                "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
+                                "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
-                                "Status LPJ", "Status Pengajuan", "Keterangan", "Progress", "Dokumen"
+                                "Status LPJ", "Pengajuan Petty Cash", "Keterangan", "Dokumen"
                             ];
                             
                             let headHTML = '<tr>';
@@ -846,11 +849,6 @@
                         // KONDISI UMUM
                         // =========================================================
                         else {
-                            pdoBreakdown.classList.remove('grid');
-                            pdoBreakdown.classList.add('hidden');
-                            dashboardWidgets.classList.add('hidden');
-                            noSummaryMsg.classList.remove('hidden');
-
                             let tableHeadIdx = 2; 
                             let dataStartIdx = tableHeadIdx + 1;
                             while (dataStartIdx < data.length) {
@@ -904,7 +902,6 @@
                         document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-red-500">Gagal memuat data dari server. Pastikan nama sheet benar.</td></tr>`;
                         if (document.getElementById('dashboard-widgets')) document.getElementById('dashboard-widgets').classList.add('hidden');
                         if (document.getElementById('pdo-status-breakdown')) document.getElementById('pdo-status-breakdown').classList.add('hidden');
-                        if (document.getElementById('monitoring-paid-breakdown')) document.getElementById('monitoring-paid-breakdown').classList.add('hidden');
                     });
             }
 
