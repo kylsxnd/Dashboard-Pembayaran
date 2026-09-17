@@ -7,7 +7,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
+        /* ========================================================
+           BACKGROUND IMAGE SETTINGS
+           ======================================================== */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #09090b; /* Warna zinc-950 */
+            /* Ini triknya: Foto dilapisin gradient gelap 90% biar elegan & teks tetep jelas */
+            background-image: linear-gradient(rgba(9, 9, 11, 0.88), rgba(9, 9, 11, 0.98)), url('/bg1.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: all 0.4s ease; 
+        }
+
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
@@ -24,10 +37,12 @@
         .delay-200 { animation-delay: 200ms; }
 
         /* ========================================================
-           TEMA SOFT PINK & CREAM (Gak Silau)
+           TEMA SOFT PINK & CREAM
            ======================================================== */
         body.theme-pink {
             background-color: #fdf2f8 !important;
+            /* Kalau ganti tema pink, fotonya dilapisin gradient pink cerah */
+            background-image: linear-gradient(rgba(253, 242, 248, 0.85), rgba(253, 242, 248, 0.95)), url('/bg1.jpeg') !important;
             color: #4b5563 !important;
         }
         body.theme-pink #sidebar,
@@ -75,7 +90,6 @@
         body.theme-pink td { border-bottom-color: #fdf2f8 !important; }
         body.theme-pink .bg-emerald-600\/10, body.theme-pink .bg-zinc-500\/5 { background-color: rgba(244, 114, 182, 0.1) !important; }
         
-        /* Pewarnaan Identitas Sidebar di Tema Pink */
         body.theme-pink .border-l-4.border-transparent:hover { color: #be185d !important; background-color: #fce7f3 !important; }
         body.theme-pink .border-sky-500 {
             border-color: #0ea5e9 !important;
@@ -105,7 +119,7 @@
         body.theme-pink #mobile-menu-btn { color: #be185d !important; }
     </style>
 </head>
-<body class="bg-zinc-950 text-gray-300 flex h-screen overflow-hidden selection:bg-emerald-500/30">
+<body class="text-gray-300 flex h-screen overflow-hidden selection:bg-emerald-500/30">
 
     <!-- OVERLAY UNTUK HP -->
     <div id="mobile-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
@@ -146,9 +160,7 @@
     </aside>
 
     <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <div class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-zinc-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-
-        <header class="h-16 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-zinc-950/80 backdrop-blur-xl relative z-10 w-full shadow-sm">
+        <header class="h-16 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-zinc-950/70 backdrop-blur-md relative z-10 w-full shadow-sm">
             <div class="flex items-center gap-2 md:gap-4">
                 <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-colors focus:outline-none shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -193,10 +205,7 @@
 
             <!-- DASHBOARD WIDGETS (SUMMARY CARDS, FULL WIDTH) -->
             <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
-                <div class="bg-gradient-to-br from-zinc-900/90 to-zinc-950/90 backdrop-blur-xl border border-white/5 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
-                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl group-hover:bg-zinc-500/10 transition-all duration-700"></div>
-                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl group-hover:bg-zinc-500/10 transition-all duration-700"></div>
-
+                <div class="bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                     <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 md:mb-8 flex items-center gap-3 relative z-10 drop-shadow-md">
                         <div class="p-2 rounded-lg bg-zinc-800 text-gray-300 border border-white/10 shadow-inner">
                             <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
@@ -212,8 +221,7 @@
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 mb-6 md:mb-8 opacity-0 animate-fade-in-up delay-200">
                 
                 <!-- KOTAK TASK PAID -->
-                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/5 rounded-3xl p-5 md:p-8 shadow-xl flex flex-col hover:border-emerald-500/30 hover:shadow-[0_10px_30px_rgba(16,185,129,0.08)] transition-all duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
+                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/10 rounded-3xl p-5 md:p-8 shadow-xl flex flex-col hover:border-emerald-500/30 hover:shadow-[0_10px_30px_rgba(16,185,129,0.08)] transition-all duration-300 relative overflow-hidden group">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10">
                         <div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         Task Sudah Paid
@@ -222,8 +230,7 @@
                 </div>
 
                 <!-- KOTAK TASK PENDING/REVIEW -->
-                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/5 rounded-3xl p-5 md:p-8 shadow-xl flex flex-col hover:border-rose-500/30 hover:shadow-[0_10px_30px_rgba(244,63,94,0.08)] transition-all duration-300 relative overflow-hidden group" id="unpaid-panel-wrapper">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-colors"></div>
+                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/10 rounded-3xl p-5 md:p-8 shadow-xl flex flex-col hover:border-rose-500/30 hover:shadow-[0_10px_30px_rgba(244,63,94,0.08)] transition-all duration-300 relative overflow-hidden group" id="unpaid-panel-wrapper">
                     <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10">
                         <div class="p-2 bg-rose-500/10 rounded-lg border border-rose-500/20"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         Task Belum Paid
@@ -232,13 +239,13 @@
                 </div>
             </div>
 
-            <div id="no-summary-msg" class="hidden mb-6 md:mb-8 bg-zinc-800/80 border border-white/10 text-gray-300 font-medium text-xs md:text-sm px-4 md:px-6 py-4 md:py-5 rounded-2xl flex items-center gap-3 opacity-0 animate-fade-in-up">
+            <div id="no-summary-msg" class="hidden mb-6 md:mb-8 bg-zinc-800/80 backdrop-blur-md border border-white/10 text-gray-300 font-medium text-xs md:text-sm px-4 md:px-6 py-4 md:py-5 rounded-2xl flex items-center gap-3 opacity-0 animate-fade-in-up">
                 <svg class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Sheet ini tidak memiliki ringkasan (Total/Summary).
             </div>
 
             <!-- Tabel Data Utama -->
-            <div class="bg-zinc-900/90 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative flex flex-col opacity-0 animate-fade-in-up delay-200">
+            <div class="bg-zinc-900/80 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative flex flex-col opacity-0 animate-fade-in-up delay-200">
                 <div class="px-5 md:px-8 py-5 md:py-6 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                     <h3 class="text-white font-bold text-xs md:text-sm tracking-widest uppercase flex items-center gap-3">
                         <div class="p-2 bg-white/10 rounded-lg"><svg class="w-4 h-4 md:w-5 md:h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg></div>
@@ -286,21 +293,15 @@
             
             if (localStorage.getItem('agrinas_theme') === 'pink') {
                 document.body.classList.add('theme-pink');
-                logoIcon.classList.replace('from-emerald-500', 'from-pink-500');
-                logoIcon.classList.replace('to-teal-600', 'to-rose-600');
             }
 
             themeToggleBtn.addEventListener('click', () => {
                 if (document.body.classList.contains('theme-pink')) {
                     document.body.classList.remove('theme-pink');
                     localStorage.setItem('agrinas_theme', 'dark');
-                    logoIcon.classList.replace('from-pink-500', 'from-emerald-500');
-                    logoIcon.classList.replace('to-rose-600', 'to-teal-600');
                 } else {
                     document.body.classList.add('theme-pink');
                     localStorage.setItem('agrinas_theme', 'pink');
-                    logoIcon.classList.replace('from-emerald-500', 'from-pink-500');
-                    logoIcon.classList.replace('to-teal-600', 'to-rose-600');
                 }
             });
 
@@ -372,6 +373,7 @@
             const rowsPerPage = 10;
 
             const menuContainer = document.getElementById('sidebar-menu');
+            
             function renderMenu() {
                 menuContainer.innerHTML = '';
                 sheetTabs.forEach(sheetName => {
@@ -380,6 +382,9 @@
                     let activeClassesStr = '';
                     let activeIconStr = '';
 
+                    // ==============================
+                    // WARNA KHUSUS PER MENU
+                    // ==============================
                     if (sheetName === 'PDO') {
                         activeClassesStr = 'bg-gradient-to-r from-sky-500/20 to-transparent text-white border-l-4 border-sky-500 theme-pink:border-sky-500 theme-pink:from-sky-500/10';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-sky-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
@@ -406,6 +411,16 @@
                     btn.onclick = () => {
                         currentActiveSheet = sheetName;
                         currentPage = 1;
+                        
+                        // Update Icon di Logo Kiri Atas sesuai menu
+                        if (sheetName === 'PDO') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.3)]";
+                        } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]";
+                        } else if (sheetName === 'Petty Cash') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.3)]";
+                        }
+
                         renderMenu(); 
                         fetchJsonData();
                         
@@ -541,7 +556,7 @@
                             pdoBreakdown.classList.remove('grid-cols-1');
                             pdoBreakdown.classList.add('md:grid-cols-2');
                             document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
-                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
+                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-2 relative z-10';
 
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
@@ -596,7 +611,7 @@
                                         <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-rose-500'}"></div>
                                         <div class="flex-1 min-w-0 pl-3">
                                             <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-emerald-200 transition-colors truncate" title="${taskCol}">${taskCol}</p>
-                                            <p class="text-[10px] md:text-xs text-gray-400 truncate">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
+                                            <p class="text-[10px] md:text-xs text-gray-400 truncate">Tipe: <span class="text-sky-400 font-semibold">${row[4] || '-'}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
                                         </div>
                                         <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
                                             ${isPaid ? 'PAID' : 'BELUM PAID'}
@@ -677,8 +692,7 @@
                             }
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                            const updateEl = document.getElementById('last-update');
-                            updateEl.innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
+                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
@@ -697,8 +711,10 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
+                            // Sembunyikan Unpaid Panel
+                            document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
+                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -871,7 +887,6 @@
                             document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
                             document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
                             
-                            // Tampilkan panel unpaid (merah) buat Petty Cash
                             document.getElementById('unpaid-panel-wrapper').classList.remove('hidden');
 
                             paidContainer.innerHTML = '';
@@ -951,7 +966,7 @@
                                         skipSection = false;
                                     }
 
-                                    let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-indigo-500/10 text-indigo-400 font-bold text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/10 text-pink-400 font-bold text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
@@ -986,14 +1001,14 @@
                                 let permStr = formatRp(permVal);
 
                                 let formatCheck = (val) => {
-                                    if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-black/20 border border-white/10 mx-auto"></div>`;
+                                    if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                     let strVal = String(val).toUpperCase();
                                     let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
                                     
                                     if (isTrue) {
-                                        return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-emerald-600 border border-emerald-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-600 border border-emerald-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                     } else {
-                                        return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-black/20 border border-white/10 mx-auto"></div>`;
+                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                     }
                                 };
                                 let lpjHTML = formatCheck(lpjVal);
@@ -1057,7 +1072,7 @@
                                 let rowHTML = '<tr class="hover:bg-zinc-800/80 transition-colors duration-200 group">';
                                 cellData.forEach((cellVal, c) => {
                                     let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
-                                    if (c === 8) cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-200 font-medium min-w-[250px] md:min-w-[300px] max-w-[400px] md:max-w-[500px] whitespace-normal leading-relaxed";
+                                    if (c === 8) cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-200 font-medium min-w-[200px] md:min-w-[250px] max-w-[300px] md:max-w-[400px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
