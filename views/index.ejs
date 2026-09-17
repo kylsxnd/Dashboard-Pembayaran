@@ -98,7 +98,7 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
+            <!-- PANEL BREAKDOWN STATUS TASK (UNTUK PDO & PETTY CASH) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -380,6 +380,13 @@
                         if (currentActiveSheet === 'PDO') {
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
+                            
+                            // Reset span for PDO
+                            pdoBreakdown.classList.remove('grid-cols-1');
+                            pdoBreakdown.classList.add('md:grid-cols-2');
+                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
+                            paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
+
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
@@ -516,10 +523,10 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Menyembunyikan Unpaid Panel
+                            // Sembunyikan Unpaid Panel
                             document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
                             
-                            // Mengubah Tampilan Panel Kiri Menjadi Lebar Penuh (Span 2 Kolom)
+                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -568,7 +575,6 @@
                                 let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
                                 if (vendorCol === '' || vendorCol === 'nan') continue;
 
-                                // --- LOGIKA MENGISI KOTAK PAID (HANYA JIKA LUNAS) ---
                                 let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
                                 let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
                                 let invName = row[6] !== undefined && row[6] !== null ? row[6].toString().trim() : '-';
@@ -601,7 +607,6 @@
                                     `;
                                     paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
                                 }
-                                // ---------------------------------------------------
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
                                 for (let c = 0; c < 16; c++) {
@@ -668,14 +673,14 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH (KODE YANG BARU DIPERBAIKI)
+                        // KONDISI 3: PETTY CASH (FIXED INDEXING)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             noSummaryMsg.classList.remove('hidden');
 
-                            // Pastikan grid kembali ke 2 kolom dan panel Unpaid dinyalakan
+                            // Kembalikan ke layout 2 kotak (Paid vs Unpaid)
                             document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
                             document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
                             document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
@@ -685,8 +690,6 @@
 
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
-                            
-                            // Kembalikan kotak jadi list memanjang ke bawah
                             paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
 
                             const displayHeaders = [
@@ -702,22 +705,31 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // BACA KOLOM SECARA HARDCODE KARENA URUTAN DI EXCEL A TO K
-                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 6, sreq: 7, ket: 8, prog: 9, dok: 10 };
+                            // INDEXING TETAP (FIXED) BERDASARKAN EXCEL ASLI
+                            // Kolom E = 4 (Pemakaian)
+                            // Kolom F = 5 (Sisa)
+                            // Kolom G = 6 (Permintaan)
+                            // Kolom H = 7 (LPJ)
+                            // Kolom I = 8 (Status Permintaan)
+                            // Kolom M = 12 (Keterangan) -> Ingat H, I, J, K Hidden (jadi indeks data mentah bisa melompat)
+                            // Kolom N = 13 (Progress)
+                            // Kolom O = 14 (Dokumen)
+
+                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 7, sreq: 8, ket: 12, prog: 13, dok: 14 };
 
                             let skipSection = false;
 
-                            for (let i = 3; i < data.length; i++) {
+                            for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                // CEK BANNER BULAN & FILTER BARIS JUNI/JULI
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
+                                    // Bypass section lama (Juni/Juli) yang tersembunyi
                                     let lowerTitle = title.toLowerCase();
                                     if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
                                         skipSection = true;
@@ -736,11 +748,14 @@
 
                                 let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
                                 let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
+                                
                                 let pemVal = row[colIdx.pem] !== undefined && row[colIdx.pem] !== null ? row[colIdx.pem] : 0;
                                 let sisaVal = row[colIdx.sisa] !== undefined && row[colIdx.sisa] !== null ? row[colIdx.sisa] : 0;
                                 let permVal = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm] : 0;
+                                
                                 let lpjVal = row[colIdx.slpj];
                                 let sreqVal = row[colIdx.sreq];
+                                
                                 let ketVal = row[colIdx.ket] !== undefined && row[colIdx.ket] !== null ? row[colIdx.ket].toString().trim() : '-';
                                 let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
                                 let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
@@ -796,7 +811,7 @@
                                     }
                                 }
 
-                                // --- LOGIKA KOTAK PAID/BELUM PAID (STRICT) ---
+                                // KOTAK PAID/PENDING KHUSUS PETTY CASH
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
@@ -806,7 +821,7 @@
                                                 <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
                                             </div>
                                             <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase">
-                                                ${isPaid ? 'PAID' : progVal}
+                                                ${progVal}
                                             </span>
                                         </div>
                                     `;
@@ -830,8 +845,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada data yang sedang di-review.</p>`;
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada pengajuan yang lunas.</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
