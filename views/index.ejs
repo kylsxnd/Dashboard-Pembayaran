@@ -12,48 +12,49 @@
         body { font-family: 'Inter', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
     </style>
 </head>
-<body class="bg-[#0b0e14] text-gray-300 flex h-screen overflow-hidden selection:bg-blue-500/30">
+<body class="bg-pink-900 text-pink-50 flex h-screen overflow-hidden selection:bg-pink-500/30">
 
-    <aside class="w-72 bg-[#12151c] border-r border-white/5 flex flex-col hidden md:flex relative z-20">
+    <aside class="w-72 bg-pink-950 border-r border-white/5 flex flex-col hidden md:flex relative z-20">
         <div class="p-6 border-b border-white/5 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.3)]">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </div>
             <div>
-                <h2 class="text-white font-bold tracking-widest text-sm bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">AGRINAS OPS</h2>
-                <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider mt-0.5">Executive On-Farm</p>
+                <h2 class="text-white font-bold tracking-widest text-sm bg-clip-text text-transparent bg-gradient-to-r from-white to-pink-200">AGRINAS OPS</h2>
+                <p class="text-[10px] text-pink-300 font-medium uppercase tracking-wider mt-0.5">Executive On-Farm</p>
             </div>
         </div>
 
         <div class="p-4 flex-1 overflow-y-auto custom-scrollbar">
-            <p class="text-[10px] font-bold text-gray-600 mb-4 tracking-widest uppercase px-2">Data Sheets (3 Utama)</p>
+            <p class="text-[10px] font-bold text-pink-400 mb-4 tracking-widest uppercase px-2">Data Sheets (3 Utama)</p>
             <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
         </div>
 
-        <div class="p-5 border-t border-white/5 bg-[#0e1117] flex items-center gap-4">
+        <div class="p-5 border-t border-white/5 bg-pink-950 flex items-center gap-4">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-[2px]">
-                <div class="w-full h-full bg-[#12151c] rounded-full flex items-center justify-center">
+                <div class="w-full h-full bg-pink-900 rounded-full flex items-center justify-center">
                     <span class="text-xs font-bold text-white">PIC</span>
                 </div>
             </div>
             <div>
                 <p class="text-sm text-white font-semibold">Staf PIC HO</p>
-                <p class="text-xs text-gray-500">pic.ho@agrinas.id</p>
+                <p class="text-xs text-pink-300">pic.ho@agrinas.id</p>
             </div>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <!-- CAHAYA BLUR BACKGROUND (Diganti jadi Pink) -->
+        <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-pink-500/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#0b0e14]/80 backdrop-blur-md relative z-10">
+        <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-pink-900/80 backdrop-blur-md relative z-10">
             <div class="flex items-center gap-2">
-                <div class="text-xs font-medium text-gray-500 bg-white/5 px-3 py-1.5 rounded-md border border-white/5 flex items-center">
+                <div class="text-xs font-medium text-pink-200 bg-white/5 px-3 py-1.5 rounded-md border border-white/5 flex items-center">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                    <span id="header-title" class="text-gray-300">Memuat Sheet...</span>
+                    <span id="header-title" class="text-white">Memuat Sheet...</span>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -68,39 +69,39 @@
             <div class="flex justify-between items-end mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-white mb-2 tracking-tight" id="page-title">Loading...</h1>
-                    <p class="text-sm text-gray-400 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-sm text-pink-200 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Menarik data langsung secara live dari file Excel.
                     </p>
                 </div>
-                <div class="text-xs font-semibold text-gray-400 bg-white/5 px-4 py-2 rounded-lg border border-white/5 shadow-sm" id="last-update">
+                <div class="text-xs font-semibold text-pink-200 bg-white/5 px-4 py-2 rounded-lg border border-white/5 shadow-sm" id="last-update">
                     Update terakhir: --:--:--
                 </div>
             </div>
 
             <!-- DASHBOARD WIDGETS & CHARTS -->
             <div id="dashboard-widgets" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 hidden">
-                <div class="col-span-2 bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
+                <div class="col-span-2 bg-pink-950 border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl group-hover:bg-pink-500/20 transition-colors"></div>
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-6 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         Distribusi Task 3D
                     </h3>
                     <div class="relative w-full h-[300px]" id="barChartContainer"></div>
                 </div>
 
-                <div class="col-span-1 bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                <div class="col-span-1 bg-pink-950 border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Summary Data
                     </h3>
                     <div id="summaryCardsContainer" class="grid grid-cols-2 gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK (DIGUNAKAN BERSAMA OLEH PDO & PETTY CASH) -->
+            <!-- PANEL BREAKDOWN STATUS TASK -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
+                <div class="bg-pink-950 border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Sudah Paid (Lunas)
@@ -108,7 +109,7 @@
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
 
-                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
+                <div class="bg-pink-950 border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Belum Paid (Pending)
@@ -117,33 +118,33 @@
                 </div>
             </div>
 
-            <div id="no-summary-msg" class="hidden mb-8 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm px-6 py-4 rounded-xl flex items-center gap-3">
+            <div id="no-summary-msg" class="hidden mb-8 bg-pink-500/10 border border-pink-500/20 text-pink-300 text-sm px-6 py-4 rounded-xl flex items-center gap-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Sheet ini tidak memiliki ringkasan (Total/Summary).
             </div>
 
             <!-- Tabel Data Utama -->
-            <div class="bg-[#12151c] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
+            <div class="bg-pink-950 border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
                 <div class="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        <svg class="w-4 h-4 text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                         Detail Data Tabel
                     </h3>
                 </div>
                 
                 <div class="overflow-x-auto custom-scrollbar flex-1 min-h-[300px] pb-4">
                     <table class="w-full text-left border-collapse min-w-max">
-                        <thead id="table-head" class="text-[11px] text-gray-400 uppercase tracking-wider font-bold"></thead>
+                        <thead id="table-head" class="text-[11px] text-pink-200 uppercase tracking-wider font-bold"></thead>
                         <tbody id="table-body" class="text-sm divide-y divide-white/5">
-                            <tr><td colspan="16" class="p-12 text-center text-gray-500 flex flex-col justify-center items-center gap-3">
-                                <svg class="animate-spin w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <tr><td colspan="16" class="p-12 text-center text-pink-300 flex flex-col justify-center items-center gap-3">
+                                <svg class="animate-spin w-8 h-8 text-pink-500" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 <span>Mengambil data live dari Google Sheets...</span>
                             </td></tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="px-6 py-4 border-t border-white/5 bg-[#0e1117] flex justify-center items-center">
+                <div class="px-6 py-4 border-t border-white/5 bg-pink-950 flex justify-center items-center">
                     <div id="pagination-container" class="flex items-center gap-2"></div>
                 </div>
             </div>
@@ -154,15 +155,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             const modalHTML = `
             <div id="custom-pdf-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-                <div class="bg-[#12151c] border border-white/10 rounded-2xl w-11/12 max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="pdf-modal-box">
+                <div class="bg-pink-950 border border-white/10 rounded-2xl w-11/12 max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="pdf-modal-box">
                     <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
                         <div class="flex items-center gap-3 overflow-hidden">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            <div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                             </div>
                             <h3 id="pdf-modal-title" class="text-white font-bold text-sm truncate">Preview Dokumen</h3>
                         </div>
-                        <button id="pdf-modal-close" class="text-gray-400 hover:text-white hover:bg-rose-500/20 p-2 rounded-lg transition-colors focus:outline-none cursor-pointer">
+                        <button id="pdf-modal-close" class="text-pink-300 hover:text-white hover:bg-rose-500/20 p-2 rounded-lg transition-colors focus:outline-none cursor-pointer">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
@@ -192,12 +193,12 @@
                 const cleanName = fileName.replace(/\.[^/.]+$/, "");
                 const searchUrl = `https://drive.google.com/drive/search?q=${encodeURIComponent(cleanName)}`;
                 modalContent.innerHTML = `
-                    <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/5">
-                        <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    <div class="w-20 h-20 bg-pink-900 rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/5">
+                        <svg class="w-10 h-10 text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                     </div>
                     <h2 class="text-xl font-bold text-white mb-2 tracking-wide">Dokumen Tersembunyi (Smart Chip)</h2>
-                    <p class="text-gray-400 mb-8 text-sm leading-relaxed max-w-md">Karena format di Google Sheets adalah <i>Smart Chip</i>, link aslinya disembunyikan. <br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
-                    <a href="${searchUrl}" target="_blank" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center gap-3">
+                    <p class="text-pink-200 mb-8 text-sm leading-relaxed max-w-md">Karena format di Google Sheets adalah <i>Smart Chip</i>, link aslinya disembunyikan. <br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
+                    <a href="${searchUrl}" target="_blank" class="px-8 py-3.5 bg-pink-600 hover:bg-pink-500 text-white font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(219,39,119,0.4)] flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         Cari PDF ini di Google Drive
                     </a>
@@ -224,12 +225,12 @@
                 sheetTabs.forEach(sheetName => {
                     const isActive = sheetName === currentActiveSheet;
                     const iconSvg = isActive 
-                        ? `<svg class="w-4 h-4 mr-3 text-blue-400 flex-shrink-0 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`
-                        : `<svg class="w-4 h-4 mr-3 text-gray-500 group-hover:text-gray-300 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`;
+                        ? `<svg class="w-4 h-4 mr-3 text-pink-400 flex-shrink-0 drop-shadow-[0_0_5px_rgba(244,114,182,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`
+                        : `<svg class="w-4 h-4 mr-3 text-pink-300 group-hover:text-white transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`;
 
                     const activeClass = isActive 
-                        ? 'bg-gradient-to-r from-blue-500/20 to-transparent text-white border-l-4 border-blue-500' 
-                        : 'text-gray-400 hover:text-gray-200 hover:bg-white/5 group border-l-4 border-transparent';
+                        ? 'bg-gradient-to-r from-pink-500/20 to-transparent text-white border-l-4 border-pink-500' 
+                        : 'text-pink-200 hover:text-white hover:bg-white/5 group border-l-4 border-transparent';
                     
                     const btn = document.createElement('button');
                     btn.className = `flex items-center px-4 py-3 rounded-r-xl text-sm transition-all duration-300 w-full text-left font-medium ${activeClass}`;
@@ -247,15 +248,15 @@
 
             function renderChartsAndCards(labels, dataValues, dateValue) {
                 if (barChartInstance) barChartInstance.destroy();
-                const premiumColors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16'];
+                const premiumColors = ['#f472b6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16'];
 
                 barChartInstance = Highcharts.chart('barChartContainer', {
                     chart: { type: 'column', backgroundColor: 'transparent', options3d: { enabled: true, alpha: 12, beta: 15, depth: 60, viewDistance: 25 } },
                     title: { text: null },
                     colors: premiumColors,
-                    xAxis: { categories: labels, labels: { style: { color: '#94a3b8', fontSize: '11px', fontFamily: 'Inter', fontWeight: '500' } }, gridLineColor: 'rgba(255,255,255,0.05)', lineColor: 'rgba(255,255,255,0.1)' },
-                    yAxis: { title: { text: null }, labels: { style: { color: '#94a3b8', fontFamily: 'Inter' } }, gridLineColor: 'rgba(255,255,255,0.05)' },
-                    tooltip: { backgroundColor: 'rgba(18, 21, 28, 0.95)', style: { color: '#e2e8f0' }, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, headerFormat: '<span style="font-size: 10px; color: #94a3b8; text-transform: uppercase">{point.key}</span><br/>', pointFormat: '<span style="color:{point.color}">\u25CF</span> Total Data: <b>{point.y}</b>' },
+                    xAxis: { categories: labels, labels: { style: { color: '#fbcfe8', fontSize: '11px', fontFamily: 'Inter', fontWeight: '500' } }, gridLineColor: 'rgba(255,255,255,0.05)', lineColor: 'rgba(255,255,255,0.1)' },
+                    yAxis: { title: { text: null }, labels: { style: { color: '#fbcfe8', fontFamily: 'Inter' } }, gridLineColor: 'rgba(255,255,255,0.05)' },
+                    tooltip: { backgroundColor: 'rgba(80, 7, 36, 0.95)', style: { color: '#fdf2f8' }, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, headerFormat: '<span style="font-size: 10px; color: #fbcfe8; text-transform: uppercase">{point.key}</span><br/>', pointFormat: '<span style="color:{point.color}">\u25CF</span> Total Data: <b>{point.y}</b>' },
                     plotOptions: { column: { depth: 45, colorByPoint: true, borderColor: 'rgba(0,0,0,0.3)', borderWidth: 1 } },
                     series: [{ name: 'Statistik', data: dataValues, showInLegend: false }],
                     credits: { enabled: false }
@@ -266,16 +267,16 @@
                 labels.forEach((label, i) => {
                     cardsContainer.innerHTML += `
                         <div class="bg-white/[0.03] border border-white/5 rounded-xl p-4 shadow-sm hover:bg-white/[0.05] transition-colors flex flex-col justify-center">
-                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-1.5 truncate" title="${label}">${label}</p>
-                            <p class="text-2xl font-bold text-gray-200">${dataValues[i]}</p>
+                            <p class="text-[9px] text-pink-300 font-bold uppercase tracking-widest mb-1.5 truncate" title="${label}">${label}</p>
+                            <p class="text-2xl font-bold text-gray-100">${dataValues[i]}</p>
                         </div>
                     `;
                 });
                 
                 if (dateValue) {
                      cardsContainer.innerHTML += `
-                        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:bg-blue-500/20 transition-colors flex flex-col justify-center">
-                            <p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest mb-1.5 truncate" title="Date">DATE</p>
+                        <div class="bg-pink-500/20 border border-pink-400/30 rounded-xl p-4 shadow-[0_0_15px_rgba(236,72,153,0.2)] hover:bg-pink-500/30 transition-colors flex flex-col justify-center">
+                            <p class="text-[9px] text-pink-200 font-bold uppercase tracking-widest mb-1.5 truncate" title="Date">DATE</p>
                             <p class="text-xl font-bold text-white">${dateValue}</p>
                         </div>
                     `;
@@ -289,7 +290,7 @@
                 if (totalPages <= 1) return;
 
                 const btnPrev = document.createElement('button');
-                btnPrev.className = `px-3 py-1.5 rounded-md text-xs font-semibold ${currentPage === 1 ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white hover:bg-white/10 transition-colors'}`;
+                btnPrev.className = `px-3 py-1.5 rounded-md text-xs font-semibold ${currentPage === 1 ? 'text-pink-300/50 cursor-not-allowed' : 'text-pink-200 hover:text-white hover:bg-white/10 transition-colors'}`;
                 btnPrev.innerText = 'Prev';
                 btnPrev.disabled = currentPage === 1;
                 btnPrev.onclick = () => { if (currentPage > 1) { currentPage--; renderTablePage(); } };
@@ -302,14 +303,14 @@
                 for (let i = startPage; i <= endPage; i++) {
                     const btnPage = document.createElement('button');
                     const isActive = i === currentPage;
-                    btnPage.className = `w-8 h-8 rounded-md text-xs font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-[#272b33] text-white shadow-sm' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`;
+                    btnPage.className = `w-8 h-8 rounded-md text-xs font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-pink-700 text-white shadow-sm' : 'text-pink-300 hover:bg-white/5 hover:text-white'}`;
                     btnPage.innerText = i;
                     btnPage.onclick = () => { currentPage = i; renderTablePage(); };
                     pagContainer.appendChild(btnPage);
                 }
 
                 const btnNext = document.createElement('button');
-                btnNext.className = `px-3 py-1.5 rounded-md text-xs font-semibold ${currentPage === totalPages ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white hover:bg-white/10 transition-colors'}`;
+                btnNext.className = `px-3 py-1.5 rounded-md text-xs font-semibold ${currentPage === totalPages ? 'text-pink-300/50 cursor-not-allowed' : 'text-pink-200 hover:text-white hover:bg-white/10 transition-colors'}`;
                 btnNext.innerText = 'Next';
                 btnNext.disabled = currentPage === totalPages;
                 btnNext.onclick = () => { if (currentPage < totalPages) { currentPage++; renderTablePage(); } };
@@ -391,8 +392,8 @@
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
-                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas)`;
-                            titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending)`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas)`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending)`;
 
                             let tTask = data[4] && data[4][1] !== undefined ? data[4][1] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -419,7 +420,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-6 py-4 font-bold bg-pink-950/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -440,7 +441,7 @@
                                     <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
                                         <div class="pr-2">
                                             <p class="text-white font-medium text-xs mb-1">${taskCol}</p>
-                                            <p class="text-[10px] text-gray-400">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> | Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
+                                            <p class="text-[10px] text-pink-300">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> | Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
                                         </div>
                                         <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap">
                                             ${isPaid ? 'PAID' : 'BELUM PAID'}
@@ -454,7 +455,7 @@
                                     unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
                                 }
 
-                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-pink-900/40 transition-colors duration-200 group">';
                                 for (let c = 0; c < 13; c++) {
                                     let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
                                     
@@ -468,13 +469,13 @@
                                     if (c === 3 && cellVal !== '-') {
                                         const urlRegex = /(https?:\/\/[^\s]+)/g;
                                         if (urlRegex.test(cellVal)) {
-                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
+                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-pink-500/20 text-pink-300 border border-pink-500/30 shadow-sm hover:bg-pink-500/30 transition-colors">Buka Dokumen</a>`);
                                         } else {
                                             const safeName = cellVal.replace(/'/g, "\\'");
                                             cellVal = `
-                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px]" title="${safeName}">
-                                                    <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                    <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${cellVal}</span>
+                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-pink-300 font-medium hover:text-pink-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px]" title="${safeName}">
+                                                    <svg class="w-4 h-4 text-pink-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                    <span class="underline decoration-pink-500/30 underline-offset-4 truncate">${cellVal}</span>
                                                 </button>
                                             `;
                                         }
@@ -498,19 +499,19 @@
                                         cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${progColor} inline-block">${cellVal}</span>`;
                                     }
 
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 2) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[250px] max-w-[400px] whitespace-normal leading-relaxed";
+                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-pink-100 text-sm whitespace-nowrap";
+                                    if (c === 2) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-pink-100 text-sm min-w-[250px] max-w-[400px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 }
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada task yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Semua task sudah lunas.</p>`;
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-pink-300 italic">Belum ada task yang lunas.</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-pink-300 italic">Semua task sudah lunas.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="13" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="13" class="px-6 py-12 text-center text-pink-300">Tidak ada baris data di sheet ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
@@ -532,7 +533,7 @@
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
 
-                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid)`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid)`;
 
                             paidContainer.innerHTML = '';
                             paidContainer.classList.remove('flex', 'flex-col');
@@ -562,7 +563,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-6 py-4 font-bold bg-pink-950/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -600,8 +601,8 @@
                                                 <span class="px-2 py-1 rounded-md text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">PAID</span>
                                             </div>
                                             <div class="flex flex-col gap-0.5">
-                                                <p class="text-[11px] text-gray-400 truncate" title="${kebunName}"><span class="text-gray-500">Kebun:</span> ${kebunName}</p>
-                                                <p class="text-[11px] text-gray-400 truncate" title="${invName}"><span class="text-gray-500">Inv:</span> ${invName}</p>
+                                                <p class="text-[11px] text-pink-300 truncate" title="${kebunName}"><span class="text-pink-400">Kebun:</span> ${kebunName}</p>
+                                                <p class="text-[11px] text-pink-300 truncate" title="${invName}"><span class="text-pink-400">Inv:</span> ${invName}</p>
                                             </div>
                                             <p class="text-xs font-black text-emerald-400 mt-1">${nominalFmt}</p>
                                         </div>
@@ -609,7 +610,7 @@
                                     paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
                                 }
 
-                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-pink-900/40 transition-colors duration-200 group">';
                                 for (let c = 0; c < 16; c++) {
                                     let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
                                     
@@ -650,9 +651,9 @@
                                         }
                                     }
 
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
+                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-pink-100 text-sm whitespace-nowrap";
                                     if (c >= 4 && c <= 6 || c === 15) { 
-                                        cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
+                                        cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-pink-100 text-sm min-w-[200px] whitespace-normal leading-relaxed";
                                     }
                                     
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
@@ -662,11 +663,11 @@
                             }
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
+                                paidContainer.innerHTML = `<p class="text-xs text-pink-300 italic px-2">Belum ada data yang lunas (Paid).</p>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-pink-300">Tidak ada baris data di sheet ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
@@ -685,8 +686,8 @@
                             document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
                             document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
 
-                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid)`;
-                            titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Dir.Ops)`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid)`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Dir.Ops)`;
 
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
@@ -701,7 +702,7 @@
                             
                             let headHTML = '<tr>';
                             displayHeaders.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-6 py-4 font-bold bg-pink-950/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -762,7 +763,7 @@
                                         skipSection = false;
                                     }
 
-                                    let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-pink-500/20 text-pink-300 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
@@ -827,13 +828,13 @@
                                 if (dokVal !== '-' && dokVal !== '') {
                                     const urlRegex = /(https?:\/\/[^\s]+)/g;
                                     if (urlRegex.test(dokVal)) {
-                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
+                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-pink-500/20 text-pink-300 border border-pink-500/30 shadow-sm hover:bg-pink-500/30 transition-colors">Buka Dokumen</a>`);
                                     } else {
                                         const safeName = dokVal.replace(/'/g, "\\'");
                                         dokHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px]" title="${safeName}">
-                                                <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${dokVal}</span>
+                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-pink-300 font-medium hover:text-pink-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px]" title="${safeName}">
+                                                <svg class="w-4 h-4 text-pink-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                <span class="underline decoration-pink-500/30 underline-offset-4 truncate">${dokVal}</span>
                                             </button>
                                         `;
                                     }
@@ -843,8 +844,8 @@
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
                                             <div class="pr-2">
-                                                <p class="text-white font-medium text-xs mb-1 truncate max-w-[220px]" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500">(${wilVal})</span></p>
-                                                <p class="text-[10px] text-gray-400 truncate max-w-[220px]" title="${ketVal}">Ket: <span class="text-blue-400 font-semibold">${ketVal}</span></p>
+                                                <p class="text-white font-medium text-xs mb-1 truncate max-w-[220px]" title="${croVal} - ${wilVal}">${croVal} <span class="text-pink-300">(${wilVal})</span></p>
+                                                <p class="text-[10px] text-pink-300 truncate max-w-[220px]" title="${ketVal}">Ket: <span class="text-pink-400 font-semibold">${ketVal}</span></p>
                                                 <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
                                             </div>
                                             <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase">
@@ -862,21 +863,21 @@
 
                                 let cellData = [ colZero, croVal, wilVal, pemStr, sisaStr, permStr, lpjHTML, sreqHTML, ketVal, progHTML, dokHTML ];
 
-                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-pink-900/40 transition-colors duration-200 group">';
                                 cellData.forEach((cellVal, c) => {
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 8) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
+                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-pink-100 text-sm whitespace-nowrap";
+                                    if (c === 8) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-pink-100 text-sm min-w-[200px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada pengajuan yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-pink-300 italic px-2">Belum ada pengajuan yang lunas.</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-pink-300 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-pink-300">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
@@ -903,7 +904,7 @@
                                 let headerText = data[tableHeadIdx][c] ? data[tableHeadIdx][c].toString().trim() : "";
                                 if (headerText !== "") {
                                     validColIndices.push(c);
-                                    headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
+                                    headHTML += `<th class="px-6 py-4 font-bold bg-pink-950/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
                                 }
                             }
                             headHTML += '</tr>';
@@ -914,19 +915,19 @@
                                 let rowStr = row.join('').trim();
                                 if (rowStr === '' || !rowStr.match(/[a-zA-Z0-9]/)) continue;
 
-                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-pink-900/40 transition-colors duration-200 group">';
                                 validColIndices.forEach((colIndex) => {
                                     let cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? row[colIndex] : '-';
                                     if (cellVal !== '-') cellVal = formatCellDate(cellVal);
                                     if (cellVal === 'nan' || cellVal === '') cellVal = '-';
-                                    rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${cellVal}</td>`;
+                                    rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-pink-100 text-sm whitespace-nowrap">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-12 text-center text-pink-300">Tidak ada baris data di sheet ini.</td></tr>`;
                                 document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
