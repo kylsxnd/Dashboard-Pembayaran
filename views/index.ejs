@@ -15,7 +15,6 @@
         
         .table-container { -webkit-overflow-scrolling: touch; }
 
-        /* Animasi Masuk (Fade-in Up) */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -25,17 +24,21 @@
         .delay-200 { animation-delay: 200ms; }
 
         /* ========================================================
-           TEMA SOFT PINK & CREAM (Gak Silau & Tetap Elegan)
+           TEMA SOFT PINK & CREAM (Gak Silau)
            ======================================================== */
         body.theme-pink {
             background-color: #fdf2f8 !important;
             color: #4b5563 !important;
         }
         body.theme-pink #sidebar,
-        body.theme-pink .bg-slate-800,
-        body.theme-pink .bg-slate-900,
-        body.theme-pink .bg-slate-800\/80,
-        body.theme-pink .bg-slate-800\/40,
+        body.theme-pink .bg-zinc-800,
+        body.theme-pink .bg-zinc-900,
+        body.theme-pink .bg-zinc-950,
+        body.theme-pink .bg-zinc-800\/80,
+        body.theme-pink .bg-zinc-800\/40,
+        body.theme-pink .bg-zinc-900\/80,
+        body.theme-pink .bg-zinc-900\/50,
+        body.theme-pink .bg-zinc-900\/95,
         body.theme-pink #custom-pdf-modal > div {
             background-color: #ffffff !important;
             border-color: #fbcfe8 !important; 
@@ -57,10 +60,9 @@
         body.theme-pink .bg-white\/\[0\.02\],
         body.theme-pink .bg-white\/\[0\.03\] { background-color: #fff5f7 !important; border-color: #fce7f3 !important; }
         
-        /* Hover Table/Cards Pink Mode */
         body.theme-pink .hover\:bg-white\/\[0\.03\]:hover,
-        body.theme-pink .hover\:bg-slate-700\/60:hover,
-        body.theme-pink .hover\:bg-slate-700\/50:hover { 
+        body.theme-pink .hover\:bg-zinc-700\/60:hover,
+        body.theme-pink .hover\:bg-zinc-800\/80:hover { 
             background-color: #fce7f3 !important; 
             box-shadow: 0 4px 12px rgba(236, 72, 153, 0.1) !important;
         }
@@ -71,11 +73,10 @@
             border-bottom-color: #fbcfe8 !important;
         }
         body.theme-pink td { border-bottom-color: #fdf2f8 !important; }
-        body.theme-pink .bg-blue-600\/10 { background-color: rgba(244, 114, 182, 0.2) !important; }
+        body.theme-pink .bg-emerald-600\/10, body.theme-pink .bg-zinc-500\/5 { background-color: rgba(244, 114, 182, 0.1) !important; }
         
-        /* Sidebar khusus pink */
         body.theme-pink .border-l-4.border-transparent:hover { color: #be185d !important; background-color: #fce7f3 !important; }
-        body.theme-pink .border-l-4.border-blue-500 {
+        body.theme-pink .border-l-4.border-emerald-500 {
             border-color: #ec4899 !important;
             background: linear-gradient(to right, rgba(244,114,182,0.1), transparent) !important;
             color: #be185d !important;
@@ -86,27 +87,27 @@
         }
         body.theme-pink .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.02); }
         body.theme-pink .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.2); }
-        body.theme-pink .bg-slate-700 { background-color: #ec4899 !important; color: white !important; }
+        body.theme-pink .bg-emerald-600 { background-color: #ec4899 !important; color: white !important; }
         body.theme-pink button.hover\:text-white:hover { color: #be185d !important; }
         body.theme-pink #mobile-overlay { background-color: rgba(255,255,255,0.7) !important; }
         body.theme-pink #mobile-menu-btn { color: #be185d !important; }
     </style>
 </head>
-<body class="bg-slate-900 text-gray-300 flex h-screen overflow-hidden selection:bg-blue-500/30">
+<body class="bg-zinc-950 text-gray-300 flex h-screen overflow-hidden selection:bg-emerald-500/30">
 
     <!-- OVERLAY UNTUK HP -->
-    <div id="mobile-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="w-72 bg-slate-800 border-r border-white/5 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-[4px_0_24px_rgba(0,0,0,0.3)] md:shadow-none">
+    <aside id="sidebar" class="w-72 bg-zinc-900 border-r border-white/5 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-[4px_0_24px_rgba(0,0,0,0.5)] md:shadow-none">
         <div class="p-6 border-b border-white/5 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.4)]" id="logo-icon">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.3)]" id="logo-icon">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
                 <div>
                     <h2 class="text-white font-black tracking-widest text-sm bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">AGRINAS OPS</h2>
-                    <p class="text-[10px] text-blue-400/80 font-bold uppercase tracking-wider mt-0.5">Executive On-Farm</p>
+                    <p class="text-[10px] text-emerald-400/80 font-bold uppercase tracking-wider mt-0.5">Executive On-Farm</p>
                 </div>
             </div>
             <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-400 hover:text-white rounded-lg bg-white/5 focus:outline-none">
@@ -119,9 +120,9 @@
             <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
         </div>
 
-        <div class="p-5 border-t border-white/5 bg-slate-900/50 flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-[2px] shadow-lg">
-                <div class="w-full h-full bg-slate-800 rounded-full flex items-center justify-center">
+        <div class="p-5 border-t border-white/5 bg-zinc-950/50 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg">
+                <div class="w-full h-full bg-zinc-900 rounded-full flex items-center justify-center">
                     <span class="text-xs font-bold text-white">PIC</span>
                 </div>
             </div>
@@ -133,16 +134,17 @@
     </aside>
 
     <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <div class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <!-- Cahaya background sangat subtle, gak bikin biru -->
+        <div class="absolute top-0 left-1/4 w-[600px] h-[600px] bg-zinc-500/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <header class="h-16 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-slate-900/80 backdrop-blur-xl relative z-10 w-full shadow-sm">
+        <header class="h-16 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-zinc-950/80 backdrop-blur-xl relative z-10 w-full shadow-sm">
             <div class="flex items-center gap-2 md:gap-4">
                 <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-colors focus:outline-none shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                <div class="text-[10px] md:text-xs font-semibold text-gray-400 bg-slate-800/80 px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
-                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                    <span id="header-title" class="text-gray-200 truncate max-w-[150px] md:max-w-xs">Memuat Sheet...</span>
+                <div class="text-[10px] md:text-xs font-semibold text-gray-300 bg-zinc-800/80 px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
+                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                    <span id="header-title" class="truncate max-w-[150px] md:max-w-xs">Memuat Sheet...</span>
                 </div>
             </div>
             <div class="flex items-center gap-2 md:gap-4">
@@ -163,16 +165,16 @@
                 <div class="w-full md:w-auto">
                     <h1 class="text-3xl md:text-4xl font-black text-white mb-1.5 md:mb-2 tracking-tight drop-shadow-md" id="page-title">Loading...</h1>
                     <p class="text-xs md:text-sm text-gray-400 flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Sinkronisasi langsung dari Google Sheets.
                     </p>
                 </div>
                 <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end">
-                    <div class="text-[10px] md:text-xs font-semibold text-gray-400 bg-slate-800/60 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/10 shadow-sm whitespace-nowrap" id="last-update">
+                    <div class="text-[10px] md:text-xs font-semibold text-gray-400 bg-zinc-900/60 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/10 shadow-sm whitespace-nowrap" id="last-update">
                         Data API <span class="text-emerald-400 font-bold ml-1">--:--:--</span>
                     </div>
                     <!-- TANGGAL (DATE) -->
-                    <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-blue-300 tracking-widest bg-blue-600/20 border border-blue-500/30 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.15)] whitespace-nowrap">
+                    <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-300 tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-sm whitespace-nowrap">
                         TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black">--/--/----</span>
                     </div>
                 </div>
@@ -180,13 +182,12 @@
 
             <!-- DASHBOARD WIDGETS (HANYA SUMMARY CARDS, FULL WIDTH) -->
             <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
-                <div class="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
-                    <!-- Orbs Decor Background -->
-                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all duration-700"></div>
-                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-700"></div>
+                <div class="bg-gradient-to-br from-zinc-900/90 to-zinc-950/90 backdrop-blur-xl border border-white/5 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl group-hover:bg-zinc-500/10 transition-all duration-700"></div>
+                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl group-hover:bg-zinc-500/10 transition-all duration-700"></div>
 
                     <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 md:mb-8 flex items-center gap-3 relative z-10 drop-shadow-md">
-                        <div class="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 shadow-inner">
+                        <div class="p-2 rounded-lg bg-zinc-800 text-gray-300 border border-white/10 shadow-inner">
                             <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         </div>
                         Summary Data Panel
@@ -198,7 +199,7 @@
 
             <!-- PANEL BREAKDOWN STATUS TASK -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8 opacity-0 animate-fade-in-up delay-200">
-                <div class="bg-slate-800/80 backdrop-blur-md border border-white/5 rounded-2xl p-4 md:p-6 shadow-xl flex flex-col hover:border-emerald-500/30 hover:shadow-emerald-500/5 transition-all duration-300 relative overflow-hidden group">
+                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/5 rounded-2xl p-4 md:p-6 shadow-xl flex flex-col hover:border-emerald-500/30 hover:shadow-emerald-500/5 transition-all duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-[11px] md:text-xs tracking-widest uppercase mb-5 flex items-center flex-wrap gap-2 relative z-10">
                         <div class="p-1.5 bg-emerald-500/10 rounded-md border border-emerald-500/20"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
@@ -207,7 +208,7 @@
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-2 relative z-10"></div>
                 </div>
 
-                <div class="bg-slate-800/80 backdrop-blur-md border border-white/5 rounded-2xl p-4 md:p-6 shadow-xl flex flex-col hover:border-rose-500/30 hover:shadow-rose-500/5 transition-all duration-300 relative overflow-hidden group">
+                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/5 rounded-2xl p-4 md:p-6 shadow-xl flex flex-col hover:border-rose-500/30 hover:shadow-rose-500/5 transition-all duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-colors"></div>
                     <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-[11px] md:text-xs tracking-widest uppercase mb-5 flex items-center flex-wrap gap-2 relative z-10">
                         <div class="p-1.5 bg-rose-500/10 rounded-md border border-rose-500/20"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
@@ -217,13 +218,13 @@
                 </div>
             </div>
 
-            <div id="no-summary-msg" class="hidden mb-6 md:mb-8 bg-blue-500/10 border border-blue-500/20 text-blue-300 font-medium text-xs md:text-sm px-4 md:px-6 py-3 md:py-4 rounded-xl flex items-center gap-3 opacity-0 animate-fade-in-up">
+            <div id="no-summary-msg" class="hidden mb-6 md:mb-8 bg-zinc-800/80 border border-white/10 text-gray-300 font-medium text-xs md:text-sm px-4 md:px-6 py-3 md:py-4 rounded-xl flex items-center gap-3 opacity-0 animate-fade-in-up">
                 <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Sheet ini tidak memiliki ringkasan (Total/Summary).
             </div>
 
             <!-- Tabel Data Utama -->
-            <div class="bg-slate-800/90 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col opacity-0 animate-fade-in-up delay-200">
+            <div class="bg-zinc-900/90 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col opacity-0 animate-fade-in-up delay-200">
                 <div class="px-4 md:px-6 py-4 md:py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                     <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase flex items-center gap-2">
                         <div class="p-1.5 bg-white/10 rounded-md"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg></div>
@@ -236,14 +237,14 @@
                         <thead id="table-head" class="text-[10px] md:text-[11px] text-gray-400 uppercase tracking-wider font-bold"></thead>
                         <tbody id="table-body" class="text-xs md:text-sm divide-y divide-white/5">
                             <tr><td colspan="16" class="p-12 text-center text-gray-500 flex flex-col justify-center items-center gap-3">
-                                <svg class="animate-spin w-8 h-8 text-indigo-500" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                <svg class="animate-spin w-8 h-8 text-emerald-500" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 <span class="font-medium tracking-wide">Mengambil data live dari Google Sheets...</span>
                             </td></tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="px-4 md:px-6 py-3 md:py-4 border-t border-white/5 bg-slate-900/50 backdrop-blur-md flex justify-center items-center">
+                <div class="px-4 md:px-6 py-3 md:py-4 border-t border-white/5 bg-zinc-950/50 backdrop-blur-md flex justify-center items-center">
                     <div id="pagination-container" class="flex items-center gap-1 md:gap-2 flex-wrap justify-center"></div>
                 </div>
             </div>
@@ -273,32 +274,32 @@
             
             if (localStorage.getItem('agrinas_theme') === 'pink') {
                 document.body.classList.add('theme-pink');
-                logoIcon.classList.replace('from-blue-500', 'from-pink-500');
-                logoIcon.classList.replace('to-indigo-600', 'to-rose-600');
+                logoIcon.classList.replace('from-emerald-500', 'from-pink-500');
+                logoIcon.classList.replace('to-teal-600', 'to-rose-600');
             }
 
             themeToggleBtn.addEventListener('click', () => {
                 if (document.body.classList.contains('theme-pink')) {
                     document.body.classList.remove('theme-pink');
                     localStorage.setItem('agrinas_theme', 'dark');
-                    logoIcon.classList.replace('from-pink-500', 'from-blue-500');
-                    logoIcon.classList.replace('to-rose-600', 'to-indigo-600');
+                    logoIcon.classList.replace('from-pink-500', 'from-emerald-500');
+                    logoIcon.classList.replace('to-rose-600', 'to-teal-600');
                 } else {
                     document.body.classList.add('theme-pink');
                     localStorage.setItem('agrinas_theme', 'pink');
-                    logoIcon.classList.replace('from-blue-500', 'from-pink-500');
-                    logoIcon.classList.replace('to-indigo-600', 'to-rose-600');
+                    logoIcon.classList.replace('from-emerald-500', 'from-pink-500');
+                    logoIcon.classList.replace('to-teal-600', 'to-rose-600');
                 }
             });
             // =========================================================
 
             const modalHTML = `
-            <div id="custom-pdf-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
-                <div class="bg-slate-800 border border-white/10 rounded-3xl w-full max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300 overflow-hidden" id="pdf-modal-box">
+            <div id="custom-pdf-modal" class="fixed inset-0 bg-zinc-950/80 backdrop-blur-md z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+                <div class="bg-zinc-900 border border-white/10 rounded-3xl w-full max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300 overflow-hidden" id="pdf-modal-box">
                     <div class="px-4 md:px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
                         <div class="flex items-center gap-3 overflow-hidden">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0 shadow-inner">
-                                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0 shadow-inner">
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                             </div>
                             <h3 id="pdf-modal-title" class="text-white font-bold text-xs md:text-sm truncate">Preview Dokumen</h3>
                         </div>
@@ -307,7 +308,7 @@
                         </button>
                     </div>
                     <div id="pdf-modal-content" class="p-6 md:p-10 flex flex-col items-center justify-center text-center relative">
-                        <div class="absolute -top-32 -right-32 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute -top-32 -right-32 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
                     </div>
                 </div>
             </div>
@@ -334,12 +335,12 @@
                 const cleanName = fileName.replace(/\.[^/.]+$/, "");
                 const searchUrl = `https://drive.google.com/drive/search?q=${encodeURIComponent(cleanName)}`;
                 modalContent.innerHTML = `
-                    <div class="w-16 h-16 md:w-24 md:h-24 bg-slate-900 rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/5 relative z-10">
-                        <svg class="w-8 h-8 md:w-12 md:h-12 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    <div class="w-16 h-16 md:w-24 md:h-24 bg-zinc-950 rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/5 relative z-10">
+                        <svg class="w-8 h-8 md:w-12 md:h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                     </div>
                     <h2 class="text-xl md:text-2xl font-black text-white mb-2 tracking-wide relative z-10">Dokumen Tersembunyi</h2>
                     <p class="text-gray-400 mb-8 text-xs md:text-sm leading-relaxed max-w-md relative z-10">Google Sheets menggunakan format <i>Smart Chip</i>, sehingga link aslinya disembunyikan. <br><br>Silakan klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
-                    <a href="${searchUrl}" target="_blank" class="px-8 md:px-10 py-3 md:py-4 bg-indigo-600 hover:bg-indigo-500 text-white text-sm md:text-base font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_10px_25px_rgba(79,70,229,0.4)] hover:shadow-[0_10px_35px_rgba(79,70,229,0.6)] hover:-translate-y-1 flex items-center gap-3 relative z-10">
+                    <a href="${searchUrl}" target="_blank" class="px-8 md:px-10 py-3 md:py-4 bg-emerald-600 hover:bg-emerald-500 text-white text-sm md:text-base font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_10px_25px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_35px_rgba(16,185,129,0.4)] hover:-translate-y-1 flex items-center gap-3 relative z-10">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         Cari di Google Drive
                     </a>
@@ -365,11 +366,11 @@
                 sheetTabs.forEach(sheetName => {
                     const isActive = sheetName === currentActiveSheet;
                     const iconSvg = isActive 
-                        ? `<svg class="w-4 h-4 mr-3 text-indigo-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(129,140,248,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`
+                        ? `<svg class="w-4 h-4 mr-3 text-emerald-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`
                         : `<svg class="w-4 h-4 mr-3 text-gray-500 group-hover:text-gray-300 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`;
 
                     const activeClass = isActive 
-                        ? 'bg-gradient-to-r from-indigo-500/20 to-transparent text-white border-l-4 border-indigo-500 theme-pink:border-pink-500 theme-pink:bg-pink-50' 
+                        ? 'bg-gradient-to-r from-emerald-500/20 to-transparent text-white border-l-4 border-emerald-500 theme-pink:border-pink-500 theme-pink:bg-pink-50' 
                         : 'text-gray-400 hover:text-gray-200 hover:bg-white/5 group border-l-4 border-transparent';
                     
                     const btn = document.createElement('button');
@@ -388,24 +389,21 @@
                 });
             }
 
-            // ================= LOGIKA UI SUMMARY BARU (DESAIN MODERN) =================
+            // ================= LOGIKA UI SUMMARY BARU =================
             function renderSummaryCards(labels, dataValues) {
                 const cardsContainer = document.getElementById('summaryCardsContainer');
                 cardsContainer.innerHTML = '';
                 
-                // Daftar warna aksen modern untuk setiap card (biru, emerald, pink, amber, dll)
                 const accentColors = ['blue', 'emerald', 'amber', 'rose', 'purple', 'cyan', 'pink', 'lime'];
 
                 labels.forEach((label, i) => {
                     const color = accentColors[i % accentColors.length];
                     
                     cardsContainer.innerHTML += `
-                        <div class="bg-slate-800/40 border border-white/5 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-slate-700/60 hover:border-${color}-500/40 hover:-translate-y-1.5 hover:shadow-[0_12px_25px_rgba(0,0,0,0.2)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
-                            <!-- Garis Aksen Atas -->
+                        <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-zinc-700/60 hover:border-${color}-500/40 hover:-translate-y-1.5 hover:shadow-[0_12px_25px_rgba(0,0,0,0.2)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
                             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${color}-500/0 via-${color}-500/50 to-${color}-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             
-                            <!-- Cahaya Glowing Latar -->
-                            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-${color}-500/10 rounded-full blur-2xl group-hover:bg-${color}-500/25 transition-colors duration-500"></div>
+                            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-${color}-500/5 rounded-full blur-2xl group-hover:bg-${color}-500/15 transition-colors duration-500"></div>
                             
                             <p class="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1.5 truncate group-hover:text-${color}-400 transition-colors duration-300 relative z-10" title="${label}">${label}</p>
                             <p class="text-2xl md:text-3xl font-black text-white group-hover:scale-110 transform origin-left transition-transform duration-300 relative z-10 drop-shadow-sm">${dataValues[i]}</p>
@@ -421,7 +419,7 @@
                 if (totalPages <= 1) return;
 
                 const btnPrev = document.createElement('button');
-                btnPrev.className = `px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[10px] md:text-xs font-bold tracking-wide ${currentPage === 1 ? 'text-gray-600 cursor-not-allowed' : 'text-indigo-400 hover:text-white hover:bg-indigo-500/20 transition-colors'}`;
+                btnPrev.className = `px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[10px] md:text-xs font-bold tracking-wide ${currentPage === 1 ? 'text-gray-600 cursor-not-allowed' : 'text-emerald-400 hover:text-white hover:bg-emerald-500/20 transition-colors'}`;
                 btnPrev.innerText = 'PREV';
                 btnPrev.disabled = currentPage === 1;
                 btnPrev.onclick = () => { if (currentPage > 1) { currentPage--; renderTablePage(); } };
@@ -434,14 +432,14 @@
                 for (let i = startPage; i <= endPage; i++) {
                     const btnPage = document.createElement('button');
                     const isActive = i === currentPage;
-                    btnPage.className = `w-7 h-7 md:w-8 md:h-8 rounded-lg text-[10px] md:text-xs font-bold flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-indigo-600 text-white shadow-[0_4px_10px_rgba(79,70,229,0.4)] scale-110' : 'text-gray-400 hover:bg-white/10 hover:text-white'}`;
+                    btnPage.className = `w-7 h-7 md:w-8 md:h-8 rounded-lg text-[10px] md:text-xs font-bold flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-emerald-600 text-white shadow-[0_4px_10px_rgba(16,185,129,0.3)] scale-110' : 'text-gray-400 hover:bg-white/10 hover:text-white'}`;
                     btnPage.innerText = i;
                     btnPage.onclick = () => { currentPage = i; renderTablePage(); };
                     pagContainer.appendChild(btnPage);
                 }
 
                 const btnNext = document.createElement('button');
-                btnNext.className = `px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[10px] md:text-xs font-bold tracking-wide ${currentPage === totalPages ? 'text-gray-600 cursor-not-allowed' : 'text-indigo-400 hover:text-white hover:bg-indigo-500/20 transition-colors'}`;
+                btnNext.className = `px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[10px] md:text-xs font-bold tracking-wide ${currentPage === totalPages ? 'text-gray-600 cursor-not-allowed' : 'text-emerald-400 hover:text-white hover:bg-emerald-500/20 transition-colors'}`;
                 btnNext.innerText = 'NEXT';
                 btnNext.disabled = currentPage === totalPages;
                 btnNext.onclick = () => { if (currentPage < totalPages) { currentPage++; renderTablePage(); } };
@@ -550,7 +548,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-slate-800/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-zinc-900/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -570,14 +568,11 @@
                                 let paidCell = row[11];
                                 let isPaid = paidCell === true || paidCell === '1' || paidCell === 1 || String(paidCell).toUpperCase() === 'TRUE';
 
-                                // DESAIN LIST ITEM BARU DENGAN HOVER EFFECT ELEGAN
                                 let taskItemHTML = `
-                                    <div class="bg-slate-800/40 border border-white/5 rounded-xl p-3 md:p-4 flex justify-between items-center hover:bg-slate-700/60 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 gap-2 cursor-default group relative overflow-hidden">
-                                        <!-- Glow baris -->
+                                    <div class="bg-zinc-800/40 border border-white/5 rounded-xl p-3 md:p-4 flex justify-between items-center hover:bg-zinc-700/60 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 gap-2 cursor-default group relative overflow-hidden">
                                         <div class="absolute left-0 top-0 w-1 h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-rose-500'}"></div>
-                                        
                                         <div class="pr-2 min-w-0 pl-1">
-                                            <p class="text-white font-semibold text-[11px] md:text-xs mb-1 truncate group-hover:text-blue-200 transition-colors">${taskCol}</p>
+                                            <p class="text-white font-semibold text-[11px] md:text-xs mb-1 truncate group-hover:text-emerald-200 transition-colors">${taskCol}</p>
                                             <p class="text-[9px] md:text-[10px] text-gray-400 truncate">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> <span class="mx-1 opacity-50">|</span> Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
                                         </div>
                                         <span class="px-2 md:px-3 py-1 rounded-md text-[9px] md:text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap flex-shrink-0 group-hover:scale-105 transition-transform">
@@ -594,7 +589,7 @@
                                     unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
                                 }
 
-                                let rowHTML = '<tr class="hover:bg-slate-800/80 transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-zinc-800/80 transition-colors duration-200 group">';
                                 for (let c = 0; c < 13; c++) {
                                     let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
                                     
@@ -608,13 +603,13 @@
                                     if (c === 3 && cellVal !== '-') {
                                         const urlRegex = /(https?:\/\/[^\s]+)/g;
                                         if (urlRegex.test(cellVal)) {
-                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 shadow-sm hover:bg-indigo-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm hover:bg-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
                                         } else {
                                             const safeName = cellVal.replace(/'/g, "\\'");
                                             cellVal = `
-                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-indigo-400 font-medium hover:text-indigo-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5" title="${safeName}">
-                                                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                    <span class="underline decoration-indigo-500/30 underline-offset-4 truncate">${cellVal}</span>
+                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-emerald-400 font-medium hover:text-emerald-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5" title="${safeName}">
+                                                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                    <span class="underline decoration-emerald-500/30 underline-offset-4 truncate">${cellVal}</span>
                                                 </button>
                                             `;
                                         }
@@ -623,7 +618,7 @@
                                     if (c >= 6 && c <= 12) {
                                         let upper = cellVal.toString().toUpperCase();
                                         if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true') {
-                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-indigo-600 border border-indigo-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-600 border border-emerald-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                         } else {
                                             cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                         }
@@ -697,7 +692,7 @@
                             let tPaid = data[4] && data[4][10] !== undefined ? data[4][10] : 0;
                             let tRevReg = data[4] && data[4][12] !== undefined ? data[4][12] : 0;
 
-                            let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Reg"];
+                            let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
                             let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
@@ -713,7 +708,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-slate-800/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-zinc-900/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -748,7 +743,7 @@
                                 if (isPaidMon && vendorName !== '-' && vendorName !== '') {
                                     paidCount++;
                                     let paidItemHTML = `
-                                        <div class="bg-slate-800/40 border border-white/5 rounded-2xl p-4 md:p-5 flex flex-col gap-2 hover:bg-slate-700/60 hover:border-emerald-500/40 hover:shadow-[0_8px_20px_rgba(16,185,129,0.1)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group cursor-default">
+                                        <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 flex flex-col gap-2 hover:bg-zinc-700/60 hover:border-emerald-500/40 hover:shadow-[0_8px_20px_rgba(16,185,129,0.1)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group cursor-default">
                                             <div class="absolute left-0 top-0 w-1 h-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                             <div class="flex justify-between items-start gap-2 pl-1">
                                                 <p class="text-white font-bold text-xs md:text-sm truncate max-w-[200px] group-hover:text-emerald-100 transition-colors" title="${vendorName}">${vendorName}</p>
@@ -764,7 +759,7 @@
                                     paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
                                 }
 
-                                let rowHTML = '<tr class="hover:bg-slate-800/80 transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-zinc-800/80 transition-colors duration-200 group">';
                                 for (let c = 0; c < 16; c++) {
                                     let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
                                     
@@ -780,7 +775,7 @@
                                     if (c >= 9 && c <= 13) {
                                         let upper = cellVal.toString().toUpperCase();
                                         if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || cellVal.toString().includes('☑')) {
-                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-indigo-600 border border-indigo-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-600 border border-emerald-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                         } else {
                                             cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                         }
@@ -866,7 +861,7 @@
                             
                             let headHTML = '<tr>';
                             displayHeaders.forEach(h => {
-                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-slate-800/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-zinc-900/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -931,7 +926,7 @@
                                         skipSection = false;
                                     }
 
-                                    let rowHTML = `<tr><td colspan="11" class="px-4 md:px-6 py-4 md:py-6 bg-indigo-500/10 text-indigo-300 font-bold text-center text-[10px] md:text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="11" class="px-4 md:px-6 py-4 md:py-6 bg-emerald-500/10 text-emerald-400 font-bold text-center text-[10px] md:text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
@@ -971,7 +966,7 @@
                                     let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
                                     
                                     if (isTrue) {
-                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-indigo-600 border border-indigo-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-600 border border-emerald-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                     } else {
                                         return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                     }
@@ -996,13 +991,13 @@
                                 if (dokVal !== '-' && dokVal !== '') {
                                     const urlRegex = /(https?:\/\/[^\s]+)/g;
                                     if (urlRegex.test(dokVal)) {
-                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 shadow-sm hover:bg-indigo-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm hover:bg-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
                                     } else {
                                         const safeName = dokVal.replace(/'/g, "\\'");
                                         dokHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-indigo-400 font-medium hover:text-indigo-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5" title="${safeName}">
-                                                <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                <span class="underline decoration-indigo-500/30 underline-offset-4 truncate">${dokVal}</span>
+                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-emerald-400 font-medium hover:text-emerald-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5" title="${safeName}">
+                                                <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                <span class="underline decoration-emerald-500/30 underline-offset-4 truncate">${dokVal}</span>
                                             </button>
                                         `;
                                     }
@@ -1010,11 +1005,11 @@
 
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
-                                        <div class="bg-slate-800/40 border border-white/5 rounded-xl p-3 md:p-4 flex justify-between items-center hover:bg-slate-700/60 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 gap-2 cursor-default group relative overflow-hidden">
+                                        <div class="bg-zinc-800/40 border border-white/5 rounded-xl p-3 md:p-4 flex justify-between items-center hover:bg-zinc-700/60 hover:border-white/10 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 gap-2 cursor-default group relative overflow-hidden">
                                             <div class="absolute left-0 top-0 w-1 h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-purple-500'}"></div>
                                             <div class="pr-2 min-w-0 pl-1">
-                                                <p class="text-white font-semibold text-[11px] md:text-xs mb-1 truncate group-hover:text-indigo-200 transition-colors" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500 font-normal">(${wilVal})</span></p>
-                                                <p class="text-[9px] md:text-[10px] text-gray-400 truncate" title="${ketVal}">Ket: <span class="text-indigo-400 font-semibold">${ketVal}</span></p>
+                                                <p class="text-white font-semibold text-[11px] md:text-xs mb-1 truncate group-hover:text-emerald-200 transition-colors" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500 font-normal">(${wilVal})</span></p>
+                                                <p class="text-[9px] md:text-[10px] text-gray-400 truncate" title="${ketVal}">Ket: <span class="text-emerald-400 font-semibold">${ketVal}</span></p>
                                                 <p class="text-[10px] md:text-[11px] font-black text-emerald-400 mt-1">${permStr}</p>
                                             </div>
                                             <span class="px-2 md:px-2.5 py-1 rounded-md text-[9px] md:text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase flex-shrink-0 group-hover:scale-105 transition-transform">
@@ -1034,7 +1029,7 @@
 
                                 let cellData = [ colZero, croVal, wilVal, pemStr, sisaStr, permStr, lpjHTML, sreqHTML, ketVal, progHTML, dokHTML ];
 
-                                let rowHTML = '<tr class="hover:bg-slate-800/80 transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-zinc-800/80 transition-colors duration-200 group">';
                                 cellData.forEach((cellVal, c) => {
                                     let cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
                                     if (c === 8) cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/5 align-middle text-gray-200 font-medium min-w-[150px] md:min-w-[200px] whitespace-normal leading-relaxed";
@@ -1089,7 +1084,7 @@
                                 let headerText = data[tableHeadIdx][c] ? data[tableHeadIdx][c].toString().trim() : "";
                                 if (headerText !== "") {
                                     validColIndices.push(c);
-                                    headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-slate-800/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
+                                    headHTML += `<th class="px-4 md:px-6 py-3 md:py-5 font-bold bg-zinc-900/95 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
                                 }
                             }
                             headHTML += '</tr>';
@@ -1100,7 +1095,7 @@
                                 let rowStr = row.join('').trim();
                                 if (rowStr === '' || !rowStr.match(/[a-zA-Z0-9]/)) continue;
 
-                                let rowHTML = '<tr class="hover:bg-slate-800/80 transition-colors duration-200 group">';
+                                let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
                                 validColIndices.forEach((colIndex) => {
                                     let cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? row[colIndex] : '-';
                                     if (cellVal !== '-') cellVal = formatCellDate(cellVal);
