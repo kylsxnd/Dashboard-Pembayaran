@@ -98,7 +98,7 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK (DIGUNAKAN BERSAMA OLEH PDO & PETTY CASH) -->
+            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -380,13 +380,6 @@
                         if (currentActiveSheet === 'PDO') {
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
-                            
-                            // Reset grid span kalau sebelumnya diubah
-                            pdoBreakdown.classList.remove('grid-cols-1');
-                            pdoBreakdown.classList.add('md:grid-cols-2');
-                            unpaidContainer.parentElement.classList.remove('hidden');
-                            paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
-
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
@@ -523,10 +516,10 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Sembunyikan panel "Belum Paid", karena khusus Monitoring hanya butuh Paid
+                            // Menyembunyikan Unpaid Panel
                             document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
                             
-                            // Ubah lebar panel Paid jadi full 1 kolom memanjang
+                            // Mengubah Tampilan Panel Kiri Menjadi Lebar Penuh (Span 2 Kolom)
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -534,7 +527,6 @@
                             titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid)`;
 
                             paidContainer.innerHTML = '';
-                            // Ubah container jadi grid cards ke samping
                             paidContainer.classList.remove('flex', 'flex-col');
                             paidContainer.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-3');
 
@@ -576,7 +568,7 @@
                                 let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
                                 if (vendorCol === '' || vendorCol === 'nan') continue;
 
-                                // --- LOGIKA MENGISI KOTAK PAID KHUSUS MONITORING ---
+                                // --- LOGIKA MENGISI KOTAK PAID (HANYA JIKA LUNAS) ---
                                 let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
                                 let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
                                 let invName = row[6] !== undefined && row[6] !== null ? row[6].toString().trim() : '-';
@@ -586,7 +578,6 @@
                                 let numNominal = parseFloat(cleanNominal);
                                 let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
 
-                                // Index 13 adalah Kolom Paid (Huruf 'N' / ke-14 di Excel)
                                 let paidCellMon = row[13];
                                 let isPaidMon = false;
                                 if (paidCellMon !== undefined && paidCellMon !== null) {
@@ -677,7 +668,7 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH (DIUBAH KARENA ADA HIDDEN COLUMNS/ROWS)
+                        // KONDISI 3: PETTY CASH (KODE YANG BARU DIPERBAIKI)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
@@ -701,7 +692,7 @@
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
-                                "Status LPJ", "Status Pengajuan", "Keterangan", "Progress", "Dokumen"
+                                "Status LPJ", "Status Permintaan", "Keterangan", "Progress", "Dokumen"
                             ];
                             
                             let headHTML = '<tr>';
@@ -711,41 +702,28 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // BACA KOLOM SECARA HARDCODE KARENA ADA HIDDEN COLUMNS DI EXCEL (H, I, J, K)
-                            // A=0, B=1, C=2, D=3, E=4, F=5, G=6, L=11, M=12, N=13, O=14
-                            let colIdx = { 
-                                no: 0, 
-                                cro: 1, 
-                                wil: 2, 
-                                pem: 3, 
-                                sisa: 4, 
-                                perm: 5, 
-                                slpj: 6, 
-                                sreq: 11, // Kolom L
-                                ket: 12,  // Kolom M
-                                prog: 13, // Kolom N
-                                dok: 14   // Kolom O
-                            };
+                            // BACA KOLOM SECARA HARDCODE KARENA URUTAN DI EXCEL A TO K
+                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 6, sreq: 7, ket: 8, prog: 9, dok: 10 };
 
-                            let skipCurrentSection = false;
+                            let skipSection = false;
 
-                            for (let i = 4; i < data.length; i++) {
+                            for (let i = 3; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                // CEK BANNER BULAN & FILTER BARIS TERSEMBUNYI (JUNI/JULI)
+                                // CEK BANNER BULAN & FILTER BARIS JUNI/JULI
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
-                                    // Bypass data Juni/Juli yang disembunyikan di Excel
-                                    if (title.toLowerCase().includes('juni') || title.toLowerCase().includes('juli')) {
-                                        skipCurrentSection = true;
+                                    let lowerTitle = title.toLowerCase();
+                                    if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
+                                        skipSection = true;
                                         continue;
                                     } else {
-                                        skipCurrentSection = false;
+                                        skipSection = false;
                                     }
 
                                     let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
@@ -753,8 +731,7 @@
                                     continue;
                                 }
 
-                                // Kalau masuk ke section yang di-skip (Bulan Juni), abaikan baris datanya!
-                                if (skipCurrentSection) continue;
+                                if (skipSection) continue;
                                 if (colZero === '' || isNaN(colZero)) continue;
 
                                 let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
@@ -820,7 +797,6 @@
                                 }
 
                                 // --- LOGIKA KOTAK PAID/BELUM PAID (STRICT) ---
-                                // HANYA MASUK KOTAK JIKA PROGRESS ADALAH PAID ATAU REVIEW
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
@@ -854,8 +830,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada pengajuan yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Tidak ada pengajuan yang sedang di-review.</p>`;
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada data yang sedang di-review.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
