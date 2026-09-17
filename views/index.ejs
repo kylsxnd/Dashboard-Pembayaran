@@ -15,59 +15,61 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
 
         /* ========================================================
-           TEMA SOFT PINK & WHITE (Jauh lebih elegan dan gak sakit mata)
+           TEMA SOFT PINK & CREAM (Kalem, Elegan, Gak Silau)
            ======================================================== */
         body.theme-pink {
-            background-color: #fdf2f8 !important; /* Latar belakang pink super muda */
-            color: #374151 !important; /* Teks abu-abu gelap biar gampang dibaca */
+            background-color: #fce7f3 !important; /* Background pink pastel */
+            color: #374151 !important; /* Teks abu-abu gelap */
         }
         body.theme-pink aside,
         body.theme-pink .bg-\[\#12151c\],
         body.theme-pink .bg-\[\#0e1117\],
         body.theme-pink #custom-pdf-modal > div {
-            background-color: #ffffff !important; /* Card dan Panel jadi Putih Bersih */
-            border-color: #fbcfe8 !important; /* Border pink lembut */
-            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.1), 0 8px 10px -6px rgba(236, 72, 153, 0.1) !important;
+            background-color: #fff0f5 !important; /* KOTAK KALEM: Lavender Blush / Krem Pink (Bukan putih murni biar gak sakit mata) */
+            border-color: #fbcfe8 !important; 
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.05) !important;
         }
         body.theme-pink header {
-            background-color: rgba(255, 255, 255, 0.85) !important;
+            background-color: rgba(255, 240, 245, 0.85) !important;
             border-bottom-color: #fbcfe8 !important;
         }
         body.theme-pink .border-white\/5,
         body.theme-pink .border-white\/10 {
-            border-color: #fce7f3 !important;
+            border-color: #fbcfe8 !important;
         }
         body.theme-pink .text-white {
-            color: #111827 !important; /* Judul jadi hitam/gelap */
+            color: #1f2937 !important; /* Judul tabel/widget jadi gelap */
         }
         body.theme-pink .text-gray-300,
         body.theme-pink .text-gray-400,
         body.theme-pink .text-gray-500 {
-            color: #4b5563 !important; /* Teks tabel jadi abu-abu gelap */
+            color: #4b5563 !important; /* Teks keterangan abu-abu gelap */
         }
-        body.theme-pink .bg-white\/\[0\.02\] {
-            background-color: #fff1f2 !important; /* Header tabel agak pink pucat */
+        /* Inner boxes kayak kotak summary atau header tabel */
+        body.theme-pink .bg-white\/\[0\.02\],
+        body.theme-pink .bg-white\/\[0\.03\] {
+            background-color: #fce7f3 !important; 
         }
         body.theme-pink .hover\:bg-white\/\[0\.03\]:hover,
         body.theme-pink .hover\:bg-white\/\[0\.04\]:hover,
         body.theme-pink .hover\:bg-white\/5:hover {
-            background-color: #fce7f3 !important; /* Efek hover baris tabel jadi pink */
+            background-color: #fbcfe8 !important; /* Hover effect */
         }
         body.theme-pink th {
-            background-color: #fce7f3 !important;
-            color: #9d174d !important; /* Teks header tabel pink tua */
-            border-bottom-color: #fbcfe8 !important;
+            background-color: #fbcfe8 !important;
+            color: #9d174d !important; /* Header tabel pink tua */
+            border-bottom-color: #f9a8d4 !important;
         }
         body.theme-pink td {
-            border-bottom-color: #fbcfe8 !important;
+            border-bottom-color: #fce7f3 !important;
         }
         body.theme-pink .bg-blue-600\/10 {
-            background-color: rgba(244, 114, 182, 0.2) !important; /* Cahaya blur belakang pink */
+            background-color: rgba(244, 114, 182, 0.15) !important; /* Cahaya blur pink */
         }
-        /* Sidebar specific override */
+        /* Sidebar khusus pink */
         body.theme-pink .border-l-4.border-transparent:hover {
             color: #be185d !important;
-            background-color: #fce7f3 !important;
+            background-color: #fbcfe8 !important;
         }
         body.theme-pink .border-l-4.border-blue-500 {
             border-color: #ec4899 !important;
@@ -75,12 +77,12 @@
             color: #be185d !important;
         }
         body.theme-pink h2.bg-gradient-to-r {
-            background-image: linear-gradient(to right, #be185d, #ec4899) !important;
+            background-image: linear-gradient(to right, #9d174d, #be185d) !important;
             color: transparent !important;
         }
         body.theme-pink .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.02); }
-        body.theme-pink .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.3); }
-        /* Pagination pagination override */
+        body.theme-pink .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.25); }
+        
         body.theme-pink .bg-\[\#272b33\] {
             background-color: #ec4899 !important;
             color: white !important;
@@ -179,7 +181,7 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK (DIGUNAKAN BERSAMA OLEH PDO & PETTY CASH) -->
+            <!-- PANEL BREAKDOWN STATUS TASK -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -237,7 +239,6 @@
             const themeToggleBtn = document.getElementById('theme-toggle');
             const logoIcon = document.getElementById('logo-icon');
             
-            // Cek localStorage, kalau user sebelumnya pilih pink, otomatis terapin
             if (localStorage.getItem('agrinas_theme') === 'pink') {
                 document.body.classList.add('theme-pink');
                 logoIcon.classList.replace('from-blue-500', 'from-pink-500');
@@ -246,13 +247,11 @@
 
             themeToggleBtn.addEventListener('click', () => {
                 if (document.body.classList.contains('theme-pink')) {
-                    // Balikin ke Dark Mode
                     document.body.classList.remove('theme-pink');
                     localStorage.setItem('agrinas_theme', 'dark');
                     logoIcon.classList.replace('from-pink-500', 'from-blue-500');
                     logoIcon.classList.replace('to-rose-600', 'to-indigo-600');
                 } else {
-                    // Pindah ke Tema Pink Putih
                     document.body.classList.add('theme-pink');
                     localStorage.setItem('agrinas_theme', 'pink');
                     logoIcon.classList.replace('from-blue-500', 'from-pink-500');
@@ -337,7 +336,7 @@
                         : `<svg class="w-4 h-4 mr-3 text-gray-500 group-hover:text-gray-300 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`;
 
                     const activeClass = isActive 
-                        ? 'bg-gradient-to-r from-blue-500/20 to-transparent text-white border-l-4 border-blue-500' 
+                        ? 'bg-gradient-to-r from-blue-500/20 to-transparent text-white border-l-4 border-blue-500 theme-pink:border-pink-500 theme-pink:bg-pink-50' 
                         : 'text-gray-400 hover:text-gray-200 hover:bg-white/5 group border-l-4 border-transparent';
                     
                     const btn = document.createElement('button');
@@ -801,7 +800,6 @@
                             unpaidContainer.innerHTML = '';
                             paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
 
-                            // Header tabel sudah sesuai web lu yang dibilang bener
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
@@ -817,7 +815,6 @@
 
                             let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
 
-                            // PERBAIKAN: SCANNER KOLOM YANG SPESIFIK AGAR TIDAK NABRAK KOLOM KOSONG
                             for (let r = 0; r < Math.min(10, data.length); r++) {
                                 if (!data[r]) continue;
                                 let rowStr = data[r].join('').toLowerCase();
@@ -843,7 +840,6 @@
                                         for(let c = 0; c < subHeaderRow.length; c++) {
                                             let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
                                             if (str.includes('pemakaian')) colIdx.pem = c;
-                                            // FIX DISINI: Harus spesifik 'sisa petty' biar nggak nimpa kolom 'petty cash sisa' yang kosong (index 10)
                                             else if (str.includes('sisa petty')) colIdx.sisa = c; 
                                         }
                                     }
