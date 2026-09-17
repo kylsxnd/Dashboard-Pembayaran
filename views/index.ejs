@@ -98,7 +98,7 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
+            <!-- PANEL BREAKDOWN STATUS TASK (UNTUK PDO & PETTY CASH) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -380,6 +380,13 @@
                         if (currentActiveSheet === 'PDO') {
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
+                            
+                            // Reset span for PDO
+                            pdoBreakdown.classList.remove('grid-cols-1');
+                            pdoBreakdown.classList.add('md:grid-cols-2');
+                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
+                            paidContainer.className = 'flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1';
+
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
@@ -515,7 +522,11 @@
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
+
+                            // Sembunyikan Unpaid Panel
                             document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
+                            
+                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -669,6 +680,7 @@
                             pdoBreakdown.classList.add('grid');
                             noSummaryMsg.classList.remove('hidden');
 
+                            // Kembalikan ke layout 2 kotak (Paid vs Unpaid)
                             document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
                             document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
                             document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
@@ -693,24 +705,31 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // INDEX MUTLAK UNTUK PETTY CASH BERDASARKAN URUTAN KOLOM EXCEL
-                            // Karena kolom H, I, J, K disembunyikan (hidden) di Excel, maka urutan asli Array-nya adalah:
-                            // A(0), B(1), C(2), D(3), E(4), F(5), G(6), L(11), M(12), N(13), O(14)
-                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 6, sreq: 11, ket: 12, prog: 13, dok: 14 };
+                            // INDEXING TETAP (FIXED) BERDASARKAN EXCEL ASLI
+                            // Kolom E = 4 (Pemakaian)
+                            // Kolom F = 5 (Sisa)
+                            // Kolom G = 6 (Permintaan)
+                            // Kolom H = 7 (LPJ)
+                            // Kolom I = 8 (Status Permintaan)
+                            // Kolom M = 12 (Keterangan) -> Ingat H, I, J, K Hidden (jadi indeks data mentah bisa melompat)
+                            // Kolom N = 13 (Progress)
+                            // Kolom O = 14 (Dokumen)
+
+                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 4, sisa: 5, perm: 6, slpj: 7, sreq: 8, ket: 12, prog: 13, dok: 14 };
 
                             let skipSection = false;
 
-                            for (let i = 3; i < data.length; i++) {
+                            for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                // CEK BANNER BULAN (OTOMATIS MENGABAIKAN DATA BULAN LALU YANG DI-HIDE)
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
+                                    // Bypass section lama (Juni/Juli) yang tersembunyi
                                     let lowerTitle = title.toLowerCase();
                                     if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
                                         skipSection = true;
@@ -741,11 +760,9 @@
                                 let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
                                 let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
 
-                                // Fungsi memformat Rupiah
                                 let formatRp = (val) => {
-                                    if (val === '-' || val === '' || val === null || val === undefined) return '-';
+                                    if (val === '-' || val === '') return '-';
                                     let cleanStr = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
-                                    if (cleanStr === '' || cleanStr === '-') return '-';
                                     let numVal = parseFloat(cleanStr);
                                     return isNaN(numVal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
                                 };
@@ -754,12 +771,8 @@
                                 let sisaStr = formatRp(sisaVal);
                                 let permStr = formatRp(permVal);
 
-                                // Fungsi merender Checkbox Biru
                                 let formatCheck = (val) => {
-                                    if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                    let strVal = String(val).toUpperCase();
-                                    let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
-                                    
+                                    let isTrue = String(val).toUpperCase() === 'TRUE' || val === 1 || val === '1' || val === true || String(val).includes('TRUE') || String(val).includes('☑');
                                     if (isTrue) {
                                         return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                     } else {
@@ -769,8 +782,7 @@
                                 let lpjHTML = formatCheck(lpjVal);
                                 let sreqHTML = formatCheck(sreqVal);
 
-                                // Fungsi merender Badge Progress
-                                let rawProg = (progVal || '').toString().toLowerCase();
+                                let rawProg = progVal.toLowerCase();
                                 let isPaid = rawProg.includes('paid');
                                 let isReview = rawProg.includes('review') || rawProg.includes('dirops');
                                 let progHTML = '-';
@@ -779,11 +791,10 @@
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
                                 } else if (isReview) {
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-purple-500/20 text-purple-400 border border-purple-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
-                                } else if (progVal !== '-' && progVal !== '') {
+                                } else if (rawProg !== '-' && rawProg !== '') {
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-slate-500/10 text-slate-400 border border-slate-500/20 inline-block whitespace-nowrap">${progVal}</span>`;
                                 }
 
-                                // Fungsi merender Link Dokumen Smart Chip
                                 let dokHTML = '-';
                                 if (dokVal !== '-' && dokVal !== '') {
                                     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -800,7 +811,7 @@
                                     }
                                 }
 
-                                // LOGIKA MEMASUKKAN DATA KE KOTAK PAID/PENDING KHUSUS PETTY CASH
+                                // KOTAK PAID/PENDING KHUSUS PETTY CASH
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
