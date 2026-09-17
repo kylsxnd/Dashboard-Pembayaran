@@ -156,8 +156,14 @@
                         Menarik data langsung secara live dari file Excel.
                     </p>
                 </div>
-                <div class="text-xs font-semibold text-gray-400 bg-white/5 px-4 py-2 rounded-lg border border-white/5 shadow-sm" id="last-update">
-                    Update terakhir: --:--:--
+                <div class="flex flex-col items-end gap-2">
+                    <div class="flex items-center gap-2 text-xs font-semibold text-gray-400 bg-white/5 px-4 py-2 rounded-lg border border-white/5 shadow-sm" id="last-update">
+                        Data Sinkron: Live Excel API
+                    </div>
+                    <!-- TANGGAL (DATE) PINDAH KESINI -->
+                    <div id="top-date-display" class="hidden text-[11px] font-bold text-blue-400 tracking-widest bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-lg shadow-sm">
+                        DATE: <span id="top-date-value" class="text-white ml-1">--/--/----</span>
+                    </div>
                 </div>
             </div>
 
@@ -380,13 +386,13 @@
                     `;
                 });
                 
-                if (dateValue) {
-                     cardsContainer.innerHTML += `
-                        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:bg-blue-500/20 transition-colors flex flex-col justify-center">
-                            <p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest mb-1.5 truncate" title="Date">DATE</p>
-                            <p class="text-xl font-bold text-white">${dateValue}</p>
-                        </div>
-                    `;
+                const dateDisplay = document.getElementById('top-date-display');
+                const dateValueEl = document.getElementById('top-date-value');
+                if (dateValue && dateValue !== '-') {
+                    dateValueEl.innerText = dateValue;
+                    dateDisplay.classList.remove('hidden');
+                } else {
+                    dateDisplay.classList.add('hidden');
                 }
             }
 
@@ -626,7 +632,6 @@
                             } else {
                                 renderTablePage();
                             }
-                            document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
                         
                         // =========================================================
@@ -785,7 +790,6 @@
                             } else {
                                 renderTablePage();
                             }
-                            document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
                         }
 
                         // =========================================================
@@ -854,6 +858,7 @@
                             let skipSection = false;
                             let paidCount = 0;
                             let unpaidCount = 0;
+                            let globalDate = "-"; // nyari date khusus petty cash
 
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
@@ -865,6 +870,10 @@
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
+                                    // Ambil kata-kata bulan buat dijadiin Date (misal "Bulan Agustus 2026")
+                                    let dateMatch = title.match(/Bulan\s+[A-Za-z]+\s+\d{4}/i);
+                                    if(dateMatch) globalDate = dateMatch[0];
+
                                     let lowerTitle = title.toLowerCase();
                                     if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
                                         skipSection = true;
@@ -996,7 +1005,16 @@
                             } else {
                                 renderTablePage();
                             }
-                            document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
+                            
+                            // SET DATE FOR PETTY CASH (karena gak ada di summary card)
+                            const dateDisplay = document.getElementById('top-date-display');
+                            const dateValueEl = document.getElementById('top-date-value');
+                            if (globalDate && globalDate !== '-') {
+                                dateValueEl.innerText = globalDate;
+                                dateDisplay.classList.remove('hidden');
+                            } else {
+                                dateDisplay.classList.add('hidden');
+                            }
                         }
 
                         // =========================================================
@@ -1047,7 +1065,9 @@
                             } else {
                                 renderTablePage();
                             }
-                            document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
+                            
+                            const dateDisplay = document.getElementById('top-date-display');
+                            dateDisplay.classList.add('hidden');
                         }
                     })
                     .catch(err => {
