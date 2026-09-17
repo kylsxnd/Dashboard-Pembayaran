@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Executive Portal - Dashboard Agrinas</title>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -18,7 +16,7 @@
         .table-container { -webkit-overflow-scrolling: touch; }
 
         /* ========================================================
-           TEMA SOFT PINK & CREAM (Override Slate Theme)
+           TEMA SOFT PINK & CREAM (Kalem, Elegan, Gak Silau)
            ======================================================== */
         body.theme-pink {
             background-color: #fce7f3 !important;
@@ -82,7 +80,7 @@
     <!-- OVERLAY UNTUK HP -->
     <div id="mobile-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- SIDEBAR (Fixed di HP, Normal di Desktop) -->
+    <!-- SIDEBAR -->
     <aside id="sidebar" class="w-72 bg-slate-800 border-r border-white/5 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-2xl md:shadow-none">
         <div class="p-6 border-b border-white/5 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
@@ -168,23 +166,15 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD WIDGETS & CHARTS -->
-            <div id="dashboard-widgets" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8 hidden">
-                <div class="col-span-1 lg:col-span-2 bg-slate-800 border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
+            <!-- DASHBOARD WIDGETS (Hanya Summary Cards Saja) -->
+            <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden">
+                <div class="bg-slate-800 border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors"></div>
                     <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 md:mb-6 flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        Distribusi Task 3D
-                    </h3>
-                    <div class="relative w-full h-[250px] md:h-[300px]" id="barChartContainer"></div>
-                </div>
-
-                <div class="col-span-1 bg-slate-800 border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden">
-                    <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Summary Data
                     </h3>
-                    <div id="summaryCardsContainer" class="grid grid-cols-2 gap-2 md:gap-3 overflow-y-auto max-h-[250px] md:max-h-[300px] custom-scrollbar pr-1"></div>
+                    <div id="summaryCardsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-8 gap-3 md:gap-4 relative z-10"></div>
                 </div>
             </div>
 
@@ -343,7 +333,6 @@
             ];
 
             let currentActiveSheet = sheetTabs[0];
-            let barChartInstance = null; 
             let allTableRowsHTML = []; 
             let currentPage = 1;
             const rowsPerPage = 10;
@@ -371,6 +360,7 @@
                         renderMenu(); 
                         fetchJsonData();
                         
+                        // Tutup otomatis sidebar di mobile kalau menu di klik
                         if (window.innerWidth < 768) {
                             toggleSidebar();
                         }
@@ -379,41 +369,17 @@
                 });
             }
 
-            function renderChartsAndCards(labels, dataValues, dateValue) {
-                if (barChartInstance) barChartInstance.destroy();
-                const premiumColors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#84cc16'];
-
-                barChartInstance = Highcharts.chart('barChartContainer', {
-                    chart: { type: 'column', backgroundColor: 'transparent', options3d: { enabled: true, alpha: 12, beta: 15, depth: 60, viewDistance: 25 } },
-                    title: { text: null },
-                    colors: premiumColors,
-                    xAxis: { categories: labels, labels: { style: { color: '#94a3b8', fontSize: '10px', fontFamily: 'Inter', fontWeight: '500' } }, gridLineColor: 'rgba(255,255,255,0.05)', lineColor: 'rgba(255,255,255,0.1)' },
-                    yAxis: { title: { text: null }, labels: { style: { color: '#94a3b8', fontFamily: 'Inter' } }, gridLineColor: 'rgba(255,255,255,0.05)' },
-                    tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.95)', style: { color: '#e2e8f0' }, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, headerFormat: '<span style="font-size: 10px; color: #94a3b8; text-transform: uppercase">{point.key}</span><br/>', pointFormat: '<span style="color:{point.color}">\u25CF</span> Total Data: <b>{point.y}</b>' },
-                    plotOptions: { column: { depth: 45, colorByPoint: true, borderColor: 'rgba(0,0,0,0.3)', borderWidth: 1 } },
-                    series: [{ name: 'Statistik', data: dataValues, showInLegend: false }],
-                    credits: { enabled: false }
-                });
-
+            function renderSummaryCards(labels, dataValues) {
                 const cardsContainer = document.getElementById('summaryCardsContainer');
                 cardsContainer.innerHTML = '';
                 labels.forEach((label, i) => {
                     cardsContainer.innerHTML += `
-                        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 md:p-4 shadow-sm hover:bg-white/[0.05] transition-colors flex flex-col justify-center">
-                            <p class="text-[8px] md:text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-1 md:mb-1.5 truncate" title="${label}">${label}</p>
-                            <p class="text-xl md:text-2xl font-bold text-gray-200">${dataValues[i]}</p>
+                        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-4 md:p-5 shadow-sm hover:bg-white/[0.05] transition-all duration-300 flex flex-col justify-center relative overflow-hidden">
+                            <p class="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 md:mb-1.5 truncate" title="${label}">${label}</p>
+                            <p class="text-2xl md:text-3xl font-black text-gray-200">${dataValues[i]}</p>
                         </div>
                     `;
                 });
-                
-                const dateDisplay = document.getElementById('top-date-display');
-                const dateValueEl = document.getElementById('top-date-value');
-                if (dateValue && dateValue !== '-') {
-                    dateValueEl.innerText = dateValue;
-                    dateDisplay.classList.remove('hidden');
-                } else {
-                    dateDisplay.classList.add('hidden');
-                }
             }
 
             function renderPagination() {
@@ -470,6 +436,7 @@
                 return val ? val.toString().trim() : '-';
             }
 
+            // IS_SILENT berfungsi supaya pas auto-refresh tabelnya gak berkedip "Loading..."
             function fetchJsonData(isSilent = false) {
                 if (!isSilent) {
                     document.getElementById('header-title').innerText = currentActiveSheet;
@@ -495,6 +462,7 @@
                         const thead = document.getElementById('table-head');
                         const tbody = document.getElementById('table-body');
                         
+                        // Hanya reset isi jika bukan auto-refresh biar UI gak ngeblink
                         if (!isSilent) tbody.innerHTML = '';
                         
                         allTableRowsHTML = [];
@@ -542,7 +510,7 @@
 
                             dashboardWidgets.classList.remove('hidden');
                             noSummaryMsg.classList.add('hidden');
-                            renderChartsAndCards(chartLabels, chartValues, dateValue);
+                            renderSummaryCards(chartLabels, chartValues);
 
                             const headers = [
                                 "No", "Date (after diproses QC)", "Task", "Link Dokumen", 
@@ -658,6 +626,15 @@
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                             document.getElementById('last-update').innerHTML = `Data Sinkron: Live API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
+                            
+                            const dateDisplay = document.getElementById('top-date-display');
+                            const dateValueEl = document.getElementById('top-date-value');
+                            if (dateValue && dateValue !== '-') {
+                                dateValueEl.innerText = dateValue;
+                                dateDisplay.classList.remove('hidden');
+                            } else {
+                                dateDisplay.classList.add('hidden');
+                            }
                         }
                         
                         // =========================================================
@@ -692,7 +669,7 @@
                             let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
-                            renderChartsAndCards(chartLabels, chartValues, dateValue);
+                            renderSummaryCards(chartLabels, chartValues);
 
                             const headers = [
                                 "No", "Date (after diproses QC)", "Regional", "Kelengkapan Dokumen", 
@@ -819,6 +796,15 @@
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                             document.getElementById('last-update').innerHTML = `Data Sinkron: Live API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
+                            
+                            const dateDisplay = document.getElementById('top-date-display');
+                            const dateValueEl = document.getElementById('top-date-value');
+                            if (dateValue && dateValue !== '-') {
+                                dateValueEl.innerText = dateValue;
+                                dateDisplay.classList.remove('hidden');
+                            } else {
+                                dateDisplay.classList.add('hidden');
+                            }
                         }
 
                         // =========================================================
@@ -996,7 +982,7 @@
                                                 <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
                                             </div>
                                             <span class="px-2 md:px-2.5 py-1 rounded-md text-[9px] md:text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase flex-shrink-0">
-                                                ${isPaid ? 'PAID' : 'REVIEW'}
+                                                ${progVal}
                                             </span>
                                         </div>
                                     `;
