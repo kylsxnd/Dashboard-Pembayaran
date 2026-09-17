@@ -98,7 +98,19 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
+            <!-- PANEL PAID KHUSUS MONITORING (BARU DITAMBAHKAN) -->
+            <div id="monitoring-paid-breakdown" class="hidden mb-8">
+                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
+                    <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Data Pembayaran Lunas (Paid)
+                    </h3>
+                    <div id="monitoring-paid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1 relative z-10"></div>
+                </div>
+            </div>
+
+            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (TETAP SEPERTI ASLINYA) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
                     <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
@@ -340,13 +352,12 @@
                 document.getElementById('header-title').innerText = currentActiveSheet;
                 document.getElementById('page-title').innerText = currentActiveSheet;
                 
-                // ROUTING PERSIS SESUAI SHEETMAP DI SERVER.JS (MANDIRI PAKAI M BESAR)
-                let apiEndpoint = '';
+                let fetchSheetName = currentActiveSheet;
                 if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
-                } else {
-                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+                    fetchSheetName = 'monitoring_pembayaran';
                 }
+
+                const apiEndpoint = `/api/sheet/${fetchSheetName.toLowerCase().replace(/ /g, '_')}`;
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -367,6 +378,14 @@
                         const unpaidContainer = document.getElementById('unpaid-task-container');
                         const dashboardWidgets = document.getElementById('dashboard-widgets');
                         const noSummaryMsg = document.getElementById('no-summary-msg');
+                        const monitoringPaidBreakdown = document.getElementById('monitoring-paid-breakdown');
+                        const monitoringPaidContainer = document.getElementById('monitoring-paid-container');
+
+                        // Reset Visibility
+                        pdoBreakdown.classList.add('hidden');
+                        monitoringPaidBreakdown.classList.add('hidden');
+                        dashboardWidgets.classList.add('hidden');
+                        noSummaryMsg.classList.add('hidden');
 
                         // =========================================================
                         // KONDISI 1: PDO
@@ -504,8 +523,9 @@
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                            pdoBreakdown.classList.remove('grid');
-                            pdoBreakdown.classList.add('hidden');
+                            // Tampilkan Panel Paid Khusus Monitoring
+                            monitoringPaidBreakdown.classList.remove('hidden');
+                            monitoringPaidContainer.innerHTML = '';
 
                             let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -520,7 +540,6 @@
                             let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
-                            noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
                             const headers = [
@@ -543,8 +562,39 @@
                                 let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
                                 if (colZero === '' || isNaN(colZero)) continue;
 
-                                let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
-                                if (vendorCol === '' || vendorCol === 'nan') continue;
+                                // --- LOGIKA MENGISI KOTAK PAID (HANYA JIKA LUNAS) ---
+                                let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
+                                let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
+                                let invName = row[6] !== undefined && row[6] !== null ? row[6].toString().trim() : '-';
+                                
+                                let nominalRaw = row[8] !== undefined && row[8] !== null ? row[8].toString() : '0';
+                                let cleanNominal = nominalRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                let numNominal = parseFloat(cleanNominal);
+                                let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
+
+                                let paidCellMon = row[13];
+                                let isPaidMon = false;
+                                if (paidCellMon !== undefined && paidCellMon !== null) {
+                                    let upperPaid = paidCellMon.toString().toUpperCase();
+                                    isPaidMon = (upperPaid === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon === 1 || paidCellMon === true);
+                                }
+
+                                if (isPaidMon && vendorName !== '-' && vendorName !== '') {
+                                    let paidItemHTML = `
+                                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
+                                            <div class="pr-2">
+                                                <p class="text-white font-medium text-xs mb-1 truncate max-w-[250px]" title="${vendorName}">${vendorName}</p>
+                                                <p class="text-[10px] text-gray-400">Kebun: <span class="text-blue-400 font-semibold">${kebunName}</span> | Inv: <span class="text-purple-400 font-semibold">${invName}</span></p>
+                                                <p class="text-[10px] font-bold text-emerald-400 mt-1">${nominalFmt}</p>
+                                            </div>
+                                            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">
+                                                PAID
+                                            </span>
+                                        </div>
+                                    `;
+                                    monitoringPaidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
+                                }
+                                // ---------------------------------------------------
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
                                 for (let c = 0; c < 16; c++) {
@@ -598,6 +648,10 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
+                            if (monitoringPaidContainer.innerHTML === '') {
+                                monitoringPaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada data yang lunas (Paid).</p>`;
+                            }
+
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
                             } else {
@@ -610,11 +664,6 @@
                         // KONDISI 3: PETTY CASH
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
-                            pdoBreakdown.classList.remove('grid');
-                            pdoBreakdown.classList.add('hidden');
-                            dashboardWidgets.classList.add('hidden');
-                            noSummaryMsg.classList.remove('hidden');
-
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
@@ -726,11 +775,6 @@
                         // KONDISI UMUM
                         // =========================================================
                         else {
-                            pdoBreakdown.classList.remove('grid');
-                            pdoBreakdown.classList.add('hidden');
-                            dashboardWidgets.classList.add('hidden');
-                            noSummaryMsg.classList.remove('hidden');
-
                             let tableHeadIdx = 2; 
                             let dataStartIdx = tableHeadIdx + 1;
                             while (dataStartIdx < data.length) {
@@ -784,6 +828,7 @@
                         document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-red-500">Gagal memuat data dari server. Pastikan nama sheet benar.</td></tr>`;
                         document.getElementById('dashboard-widgets').classList.add('hidden');
                         document.getElementById('pdo-status-breakdown').classList.add('hidden');
+                        document.getElementById('monitoring-paid-breakdown').classList.add('hidden');
                     });
             }
 
