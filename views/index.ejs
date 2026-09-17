@@ -174,7 +174,7 @@
 
                 <div class="col-span-1 bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
                     <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Summary Data
                     </h3>
                     <div id="summaryCardsContainer" class="grid grid-cols-2 gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
@@ -615,8 +615,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Task</span>`;
-                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending) <span class="ml-2 px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-400 text-[10px] shadow-sm">${unpaidCount} Task</span>`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Paid</span>`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending) <span class="ml-2 px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-400 text-[10px] shadow-sm">${unpaidCount} Pending</span>`;
 
                             if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada task yang lunas.</p>`;
                             if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Semua task sudah lunas.</p>`;
@@ -774,7 +774,7 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Data</span>`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Paid</span>`;
 
                             if (paidContainer.innerHTML === '') {
                                 paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
@@ -985,8 +985,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Pengajuan</span>`;
-                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Dir.Ops) <span class="ml-2 px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-400 text-[10px] shadow-sm">${unpaidCount} Pengajuan</span>`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Paid</span>`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Dir.Ops) <span class="ml-2 px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-400 text-[10px] shadow-sm">${unpaidCount} Review</span>`;
 
                             if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada pengajuan yang lunas.</p>`;
                             if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
