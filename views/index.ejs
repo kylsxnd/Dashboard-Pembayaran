@@ -18,15 +18,15 @@
         .table-container { -webkit-overflow-scrolling: touch; }
 
         /* ========================================================
-           TEMA SOFT PINK & CREAM (Kalem, Elegan, Gak Silau)
+           TEMA SOFT PINK & CREAM (Override Slate Theme)
            ======================================================== */
         body.theme-pink {
             background-color: #fce7f3 !important;
             color: #374151 !important;
         }
         body.theme-pink #sidebar,
-        body.theme-pink .bg-\[\#12151c\],
-        body.theme-pink .bg-\[\#0e1117\],
+        body.theme-pink .bg-slate-800,
+        body.theme-pink .bg-slate-900,
         body.theme-pink #custom-pdf-modal > div {
             background-color: #fff0f5 !important;
             border-color: #fbcfe8 !important; 
@@ -71,21 +71,19 @@
         }
         body.theme-pink .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.02); }
         body.theme-pink .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.25); }
-        body.theme-pink .bg-\[\#272b33\] { background-color: #ec4899 !important; color: white !important; }
+        body.theme-pink .bg-slate-700 { background-color: #ec4899 !important; color: white !important; }
         body.theme-pink button.hover\:text-white:hover { color: #be185d !important; }
-        
-        /* Mobile Overlay Theme */
         body.theme-pink #mobile-overlay { background-color: rgba(255,255,255,0.7) !important; }
         body.theme-pink #mobile-menu-btn { color: #be185d !important; }
     </style>
 </head>
-<body class="bg-[#0b0e14] text-gray-300 flex h-screen overflow-hidden selection:bg-blue-500/30">
+<body class="bg-slate-900 text-gray-300 flex h-screen overflow-hidden selection:bg-blue-500/30">
 
     <!-- OVERLAY UNTUK HP -->
     <div id="mobile-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- SIDEBAR (Fixed di HP, Normal di Desktop) -->
-    <aside id="sidebar" class="w-72 bg-[#12151c] border-r border-white/5 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-2xl md:shadow-none">
+    <aside id="sidebar" class="w-72 bg-slate-800 border-r border-white/5 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-2xl md:shadow-none">
         <div class="p-6 border-b border-white/5 flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)]" id="logo-icon">
@@ -107,9 +105,9 @@
             <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
         </div>
 
-        <div class="p-5 border-t border-white/5 bg-[#0e1117] flex items-center gap-4">
+        <div class="p-5 border-t border-white/5 bg-slate-900 flex items-center gap-4">
             <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-500 p-[2px]">
-                <div class="w-full h-full bg-[#12151c] rounded-full flex items-center justify-center">
+                <div class="w-full h-full bg-slate-800 rounded-full flex items-center justify-center">
                     <span class="text-xs font-bold text-white">PIC</span>
                 </div>
             </div>
@@ -123,7 +121,7 @@
     <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <header class="h-16 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-[#0b0e14]/80 backdrop-blur-md relative z-10 w-full">
+        <header class="h-16 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-slate-900/80 backdrop-blur-md relative z-10 w-full">
             <div class="flex items-center gap-2 md:gap-4">
                 <!-- Tombol Hamburger Khusus HP -->
                 <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-colors focus:outline-none shadow-sm">
@@ -172,7 +170,7 @@
 
             <!-- DASHBOARD WIDGETS & CHARTS -->
             <div id="dashboard-widgets" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8 hidden">
-                <div class="col-span-1 lg:col-span-2 bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden group">
+                <div class="col-span-1 lg:col-span-2 bg-slate-800 border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
                     <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 md:mb-6 flex items-center gap-2">
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -181,7 +179,7 @@
                     <div class="relative w-full h-[250px] md:h-[300px]" id="barChartContainer"></div>
                 </div>
 
-                <div class="col-span-1 bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden">
+                <div class="col-span-1 bg-slate-800 border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden">
                     <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Summary Data
@@ -192,7 +190,7 @@
 
             <!-- PANEL BREAKDOWN STATUS TASK -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl flex flex-col">
+                <div class="bg-slate-800 border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 flex items-center flex-wrap gap-2">
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Sudah Paid (Lunas)
@@ -200,7 +198,7 @@
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
 
-                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl flex flex-col">
+                <div class="bg-slate-800 border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl flex flex-col">
                     <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 flex items-center flex-wrap gap-2">
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Belum Paid (Pending)
@@ -215,7 +213,7 @@
             </div>
 
             <!-- Tabel Data Utama -->
-            <div class="bg-[#12151c] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
+            <div class="bg-slate-800 border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
                 <div class="px-4 md:px-6 py-4 md:py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                     <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase flex items-center gap-2">
                         <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
@@ -235,7 +233,7 @@
                     </table>
                 </div>
 
-                <div class="px-4 md:px-6 py-3 md:py-4 border-t border-white/5 bg-[#0e1117] flex justify-center items-center">
+                <div class="px-4 md:px-6 py-3 md:py-4 border-t border-white/5 bg-slate-900 flex justify-center items-center">
                     <div id="pagination-container" class="flex items-center gap-1 md:gap-2 flex-wrap justify-center"></div>
                 </div>
             </div>
@@ -286,7 +284,7 @@
 
             const modalHTML = `
             <div id="custom-pdf-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
-                <div class="bg-[#12151c] border border-white/10 rounded-2xl w-full max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="pdf-modal-box">
+                <div class="bg-slate-800 border border-white/10 rounded-2xl w-full max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="pdf-modal-box">
                     <div class="px-4 md:px-6 py-3 md:py-4 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
                         <div class="flex items-center gap-3 overflow-hidden">
                             <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
@@ -373,7 +371,6 @@
                         renderMenu(); 
                         fetchJsonData();
                         
-                        // Tutup otomatis sidebar di mobile kalau menu di klik
                         if (window.innerWidth < 768) {
                             toggleSidebar();
                         }
@@ -392,7 +389,7 @@
                     colors: premiumColors,
                     xAxis: { categories: labels, labels: { style: { color: '#94a3b8', fontSize: '10px', fontFamily: 'Inter', fontWeight: '500' } }, gridLineColor: 'rgba(255,255,255,0.05)', lineColor: 'rgba(255,255,255,0.1)' },
                     yAxis: { title: { text: null }, labels: { style: { color: '#94a3b8', fontFamily: 'Inter' } }, gridLineColor: 'rgba(255,255,255,0.05)' },
-                    tooltip: { backgroundColor: 'rgba(18, 21, 28, 0.95)', style: { color: '#e2e8f0' }, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, headerFormat: '<span style="font-size: 10px; color: #94a3b8; text-transform: uppercase">{point.key}</span><br/>', pointFormat: '<span style="color:{point.color}">\u25CF</span> Total Data: <b>{point.y}</b>' },
+                    tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.95)', style: { color: '#e2e8f0' }, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, headerFormat: '<span style="font-size: 10px; color: #94a3b8; text-transform: uppercase">{point.key}</span><br/>', pointFormat: '<span style="color:{point.color}">\u25CF</span> Total Data: <b>{point.y}</b>' },
                     plotOptions: { column: { depth: 45, colorByPoint: true, borderColor: 'rgba(0,0,0,0.3)', borderWidth: 1 } },
                     series: [{ name: 'Statistik', data: dataValues, showInLegend: false }],
                     credits: { enabled: false }
@@ -439,7 +436,7 @@
                 for (let i = startPage; i <= endPage; i++) {
                     const btnPage = document.createElement('button');
                     const isActive = i === currentPage;
-                    btnPage.className = `w-7 h-7 md:w-8 md:h-8 rounded-md text-[10px] md:text-xs font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-[#272b33] text-white shadow-sm' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`;
+                    btnPage.className = `w-7 h-7 md:w-8 md:h-8 rounded-md text-[10px] md:text-xs font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-slate-700 text-white shadow-sm' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`;
                     btnPage.innerText = i;
                     btnPage.onclick = () => { currentPage = i; renderTablePage(); };
                     pagContainer.appendChild(btnPage);
@@ -555,7 +552,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-slate-800/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -670,8 +667,10 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
+                            // Sembunyikan Unpaid Panel
                             document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
                             
+                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -704,7 +703,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-slate-800/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -846,7 +845,7 @@
                             
                             let headHTML = '<tr>';
                             displayHeaders.forEach(h => {
-                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-slate-800/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -1068,7 +1067,7 @@
                                 let headerText = data[tableHeadIdx][c] ? data[tableHeadIdx][c].toString().trim() : "";
                                 if (headerText !== "") {
                                     validColIndices.push(c);
-                                    headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
+                                    headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-slate-800/90 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
                                 }
                             }
                             headHTML += '</tr>';
