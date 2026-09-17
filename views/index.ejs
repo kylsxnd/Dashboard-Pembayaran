@@ -126,7 +126,6 @@
          ======================================================== -->
     <div id="auth-page" class="fixed inset-0 z-[200] flex items-center justify-center bg-zinc-950/40 backdrop-blur-xl transition-all duration-700">
         <div id="auth-card" class="bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 w-11/12 max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group transform transition-all duration-500">
-            <!-- Glow Latar -->
             <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
             <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
 
@@ -138,7 +137,6 @@
                 <p class="text-xs text-emerald-400 font-bold uppercase tracking-wider mt-1">Executive Portal</p>
             </div>
 
-            <!-- Pesan Error -->
             <div id="auth-error" class="hidden mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs text-center font-medium relative z-10"></div>
 
             <!-- FORM LOGIN -->
@@ -253,7 +251,6 @@
             </header>
 
             <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10">
-                <!-- HEADER KONTEN RESPONSIVE -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 opacity-0 animate-fade-in-up">
                     <div class="w-full md:w-auto">
                         <h1 class="text-3xl md:text-4xl font-black text-white mb-1.5 md:mb-2 tracking-tight drop-shadow-xl" id="page-title">Loading...</h1>
@@ -272,7 +269,6 @@
                     </div>
                 </div>
 
-                <!-- DASHBOARD WIDGETS -->
                 <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                         <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 md:mb-8 flex items-center gap-3 relative z-10 drop-shadow-lg">
@@ -285,7 +281,6 @@
                     </div>
                 </div>
 
-                <!-- PANEL BREAKDOWN STATUS TASK -->
                 <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 mb-6 md:mb-8 opacity-0 animate-fade-in-up delay-200">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl flex flex-col hover:border-emerald-400/50 hover:shadow-[0_15px_40px_rgba(16,185,129,0.15)] transition-all duration-300 relative overflow-hidden group">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
@@ -311,7 +306,7 @@
                     Sheet ini tidak memiliki ringkasan (Total/Summary).
                 </div>
 
-                <!-- Tabel Data Utama -->
+                <!-- Tabel Data Utama - GLASSMORPHISM -->
                 <div class="bg-zinc-900/40 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col opacity-0 animate-fade-in-up delay-200">
                     <div class="px-5 md:px-8 py-5 md:py-6 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
                         <h3 class="text-white font-bold text-xs md:text-sm tracking-widest uppercase flex items-center gap-3 drop-shadow-lg">
@@ -373,20 +368,16 @@
             const authError = document.getElementById('auth-error');
             const logoutBtn = document.getElementById('logout-btn');
 
-            // Cek apakah user sudah login sebelumnya
             let activeUser = JSON.parse(localStorage.getItem('agrinas_active_user'));
 
             function checkAuth() {
                 if (activeUser && activeUser.email) {
-                    // Update Profil UI di Sidebar
                     document.getElementById('profile-name').innerText = activeUser.name;
                     document.getElementById('profile-email').innerText = activeUser.email;
                     
-                    // Bikin inisial dari nama (Maksimal 2 huruf)
                     let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     document.getElementById('profile-initials').innerText = initials || 'PIC';
 
-                    // Transisi Animasi Menutup Login dan Membuka Dashboard
                     authPage.classList.add('opacity-0');
                     setTimeout(() => {
                         authPage.classList.add('hidden');
@@ -394,15 +385,13 @@
                         setTimeout(() => {
                             dashboardWrapper.classList.remove('opacity-0');
                         }, 50);
-                    }, 700); // Tunggu animasi pudar selesai
+                    }, 700);
 
-                    // Jalankan fetch data (hanya kalau udah login)
                     if(!fetchInterval) {
                         fetchJsonData(); 
                         fetchInterval = setInterval(() => { fetchJsonData(true); }, 10000);
                     }
                 } else {
-                    // Tampilkan halaman login
                     dashboardWrapper.classList.add('hidden', 'opacity-0');
                     authPage.classList.remove('hidden');
                     setTimeout(() => authPage.classList.remove('opacity-0'), 50);
@@ -415,7 +404,6 @@
                 setTimeout(() => authError.classList.add('hidden'), 5000);
             }
 
-            // Pindah antara Login dan Register form
             goToRegisterBtn.addEventListener('click', () => {
                 loginForm.classList.add('hidden');
                 registerForm.classList.remove('hidden');
@@ -428,38 +416,28 @@
                 authError.classList.add('hidden');
             });
 
-            // Proses Register
             registerForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const name = document.getElementById('reg-name').value.trim();
                 const email = document.getElementById('reg-email').value.trim();
                 const password = document.getElementById('reg-password').value;
 
-                if(password.length < 6) {
-                    return showError("Password harus minimal 6 karakter!");
-                }
+                if(password.length < 6) return showError("Password harus minimal 6 karakter!");
 
                 let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
                 
-                // Cek apakah email sudah terdaftar
-                if(usersDB.find(u => u.email === email)) {
-                    return showError("Email sudah terdaftar. Silakan login.");
-                }
+                if(usersDB.find(u => u.email === email)) return showError("Email sudah terdaftar. Silakan login.");
 
-                // Simpan user baru
                 usersDB.push({ name, email, password });
                 localStorage.setItem('agrinas_users_db', JSON.stringify(usersDB));
 
-                // Langsung login-kan
                 activeUser = { name, email };
                 localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
                 
-                // Reset form & Masuk Dashboard
                 registerForm.reset();
                 checkAuth();
             });
 
-            // Proses Login
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const email = document.getElementById('login-email').value.trim();
@@ -478,7 +456,6 @@
                 }
             });
 
-            // Proses Logout
             logoutBtn.addEventListener('click', () => {
                 localStorage.removeItem('agrinas_active_user');
                 activeUser = null;
@@ -486,11 +463,11 @@
                     clearInterval(fetchInterval);
                     fetchInterval = null;
                 }
-                window.location.reload(); // Refresh total untuk kembali ke state awal
+                window.location.reload(); 
             });
 
             // =========================================================
-            // 2. LOGIKA DASHBOARD (SAMA SEPERTI SEBELUMNYA)
+            // 2. LOGIKA DASHBOARD 
             // =========================================================
             let fetchInterval = null;
 
@@ -919,11 +896,12 @@
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Sudah Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<div class="p-5 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas.</p></div>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Semua task sudah lunas.</p></div>`;
+                            if (paidContainer.innerHTML === '') {
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas.</p></div>`;
+                            }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="13" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
@@ -948,10 +926,8 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Sembunyikan Unpaid Panel
                             document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
-                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -1405,6 +1381,9 @@
                     });
             }
 
+            // Render menu sidebar pertama kali
+            renderMenu();
+            
             // Jalankan cek autentikasi pertama kali
             checkAuth();
             
