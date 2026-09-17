@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
@@ -24,7 +24,7 @@
         .delay-200 { animation-delay: 200ms; }
 
         /* ========================================================
-           TEMA SOFT PINK & CREAM
+           TEMA SOFT PINK & CREAM (Gak Silau & Tetap Elegan)
            ======================================================== */
         body.theme-pink {
             background-color: #fdf2f8 !important;
@@ -141,8 +141,8 @@
                 <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-colors focus:outline-none shadow-sm">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                <div class="text-xs md:text-sm font-semibold text-gray-300 bg-zinc-800/80 px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
-                    <svg class="w-4 h-4 md:w-5 md:h-5 mr-1.5 md:mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                <div class="text-[10px] md:text-xs font-semibold text-gray-300 bg-zinc-800/80 px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
+                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
                     <span id="header-title" class="truncate max-w-[150px] md:max-w-xs">Memuat Sheet...</span>
                 </div>
             </div>
@@ -173,13 +173,13 @@
                         Data API <span class="text-emerald-400 font-bold ml-1">--:--:--</span>
                     </div>
                     <!-- TANGGAL (DATE) -->
-                    <div id="top-date-display" class="hidden text-[10px] md:text-xs font-bold text-emerald-300 tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-sm whitespace-nowrap">
+                    <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-300 tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-sm whitespace-nowrap">
                         TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black">--/--/----</span>
                     </div>
                 </div>
             </div>
 
-            <!-- DASHBOARD WIDGETS (SUMMARY CARDS, FULL WIDTH) -->
+            <!-- DASHBOARD WIDGETS (SUMMARY CARDS) -->
             <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
                 <div class="bg-gradient-to-br from-zinc-900/90 to-zinc-950/90 backdrop-blur-xl border border-white/5 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                     <div class="absolute -top-24 -right-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl group-hover:bg-zinc-500/10 transition-all duration-700"></div>
@@ -198,22 +198,26 @@
 
             <!-- PANEL BREAKDOWN STATUS TASK -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 mb-6 md:mb-8 opacity-0 animate-fade-in-up delay-200">
+                
+                <!-- KOTAK TASK PAID -->
                 <div class="bg-zinc-900/80 backdrop-blur-md border border-white/5 rounded-3xl p-5 md:p-8 shadow-xl flex flex-col hover:border-emerald-500/30 hover:shadow-[0_10px_30px_rgba(16,185,129,0.08)] transition-all duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
                     <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10">
                         <div class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         Task Sudah Paid
                     </h3>
-                    <div id="paid-task-container" class="flex flex-col gap-4 overflow-y-auto max-h-[400px] custom-scrollbar pr-2 relative z-10"></div>
+                    <!-- max-height ditinggikan, pr-3 untuk scrollbar space -->
+                    <div id="paid-task-container" class="flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10"></div>
                 </div>
 
-                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/5 rounded-3xl p-5 md:p-8 shadow-xl flex flex-col hover:border-rose-500/30 hover:shadow-[0_10px_30px_rgba(244,63,94,0.08)] transition-all duration-300 relative overflow-hidden group">
+                <!-- KOTAK TASK PENDING/REVIEW -->
+                <div class="bg-zinc-900/80 backdrop-blur-md border border-white/5 rounded-3xl p-5 md:p-8 shadow-xl flex flex-col hover:border-rose-500/30 hover:shadow-[0_10px_30px_rgba(244,63,94,0.08)] transition-all duration-300 relative overflow-hidden group" id="unpaid-panel-wrapper">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-colors"></div>
                     <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10">
                         <div class="p-2 bg-rose-500/10 rounded-lg border border-rose-500/20"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                         Task Belum Paid
                     </h3>
-                    <div id="unpaid-task-container" class="flex flex-col gap-4 overflow-y-auto max-h-[400px] custom-scrollbar pr-2 relative z-10"></div>
+                    <div id="unpaid-task-container" class="flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10"></div>
                 </div>
             </div>
 
@@ -395,12 +399,13 @@
                     const color = accentColors[i % accentColors.length];
                     
                     cardsContainer.innerHTML += `
-                        <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-5 md:p-6 shadow-lg backdrop-blur-md hover:bg-zinc-700/60 hover:border-${color}-500/40 hover:-translate-y-1.5 hover:shadow-[0_12px_25px_rgba(0,0,0,0.2)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
+                        <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-zinc-700/60 hover:border-${color}-500/40 hover:-translate-y-1.5 hover:shadow-[0_12px_25px_rgba(0,0,0,0.2)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
                             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${color}-500/0 via-${color}-500/50 to-${color}-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            
                             <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-${color}-500/5 rounded-full blur-2xl group-hover:bg-${color}-500/15 transition-colors duration-500"></div>
                             
-                            <p class="text-[10px] md:text-xs text-gray-400 font-bold uppercase tracking-widest mb-2 truncate group-hover:text-${color}-400 transition-colors duration-300 relative z-10" title="${label}">${label}</p>
-                            <p class="text-3xl md:text-4xl font-black text-white group-hover:scale-110 transform origin-left transition-transform duration-300 relative z-10 drop-shadow-sm">${dataValues[i]}</p>
+                            <p class="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1.5 truncate group-hover:text-${color}-400 transition-colors duration-300 relative z-10" title="${label}">${label}</p>
+                            <p class="text-2xl md:text-3xl font-black text-white group-hover:scale-110 transform origin-left transition-transform duration-300 relative z-10 drop-shadow-sm">${dataValues[i]}</p>
                         </div>
                     `;
                 });
@@ -486,6 +491,7 @@
                         const tbody = document.getElementById('table-body');
                         
                         if (!isSilent) tbody.innerHTML = '';
+                        
                         allTableRowsHTML = [];
 
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
@@ -510,8 +516,11 @@
                             
                             pdoBreakdown.classList.remove('grid-cols-1');
                             pdoBreakdown.classList.add('md:grid-cols-2');
-                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
-                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[400px] custom-scrollbar pr-2 relative z-10';
+                            
+                            // Tampilkan panel unpaid (merah) buat PDO
+                            document.getElementById('unpaid-panel-wrapper').classList.remove('hidden');
+                            
+                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
 
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
@@ -562,11 +571,11 @@
                                 let isPaid = paidCell === true || paidCell === '1' || paidCell === 1 || String(paidCell).toUpperCase() === 'TRUE';
 
                                 let taskItemHTML = `
-                                    <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-zinc-700/60 hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 gap-3 cursor-default group relative overflow-hidden">
-                                        <div class="absolute left-0 top-0 w-1 h-full opacity-50 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-rose-500'}"></div>
-                                        <div class="pr-2 min-w-0 pl-2">
-                                            <p class="text-white font-bold text-sm md:text-base mb-1.5 truncate group-hover:text-emerald-200 transition-colors">${taskCol}</p>
-                                            <p class="text-xs text-gray-400 truncate">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
+                                    <div class="flex-shrink-0 bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-zinc-700/60 hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 gap-4 cursor-default group relative overflow-hidden">
+                                        <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-rose-500'}"></div>
+                                        <div class="flex-1 min-w-0 pl-3">
+                                            <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-emerald-200 transition-colors truncate" title="${taskCol}">${taskCol}</p>
+                                            <p class="text-[10px] md:text-xs text-gray-400 truncate">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
                                         </div>
                                         <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
                                             ${isPaid ? 'PAID' : 'BELUM PAID'}
@@ -623,7 +632,7 @@
                                         if (lProg.includes('approved')) progColor = 'bg-purple-500/10 text-purple-400 border-purple-500/30';
                                         else if (lProg.includes('revisi')) progColor = 'bg-amber-500/10 text-amber-400 border-amber-500/30';
                                         else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/10 text-rose-400 border-rose-500/30';
-                                        cellVal = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold tracking-wide ${progColor} inline-block">${cellVal}</span>`;
+                                        cellVal = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${progColor} inline-block">${cellVal}</span>`;
                                     }
 
                                     let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
@@ -647,7 +656,8 @@
                             }
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
+                            const updateEl = document.getElementById('last-update');
+                            updateEl.innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
@@ -666,8 +676,10 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
+                            // Sembunyikan Unpaid Panel
+                            document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
+                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -735,17 +747,17 @@
                                 if (isPaidMon && vendorName !== '-' && vendorName !== '') {
                                     paidCount++;
                                     let paidItemHTML = `
-                                        <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-zinc-700/60 hover:border-emerald-500/40 hover:shadow-[0_10px_30px_rgba(16,185,129,0.1)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group cursor-default">
-                                            <div class="absolute left-0 top-0 w-1.5 h-full bg-emerald-500 opacity-50 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                            <div class="flex justify-between items-start gap-3 pl-2">
+                                        <div class="flex-shrink-0 bg-zinc-800/40 border border-white/5 rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-zinc-700/60 hover:border-emerald-500/40 hover:shadow-[0_10px_30px_rgba(16,185,129,0.1)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group cursor-default">
+                                            <div class="absolute left-0 top-0 w-1.5 h-full bg-emerald-500 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                            <div class="flex justify-between items-start gap-3 pl-3">
                                                 <p class="text-white font-bold text-sm md:text-base truncate max-w-[200px] md:max-w-[250px] group-hover:text-emerald-200 transition-colors" title="${vendorName}">${vendorName}</p>
-                                                <span class="px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap flex-shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors tracking-wide">PAID</span>
+                                                <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap flex-shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors tracking-wide">PAID</span>
                                             </div>
-                                            <div class="flex flex-col gap-1.5 pl-2 mt-1">
+                                            <div class="flex flex-col gap-1.5 pl-3 mt-1">
                                                 <p class="text-xs text-gray-400 truncate" title="${kebunName}"><span class="text-gray-500 font-semibold">Kebun:</span> ${kebunName}</p>
                                                 <p class="text-xs text-gray-400 truncate" title="${invName}"><span class="text-gray-500 font-semibold">Inv:</span> ${invName}</p>
                                             </div>
-                                            <p class="text-sm md:text-base font-black text-emerald-400 mt-2 pl-2 group-hover:scale-105 transform origin-left transition-transform">${nominalFmt}</p>
+                                            <p class="text-sm md:text-base font-black text-emerald-400 mt-2 pl-3 group-hover:scale-105 transform origin-left transition-transform">${nominalFmt}</p>
                                         </div>
                                     `;
                                     paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
@@ -839,11 +851,13 @@
 
                             document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
                             document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
-                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
+                            
+                            // Tampilkan panel unpaid (merah) buat Petty Cash
+                            document.getElementById('unpaid-panel-wrapper').classList.remove('hidden');
 
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
-                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[400px] custom-scrollbar pr-2 relative z-10';
+                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
 
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
@@ -918,7 +932,7 @@
                                         skipSection = false;
                                     }
 
-                                    let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-indigo-500/10 text-indigo-400 font-bold text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
@@ -958,7 +972,7 @@
                                     let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
                                     
                                     if (isTrue) {
-                                        return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-emerald-600 border border-emerald-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                        return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-indigo-600 border border-indigo-500 shadow-sm mx-auto group-hover:scale-110 transition-transform"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                     } else {
                                         return `<div class="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 rounded-lg bg-black/20 border border-white/10 mx-auto"></div>`;
                                     }
@@ -983,13 +997,13 @@
                                 if (dokVal !== '-' && dokVal !== '') {
                                     const urlRegex = /(https?:\/\/[^\s]+)/g;
                                     if (urlRegex.test(dokVal)) {
-                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold tracking-wide bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-sm hover:bg-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold tracking-wide bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 shadow-sm hover:bg-indigo-500/20 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
                                     } else {
                                         const safeName = dokVal.replace(/'/g, "\\'");
                                         dokHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-emerald-400 font-medium hover:text-emerald-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px] md:max-w-[250px] hover:-translate-y-0.5" title="${safeName}">
-                                                <svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                <span class="underline decoration-emerald-500/30 underline-offset-4 truncate">${dokVal}</span>
+                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-indigo-400 font-medium hover:text-indigo-300 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px] md:max-w-[250px] hover:-translate-y-0.5" title="${safeName}">
+                                                <svg class="w-4 h-4 md:w-5 md:h-5 text-indigo-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                <span class="underline decoration-indigo-500/30 underline-offset-4 truncate">${dokVal}</span>
                                             </button>
                                         `;
                                     }
@@ -997,12 +1011,12 @@
 
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
-                                        <div class="bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-zinc-700/60 hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 gap-3 cursor-default group relative overflow-hidden">
-                                            <div class="absolute left-0 top-0 w-1 h-full opacity-50 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-purple-500'}"></div>
-                                            <div class="pr-2 min-w-0 pl-2">
-                                                <p class="text-white font-bold text-sm md:text-base mb-1.5 truncate group-hover:text-emerald-200 transition-colors" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500 font-normal text-xs ml-1">(${wilVal})</span></p>
-                                                <p class="text-xs text-gray-400 truncate" title="${ketVal}">Ket: <span class="text-emerald-400 font-semibold">${ketVal}</span></p>
-                                                <p class="text-xs md:text-sm font-black text-emerald-400 mt-2">${permStr}</p>
+                                        <div class="flex-shrink-0 bg-zinc-800/40 border border-white/5 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-zinc-700/60 hover:border-white/10 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 gap-4 cursor-default group relative overflow-hidden">
+                                            <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 ${isPaid ? 'bg-emerald-500' : 'bg-purple-500'}"></div>
+                                            <div class="flex-1 min-w-0 pl-3">
+                                                <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-indigo-200 transition-colors truncate" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500 font-normal ml-1">(${wilVal})</span></p>
+                                                <p class="text-[10px] md:text-xs text-gray-400 mb-2 truncate" title="${ketVal}">Ket: <span class="text-indigo-400 font-semibold">${ketVal}</span></p>
+                                                <p class="text-[11px] md:text-sm font-black text-emerald-400">${permStr}</p>
                                             </div>
                                             <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
                                                 ${progVal}
@@ -1024,7 +1038,7 @@
                                 let rowHTML = '<tr class="hover:bg-zinc-800/80 transition-colors duration-200 group">';
                                 cellData.forEach((cellVal, c) => {
                                     let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
-                                    if (c === 8) cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-200 font-medium min-w-[200px] md:min-w-[250px] max-w-[300px] md:max-w-[400px] whitespace-normal leading-relaxed";
+                                    if (c === 8) cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/5 align-middle text-gray-200 font-medium min-w-[250px] md:min-w-[300px] max-w-[400px] md:max-w-[500px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
@@ -1038,7 +1052,7 @@
                             if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-purple-500/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-500/50 italic font-medium">Tidak ada pengajuan yang sedang di-review.</p></div>`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-500 font-medium text-sm md:text-base">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-500 font-medium text-sm md:text-base">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
