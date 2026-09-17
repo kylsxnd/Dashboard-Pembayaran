@@ -383,7 +383,7 @@
 
                         // Reset Visibility
                         pdoBreakdown.classList.add('hidden');
-                        monitoringPaidBreakdown.classList.add('hidden');
+                        if(monitoringPaidBreakdown) monitoringPaidBreakdown.classList.add('hidden');
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
 
@@ -523,9 +523,14 @@
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            pdoBreakdown.classList.remove('grid');
+                            pdoBreakdown.classList.add('hidden');
+
                             // Tampilkan Panel Paid Khusus Monitoring
-                            monitoringPaidBreakdown.classList.remove('hidden');
-                            monitoringPaidContainer.innerHTML = '';
+                            if (monitoringPaidBreakdown) {
+                                monitoringPaidBreakdown.classList.remove('hidden');
+                                monitoringPaidContainer.innerHTML = '';
+                            }
 
                             let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -540,6 +545,7 @@
                             let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
+                            noSummaryMsg.classList.add('hidden');
                             renderChartsAndCards(chartLabels, chartValues, dateValue);
 
                             const headers = [
@@ -562,6 +568,9 @@
                                 let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
                                 if (colZero === '' || isNaN(colZero)) continue;
 
+                                let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
+                                if (vendorCol === '' || vendorCol === 'nan') continue;
+
                                 // --- LOGIKA MENGISI KOTAK PAID (HANYA JIKA LUNAS) ---
                                 let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
                                 let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
@@ -576,20 +585,21 @@
                                 let isPaidMon = false;
                                 if (paidCellMon !== undefined && paidCellMon !== null) {
                                     let upperPaid = paidCellMon.toString().toUpperCase();
-                                    isPaidMon = (upperPaid === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon === 1 || paidCellMon === true);
+                                    isPaidMon = (upperPaid === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon === 1 || paidCellMon === true || paidCellMon.toString().includes('☑'));
                                 }
 
                                 if (isPaidMon && vendorName !== '-' && vendorName !== '') {
                                     let paidItemHTML = `
-                                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
-                                            <div class="pr-2">
-                                                <p class="text-white font-medium text-xs mb-1 truncate max-w-[250px]" title="${vendorName}">${vendorName}</p>
-                                                <p class="text-[10px] text-gray-400">Kebun: <span class="text-blue-400 font-semibold">${kebunName}</span> | Inv: <span class="text-purple-400 font-semibold">${invName}</span></p>
-                                                <p class="text-[10px] font-bold text-emerald-400 mt-1">${nominalFmt}</p>
+                                        <div class="bg-white/[0.02] border border-emerald-500/20 rounded-xl p-4 flex flex-col gap-2 hover:bg-emerald-500/5 transition-colors">
+                                            <div class="flex justify-between items-start">
+                                                <p class="text-white font-bold text-sm truncate max-w-[200px]" title="${vendorName}">${vendorName}</p>
+                                                <span class="px-2 py-1 rounded-md text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">PAID</span>
                                             </div>
-                                            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">
-                                                PAID
-                                            </span>
+                                            <div class="flex flex-col gap-0.5">
+                                                <p class="text-[11px] text-gray-400 truncate" title="${kebunName}"><span class="text-gray-500">Kebun:</span> ${kebunName}</p>
+                                                <p class="text-[11px] text-gray-400 truncate" title="${invName}"><span class="text-gray-500">Inv:</span> ${invName}</p>
+                                            </div>
+                                            <p class="text-xs font-black text-emerald-400 mt-1">${nominalFmt}</p>
                                         </div>
                                     `;
                                     monitoringPaidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
@@ -611,7 +621,7 @@
 
                                     if (c >= 9 && c <= 13) {
                                         let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0') {
+                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true' || cellVal.toString().includes('☑')) {
                                             cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                         } else {
                                             cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
@@ -648,8 +658,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (monitoringPaidContainer.innerHTML === '') {
-                                monitoringPaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Belum ada data yang lunas (Paid).</p>`;
+                            if (monitoringPaidContainer && monitoringPaidContainer.innerHTML === '') {
+                                monitoringPaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
@@ -664,6 +674,11 @@
                         // KONDISI 3: PETTY CASH
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
+                            pdoBreakdown.classList.remove('grid');
+                            pdoBreakdown.classList.add('hidden');
+                            dashboardWidgets.classList.add('hidden');
+                            noSummaryMsg.classList.remove('hidden');
+
                             const displayHeaders = [
                                 "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
                                 "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
@@ -775,6 +790,11 @@
                         // KONDISI UMUM
                         // =========================================================
                         else {
+                            pdoBreakdown.classList.remove('grid');
+                            pdoBreakdown.classList.add('hidden');
+                            dashboardWidgets.classList.add('hidden');
+                            noSummaryMsg.classList.remove('hidden');
+
                             let tableHeadIdx = 2; 
                             let dataStartIdx = tableHeadIdx + 1;
                             while (dataStartIdx < data.length) {
@@ -826,9 +846,9 @@
                         console.error(err);
                         document.getElementById('table-head').innerHTML = '';
                         document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-red-500">Gagal memuat data dari server. Pastikan nama sheet benar.</td></tr>`;
-                        document.getElementById('dashboard-widgets').classList.add('hidden');
-                        document.getElementById('pdo-status-breakdown').classList.add('hidden');
-                        document.getElementById('monitoring-paid-breakdown').classList.add('hidden');
+                        if (document.getElementById('dashboard-widgets')) document.getElementById('dashboard-widgets').classList.add('hidden');
+                        if (document.getElementById('pdo-status-breakdown')) document.getElementById('pdo-status-breakdown').classList.add('hidden');
+                        if (document.getElementById('monitoring-paid-breakdown')) document.getElementById('monitoring-paid-breakdown').classList.add('hidden');
                     });
             }
 
