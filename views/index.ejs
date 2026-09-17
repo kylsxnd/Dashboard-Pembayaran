@@ -10,22 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+        
+        /* Smooth scrolling buat HP */
+        .table-container { -webkit-overflow-scrolling: touch; }
 
         /* ========================================================
            TEMA SOFT PINK & CREAM (Kalem, Elegan, Gak Silau)
            ======================================================== */
         body.theme-pink {
-            background-color: #fce7f3 !important; /* Background pink pastel */
-            color: #374151 !important; /* Teks abu-abu gelap */
+            background-color: #fce7f3 !important;
+            color: #374151 !important;
         }
-        body.theme-pink aside,
+        body.theme-pink #sidebar,
         body.theme-pink .bg-\[\#12151c\],
         body.theme-pink .bg-\[\#0e1117\],
         body.theme-pink #custom-pdf-modal > div {
-            background-color: #fff0f5 !important; /* KOTAK KALEM: Lavender Blush / Krem Pink (Bukan putih murni biar gak sakit mata) */
+            background-color: #fff0f5 !important;
             border-color: #fbcfe8 !important; 
             box-shadow: 0 4px 15px rgba(236, 72, 153, 0.05) !important;
         }
@@ -37,36 +40,22 @@
         body.theme-pink .border-white\/10 {
             border-color: #fbcfe8 !important;
         }
-        body.theme-pink .text-white {
-            color: #1f2937 !important; /* Judul tabel/widget jadi gelap */
-        }
+        body.theme-pink .text-white { color: #1f2937 !important; }
         body.theme-pink .text-gray-300,
         body.theme-pink .text-gray-400,
-        body.theme-pink .text-gray-500 {
-            color: #4b5563 !important; /* Teks keterangan abu-abu gelap */
-        }
-        /* Inner boxes kayak kotak summary atau header tabel */
+        body.theme-pink .text-gray-500 { color: #4b5563 !important; }
         body.theme-pink .bg-white\/\[0\.02\],
-        body.theme-pink .bg-white\/\[0\.03\] {
-            background-color: #fce7f3 !important; 
-        }
+        body.theme-pink .bg-white\/\[0\.03\] { background-color: #fce7f3 !important; }
         body.theme-pink .hover\:bg-white\/\[0\.03\]:hover,
         body.theme-pink .hover\:bg-white\/\[0\.04\]:hover,
-        body.theme-pink .hover\:bg-white\/5:hover {
-            background-color: #fbcfe8 !important; /* Hover effect */
-        }
+        body.theme-pink .hover\:bg-white\/5:hover { background-color: #fbcfe8 !important; }
         body.theme-pink th {
             background-color: #fbcfe8 !important;
-            color: #9d174d !important; /* Header tabel pink tua */
+            color: #9d174d !important;
             border-bottom-color: #f9a8d4 !important;
         }
-        body.theme-pink td {
-            border-bottom-color: #fce7f3 !important;
-        }
-        body.theme-pink .bg-blue-600\/10 {
-            background-color: rgba(244, 114, 182, 0.15) !important; /* Cahaya blur pink */
-        }
-        /* Sidebar khusus pink */
+        body.theme-pink td { border-bottom-color: #fce7f3 !important; }
+        body.theme-pink .bg-blue-600\/10 { background-color: rgba(244, 114, 182, 0.15) !important; }
         body.theme-pink .border-l-4.border-transparent:hover {
             color: #be185d !important;
             background-color: #fbcfe8 !important;
@@ -82,27 +71,35 @@
         }
         body.theme-pink .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.02); }
         body.theme-pink .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.25); }
+        body.theme-pink .bg-\[\#272b33\] { background-color: #ec4899 !important; color: white !important; }
+        body.theme-pink button.hover\:text-white:hover { color: #be185d !important; }
         
-        body.theme-pink .bg-\[\#272b33\] {
-            background-color: #ec4899 !important;
-            color: white !important;
-        }
-        body.theme-pink button.hover\:text-white:hover {
-            color: #be185d !important;
-        }
+        /* Mobile Overlay Theme */
+        body.theme-pink #mobile-overlay { background-color: rgba(255,255,255,0.7) !important; }
+        body.theme-pink #mobile-menu-btn { color: #be185d !important; }
     </style>
 </head>
 <body class="bg-[#0b0e14] text-gray-300 flex h-screen overflow-hidden selection:bg-blue-500/30">
 
-    <aside class="w-72 bg-[#12151c] border-r border-white/5 flex flex-col hidden md:flex relative z-20">
-        <div class="p-6 border-b border-white/5 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)]" id="logo-icon">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+    <!-- OVERLAY UNTUK HP -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- SIDEBAR (Fixed di HP, Normal di Desktop) -->
+    <aside id="sidebar" class="w-72 bg-[#12151c] border-r border-white/5 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-2xl md:shadow-none">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)]" id="logo-icon">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                    <h2 class="text-white font-bold tracking-widest text-sm bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">AGRINAS OPS</h2>
+                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider mt-0.5">Executive On-Farm</p>
+                </div>
             </div>
-            <div>
-                <h2 class="text-white font-bold tracking-widest text-sm bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">AGRINAS OPS </h2>
-                <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider mt-0.5">Executive On-Farm</p>
-            </div>
+            <!-- Tombol Tutup Sidebar Khusus HP -->
+            <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-400 hover:text-white rounded-lg bg-white/5 focus:outline-none">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
 
         <div class="p-4 flex-1 overflow-y-auto custom-scrollbar">
@@ -126,104 +123,110 @@
     <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
         <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 bg-[#0b0e14]/80 backdrop-blur-md relative z-10">
-            <div class="flex items-center gap-2">
-                <div class="text-xs font-medium text-gray-500 bg-white/5 px-3 py-1.5 rounded-md border border-white/5 flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                    <span id="header-title" class="text-gray-300">Memuat Sheet...</span>
+        <header class="h-16 md:h-20 border-b border-white/5 flex items-center justify-between px-4 md:px-8 bg-[#0b0e14]/80 backdrop-blur-md relative z-10 w-full">
+            <div class="flex items-center gap-2 md:gap-4">
+                <!-- Tombol Hamburger Khusus HP -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-colors focus:outline-none shadow-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div class="text-[10px] md:text-xs font-medium text-gray-500 bg-white/5 px-2 md:px-3 py-1.5 rounded-md border border-white/5 flex items-center">
+                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                    <span id="header-title" class="text-gray-300 truncate max-w-[150px] md:max-w-xs">Memuat Sheet...</span>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 md:gap-4">
                 
                 <!-- TOMBOL GANTI TEMA -->
-                <button id="theme-toggle" class="p-2.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300 shadow-sm" title="Ganti Tema">
+                <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300 shadow-sm" title="Ganti Tema">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                 </button>
 
-                <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-4 py-2 rounded-lg flex items-center shadow-[0_0_15px_rgba(16,185,129,0.15)] tracking-wider">
-                    <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-                    LIVE EXCEL SYNC
+                <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] md:text-[10px] font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-lg flex items-center shadow-[0_0_15px_rgba(16,185,129,0.15)] tracking-wider">
+                    <span class="w-2 h-2 md:w-2.5 md:h-2.5 bg-emerald-500 rounded-full mr-1.5 md:mr-2.5 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+                    <span class="hidden sm:inline">LIVE EXCEL SYNC</span>
+                    <span class="inline sm:hidden">LIVE</span>
                 </div>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10">
-            <div class="flex justify-between items-end mb-8">
-                <div>
-                    <h1 class="text-3xl font-bold text-white mb-2 tracking-tight" id="page-title">Loading...</h1>
-                    <p class="text-sm text-gray-400 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10">
+            <!-- HEADER KONTEN RESPONSIVE -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4">
+                <div class="w-full md:w-auto">
+                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1.5 md:mb-2 tracking-tight" id="page-title">Loading...</h1>
+                    <p class="text-xs md:text-sm text-gray-400 flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Menarik data langsung secara live dari file Excel.
                     </p>
                 </div>
-                <div class="flex flex-col items-end gap-2">
-                    <div class="flex items-center gap-2 text-xs font-semibold text-gray-400 bg-white/5 px-4 py-2 rounded-lg border border-white/5 shadow-sm" id="last-update">
-                        Data Sinkron: Live Excel API
+                <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end">
+                    <div class="text-[10px] md:text-xs font-semibold text-gray-400 bg-white/5 px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/5 shadow-sm whitespace-nowrap" id="last-update">
+                        Data Sinkron: Live API <span class="text-emerald-400 font-bold ml-1">--:--:--</span>
                     </div>
-                    <!-- TANGGAL (DATE) PINDAH KESINI -->
-                    <div id="top-date-display" class="hidden text-[11px] font-bold text-blue-400 tracking-widest bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-lg shadow-sm">
+                    <!-- TANGGAL (DATE) -->
+                    <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-blue-400 tracking-widest bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-sm whitespace-nowrap">
                         DATE: <span id="top-date-value" class="text-white ml-1">--/--/----</span>
                     </div>
                 </div>
             </div>
 
             <!-- DASHBOARD WIDGETS & CHARTS -->
-            <div id="dashboard-widgets" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 hidden">
-                <div class="col-span-2 bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden group">
+            <div id="dashboard-widgets" class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8 hidden">
+                <div class="col-span-1 lg:col-span-2 bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
-                    <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-6 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 md:mb-6 flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         Distribusi Task 3D
                     </h3>
-                    <div class="relative w-full h-[300px]" id="barChartContainer"></div>
+                    <div class="relative w-full h-[250px] md:h-[300px]" id="barChartContainer"></div>
                 </div>
 
-                <div class="col-span-1 bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-                    <h3 class="text-white font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                <div class="col-span-1 bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl relative overflow-hidden">
+                    <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Summary Data
                     </h3>
-                    <div id="summaryCardsContainer" class="grid grid-cols-2 gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
+                    <div id="summaryCardsContainer" class="grid grid-cols-2 gap-2 md:gap-3 overflow-y-auto max-h-[250px] md:max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
             </div>
 
             <!-- PANEL BREAKDOWN STATUS TASK -->
-            <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl flex flex-col">
+                    <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 flex items-center flex-wrap gap-2">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Sudah Paid (Lunas)
                     </h3>
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
 
-                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="bg-[#12151c] border border-white/5 rounded-2xl p-4 md:p-6 shadow-2xl flex flex-col">
+                    <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-[11px] md:text-xs tracking-widest uppercase mb-4 flex items-center flex-wrap gap-2">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Task Belum Paid (Pending)
                     </h3>
                     <div id="unpaid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
             </div>
 
-            <div id="no-summary-msg" class="hidden mb-8 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm px-6 py-4 rounded-xl flex items-center gap-3">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div id="no-summary-msg" class="hidden mb-6 md:mb-8 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs md:text-sm px-4 md:px-6 py-3 md:py-4 rounded-xl flex items-center gap-3">
+                <svg class="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Sheet ini tidak memiliki ringkasan (Total/Summary).
             </div>
 
             <!-- Tabel Data Utama -->
             <div class="bg-[#12151c] border border-white/5 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
-                <div class="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-                    <h3 class="text-white font-bold text-xs tracking-widest uppercase flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                <div class="px-4 md:px-6 py-4 md:py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                    <h3 class="text-white font-bold text-[11px] md:text-xs tracking-widest uppercase flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                         Detail Data Tabel
                     </h3>
                 </div>
                 
-                <div class="overflow-x-auto custom-scrollbar flex-1 min-h-[300px] pb-4">
+                <div class="overflow-x-auto custom-scrollbar table-container flex-1 min-h-[300px] pb-4">
                     <table class="w-full text-left border-collapse min-w-max">
-                        <thead id="table-head" class="text-[11px] text-gray-400 uppercase tracking-wider font-bold"></thead>
-                        <tbody id="table-body" class="text-sm divide-y divide-white/5">
+                        <thead id="table-head" class="text-[10px] md:text-[11px] text-gray-400 uppercase tracking-wider font-bold"></thead>
+                        <tbody id="table-body" class="text-xs md:text-sm divide-y divide-white/5">
                             <tr><td colspan="16" class="p-12 text-center text-gray-500 flex flex-col justify-center items-center gap-3">
                                 <svg class="animate-spin w-8 h-8 text-blue-500" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 <span>Mengambil data live dari Google Sheets...</span>
@@ -232,8 +235,8 @@
                     </table>
                 </div>
 
-                <div class="px-6 py-4 border-t border-white/5 bg-[#0e1117] flex justify-center items-center">
-                    <div id="pagination-container" class="flex items-center gap-2"></div>
+                <div class="px-4 md:px-6 py-3 md:py-4 border-t border-white/5 bg-[#0e1117] flex justify-center items-center">
+                    <div id="pagination-container" class="flex items-center gap-1 md:gap-2 flex-wrap justify-center"></div>
                 </div>
             </div>
         </div>
@@ -241,6 +244,21 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // ================= LOGIKA MOBILE MENU =================
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+            const sidebar = document.getElementById('sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                mobileOverlay.classList.toggle('hidden');
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleSidebar);
+            closeSidebarBtn.addEventListener('click', toggleSidebar);
+            mobileOverlay.addEventListener('click', toggleSidebar);
+
             // ================= LOGIKA THEME SWITCHER =================
             const themeToggleBtn = document.getElementById('theme-toggle');
             const logoIcon = document.getElementById('logo-icon');
@@ -267,20 +285,20 @@
             // =========================================================
 
             const modalHTML = `
-            <div id="custom-pdf-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-                <div class="bg-[#12151c] border border-white/10 rounded-2xl w-11/12 max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="pdf-modal-box">
-                    <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+            <div id="custom-pdf-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+                <div class="bg-[#12151c] border border-white/10 rounded-2xl w-full max-w-2xl flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="pdf-modal-box">
+                    <div class="px-4 md:px-6 py-3 md:py-4 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
                         <div class="flex items-center gap-3 overflow-hidden">
                             <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
                                 <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                             </div>
-                            <h3 id="pdf-modal-title" class="text-white font-bold text-sm truncate">Preview Dokumen</h3>
+                            <h3 id="pdf-modal-title" class="text-white font-bold text-xs md:text-sm truncate">Preview Dokumen</h3>
                         </div>
                         <button id="pdf-modal-close" class="text-gray-400 hover:text-white hover:bg-rose-500/20 p-2 rounded-lg transition-colors focus:outline-none cursor-pointer">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
-                    <div id="pdf-modal-content" class="p-8 flex flex-col items-center justify-center text-center"></div>
+                    <div id="pdf-modal-content" class="p-4 md:p-8 flex flex-col items-center justify-center text-center"></div>
                 </div>
             </div>
             `;
@@ -306,14 +324,14 @@
                 const cleanName = fileName.replace(/\.[^/.]+$/, "");
                 const searchUrl = `https://drive.google.com/drive/search?q=${encodeURIComponent(cleanName)}`;
                 modalContent.innerHTML = `
-                    <div class="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/5">
-                        <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-800 rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-inner border border-white/5">
+                        <svg class="w-8 h-8 md:w-10 md:h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                     </div>
-                    <h2 class="text-xl font-bold text-white mb-2 tracking-wide">Dokumen Tersembunyi (Smart Chip)</h2>
-                    <p class="text-gray-400 mb-8 text-sm leading-relaxed max-w-md">Karena format di Google Sheets adalah <i>Smart Chip</i>, link aslinya disembunyikan. <br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
-                    <a href="${searchUrl}" target="_blank" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        Cari PDF ini di Google Drive
+                    <h2 class="text-lg md:text-xl font-bold text-white mb-2 tracking-wide">Dokumen Tersembunyi</h2>
+                    <p class="text-gray-400 mb-6 md:mb-8 text-xs md:text-sm leading-relaxed max-w-md">Karena format di Google Sheets adalah <i>Smart Chip</i>, link aslinya disembunyikan. <br>Klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
+                    <a href="${searchUrl}" target="_blank" class="px-6 md:px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm md:text-base font-bold tracking-wide rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(37,99,235,0.4)] flex items-center gap-2 md:gap-3">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        Cari di Google Drive
                     </a>
                 `;
                 modalOverlay.classList.remove('hidden');
@@ -354,6 +372,11 @@
                         currentPage = 1;
                         renderMenu(); 
                         fetchJsonData();
+                        
+                        // Tutup otomatis sidebar di mobile kalau menu di klik
+                        if (window.innerWidth < 768) {
+                            toggleSidebar();
+                        }
                     };
                     menuContainer.appendChild(btn);
                 });
@@ -367,7 +390,7 @@
                     chart: { type: 'column', backgroundColor: 'transparent', options3d: { enabled: true, alpha: 12, beta: 15, depth: 60, viewDistance: 25 } },
                     title: { text: null },
                     colors: premiumColors,
-                    xAxis: { categories: labels, labels: { style: { color: '#94a3b8', fontSize: '11px', fontFamily: 'Inter', fontWeight: '500' } }, gridLineColor: 'rgba(255,255,255,0.05)', lineColor: 'rgba(255,255,255,0.1)' },
+                    xAxis: { categories: labels, labels: { style: { color: '#94a3b8', fontSize: '10px', fontFamily: 'Inter', fontWeight: '500' } }, gridLineColor: 'rgba(255,255,255,0.05)', lineColor: 'rgba(255,255,255,0.1)' },
                     yAxis: { title: { text: null }, labels: { style: { color: '#94a3b8', fontFamily: 'Inter' } }, gridLineColor: 'rgba(255,255,255,0.05)' },
                     tooltip: { backgroundColor: 'rgba(18, 21, 28, 0.95)', style: { color: '#e2e8f0' }, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, headerFormat: '<span style="font-size: 10px; color: #94a3b8; text-transform: uppercase">{point.key}</span><br/>', pointFormat: '<span style="color:{point.color}">\u25CF</span> Total Data: <b>{point.y}</b>' },
                     plotOptions: { column: { depth: 45, colorByPoint: true, borderColor: 'rgba(0,0,0,0.3)', borderWidth: 1 } },
@@ -379,9 +402,9 @@
                 cardsContainer.innerHTML = '';
                 labels.forEach((label, i) => {
                     cardsContainer.innerHTML += `
-                        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-4 shadow-sm hover:bg-white/[0.05] transition-colors flex flex-col justify-center">
-                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-1.5 truncate" title="${label}">${label}</p>
-                            <p class="text-2xl font-bold text-gray-200">${dataValues[i]}</p>
+                        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 md:p-4 shadow-sm hover:bg-white/[0.05] transition-colors flex flex-col justify-center">
+                            <p class="text-[8px] md:text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-1 md:mb-1.5 truncate" title="${label}">${label}</p>
+                            <p class="text-xl md:text-2xl font-bold text-gray-200">${dataValues[i]}</p>
                         </div>
                     `;
                 });
@@ -403,7 +426,7 @@
                 if (totalPages <= 1) return;
 
                 const btnPrev = document.createElement('button');
-                btnPrev.className = `px-3 py-1.5 rounded-md text-xs font-semibold ${currentPage === 1 ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white hover:bg-white/10 transition-colors'}`;
+                btnPrev.className = `px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[10px] md:text-xs font-semibold ${currentPage === 1 ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white hover:bg-white/10 transition-colors'}`;
                 btnPrev.innerText = 'Prev';
                 btnPrev.disabled = currentPage === 1;
                 btnPrev.onclick = () => { if (currentPage > 1) { currentPage--; renderTablePage(); } };
@@ -416,14 +439,14 @@
                 for (let i = startPage; i <= endPage; i++) {
                     const btnPage = document.createElement('button');
                     const isActive = i === currentPage;
-                    btnPage.className = `w-8 h-8 rounded-md text-xs font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-[#272b33] text-white shadow-sm' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`;
+                    btnPage.className = `w-7 h-7 md:w-8 md:h-8 rounded-md text-[10px] md:text-xs font-semibold flex items-center justify-center transition-colors ${isActive ? 'bg-[#272b33] text-white shadow-sm' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`;
                     btnPage.innerText = i;
                     btnPage.onclick = () => { currentPage = i; renderTablePage(); };
                     pagContainer.appendChild(btnPage);
                 }
 
                 const btnNext = document.createElement('button');
-                btnNext.className = `px-3 py-1.5 rounded-md text-xs font-semibold ${currentPage === totalPages ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white hover:bg-white/10 transition-colors'}`;
+                btnNext.className = `px-2 md:px-3 py-1 md:py-1.5 rounded-md text-[10px] md:text-xs font-semibold ${currentPage === totalPages ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white hover:bg-white/10 transition-colors'}`;
                 btnNext.innerText = 'Next';
                 btnNext.disabled = currentPage === totalPages;
                 btnNext.onclick = () => { if (currentPage < totalPages) { currentPage++; renderTablePage(); } };
@@ -450,9 +473,11 @@
                 return val ? val.toString().trim() : '-';
             }
 
-            function fetchJsonData() {
-                document.getElementById('header-title').innerText = currentActiveSheet;
-                document.getElementById('page-title').innerText = currentActiveSheet;
+            function fetchJsonData(isSilent = false) {
+                if (!isSilent) {
+                    document.getElementById('header-title').innerText = currentActiveSheet;
+                    document.getElementById('page-title').innerText = currentActiveSheet;
+                }
                 
                 let apiEndpoint = '';
                 if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
@@ -472,7 +497,9 @@
 
                         const thead = document.getElementById('table-head');
                         const tbody = document.getElementById('table-body');
-                        tbody.innerHTML = '';
+                        
+                        if (!isSilent) tbody.innerHTML = '';
+                        
                         allTableRowsHTML = [];
 
                         const pdoBreakdown = document.getElementById('pdo-status-breakdown');
@@ -484,7 +511,6 @@
                         const titlePaidPanel = document.getElementById('panel-title-paid');
                         const titleUnpaidPanel = document.getElementById('panel-title-unpaid');
 
-                        // Reset Visibility di Awal Fetch
                         pdoBreakdown.classList.add('hidden');
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
@@ -529,7 +555,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -550,12 +576,12 @@
                                 let isPaid = paidCell === true || paidCell === '1' || paidCell === 1 || String(paidCell).toUpperCase() === 'TRUE';
 
                                 let taskItemHTML = `
-                                    <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
-                                        <div class="pr-2">
-                                            <p class="text-white font-medium text-xs mb-1">${taskCol}</p>
-                                            <p class="text-[10px] text-gray-400">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> | Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
+                                    <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors gap-2">
+                                        <div class="pr-2 min-w-0">
+                                            <p class="text-white font-medium text-[11px] md:text-xs mb-1 truncate">${taskCol}</p>
+                                            <p class="text-[9px] md:text-[10px] text-gray-400 truncate">Tipe: <span class="text-blue-400 font-semibold">${row[4] || '-'}</span> | Progress: <span class="text-purple-400 font-semibold">${row[5] || '-'}</span></p>
                                         </div>
-                                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap">
+                                        <span class="px-2 md:px-2.5 py-1 rounded-md text-[9px] md:text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'} whitespace-nowrap flex-shrink-0">
                                             ${isPaid ? 'PAID' : 'BELUM PAID'}
                                         </span>
                                     </div>
@@ -583,12 +609,12 @@
                                     if (c === 3 && cellVal !== '-') {
                                         const urlRegex = /(https?:\/\/[^\s]+)/g;
                                         if (urlRegex.test(cellVal)) {
-                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
+                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
                                         } else {
                                             const safeName = cellVal.replace(/'/g, "\\'");
                                             cellVal = `
-                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px]" title="${safeName}">
-                                                    <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px]" title="${safeName}">
+                                                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
                                                     <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${cellVal}</span>
                                                 </button>
                                             `;
@@ -598,9 +624,9 @@
                                     if (c >= 6 && c <= 12) {
                                         let upper = cellVal.toString().toUpperCase();
                                         if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true') {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                         } else {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
+                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                         }
                                     }
 
@@ -610,28 +636,31 @@
                                         if (lProg.includes('approved')) progColor = 'bg-purple-500/10 text-purple-400 border-purple-500/25';
                                         else if (lProg.includes('revisi')) progColor = 'bg-amber-500/10 text-amber-400 border-amber-500/25';
                                         else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/10 text-rose-400 border-rose-500/25';
-                                        cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${progColor} inline-block">${cellVal}</span>`;
+                                        cellVal = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block">${cellVal}</span>`;
                                     }
 
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 2) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[250px] max-w-[400px] whitespace-normal leading-relaxed";
+                                    let cellClasses = "px-4 md:px-6 py-3 md:py-4 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
+                                    if (c === 2) cellClasses = "px-4 md:px-6 py-3 md:py-4 border-b border-white/5 align-middle text-gray-300 min-w-[200px] md:min-w-[250px] max-w-[300px] md:max-w-[400px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 }
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Paid</span>`;
-                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending) <span class="ml-2 px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-400 text-[10px] shadow-sm">${unpaidCount} Pending</span>`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid <span class="ml-auto md:ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[9px] md:text-[10px] shadow-sm flex-shrink-0">${paidCount} Paid</span>`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid <span class="ml-auto md:ml-2 px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-400 text-[9px] md:text-[10px] shadow-sm flex-shrink-0">${unpaidCount} Pending</span>`;
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada task yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Semua task sudah lunas.</p>`;
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-[11px] md:text-xs text-gray-500 italic px-2">Belum ada task yang lunas.</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-[11px] md:text-xs text-gray-500 italic px-2">Semua task sudah lunas.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="13" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
+                            
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data Sinkron: Live API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
                         }
                         
                         // =========================================================
@@ -641,10 +670,8 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Sembunyikan Unpaid Panel
                             document.querySelector('#unpaid-task-container').parentElement.classList.add('hidden');
                             
-                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -677,7 +704,7 @@
 
                             let headHTML = '<tr>';
                             headers.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -712,16 +739,16 @@
                                 if (isPaidMon && vendorName !== '-' && vendorName !== '') {
                                     paidCount++;
                                     let paidItemHTML = `
-                                        <div class="bg-white/[0.02] border border-emerald-500/20 rounded-xl p-4 flex flex-col gap-2 hover:bg-emerald-500/5 transition-colors">
-                                            <div class="flex justify-between items-start">
-                                                <p class="text-white font-bold text-sm truncate max-w-[200px]" title="${vendorName}">${vendorName}</p>
-                                                <span class="px-2 py-1 rounded-md text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">PAID</span>
+                                        <div class="bg-white/[0.02] border border-emerald-500/20 rounded-xl p-3 md:p-4 flex flex-col gap-2 hover:bg-emerald-500/5 transition-colors">
+                                            <div class="flex justify-between items-start gap-2">
+                                                <p class="text-white font-bold text-xs md:text-sm truncate max-w-[200px]" title="${vendorName}">${vendorName}</p>
+                                                <span class="px-2 py-1 rounded-md text-[8px] md:text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap flex-shrink-0">PAID</span>
                                             </div>
                                             <div class="flex flex-col gap-0.5">
-                                                <p class="text-[11px] text-gray-400 truncate" title="${kebunName}"><span class="text-gray-500">Kebun:</span> ${kebunName}</p>
-                                                <p class="text-[11px] text-gray-400 truncate" title="${invName}"><span class="text-gray-500">Inv:</span> ${invName}</p>
+                                                <p class="text-[10px] md:text-[11px] text-gray-400 truncate" title="${kebunName}"><span class="text-gray-500">Kebun:</span> ${kebunName}</p>
+                                                <p class="text-[10px] md:text-[11px] text-gray-400 truncate" title="${invName}"><span class="text-gray-500">Inv:</span> ${invName}</p>
                                             </div>
-                                            <p class="text-xs font-black text-emerald-400 mt-1">${nominalFmt}</p>
+                                            <p class="text-[11px] md:text-xs font-black text-emerald-400 mt-1">${nominalFmt}</p>
                                         </div>
                                     `;
                                     paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
@@ -743,9 +770,9 @@
                                     if (c >= 9 && c <= 13) {
                                         let upper = cellVal.toString().toUpperCase();
                                         if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || cellVal.toString().includes('☑')) {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                         } else {
-                                            cellVal = `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
+                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                         }
                                     }
 
@@ -757,7 +784,7 @@
                                         } else if (lKel.includes('tidak') || lKel.includes('kurang')) {
                                             kelColor = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
                                         }
-                                        cellVal = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
+                                        cellVal = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
                                     }
 
                                     if (c === 8 && cellVal !== '-') {
@@ -768,9 +795,9 @@
                                         }
                                     }
 
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
+                                    let cellClasses = "px-4 md:px-6 py-3 md:py-4 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
                                     if (c >= 4 && c <= 6 || c === 15) { 
-                                        cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
+                                        cellClasses = "px-4 md:px-6 py-3 md:py-4 border-b border-white/5 align-middle text-gray-300 min-w-[150px] md:min-w-[200px] whitespace-normal leading-relaxed";
                                     }
                                     
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
@@ -779,10 +806,10 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Paid</span>`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Pembayaran Lunas <span class="ml-auto md:ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[9px] md:text-[10px] shadow-sm flex-shrink-0">${paidCount} Paid</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
+                                paidContainer.innerHTML = `<p class="text-[11px] md:text-xs text-gray-500 italic px-2">Belum ada data yang lunas (Paid).</p>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
@@ -790,6 +817,9 @@
                             } else {
                                 renderTablePage();
                             }
+                            
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data Sinkron: Live API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
                         }
 
                         // =========================================================
@@ -816,7 +846,7 @@
                             
                             let headHTML = '<tr>';
                             displayHeaders.forEach(h => {
-                                headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
+                                headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${h}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
@@ -858,7 +888,7 @@
                             let skipSection = false;
                             let paidCount = 0;
                             let unpaidCount = 0;
-                            let globalDate = "-"; // nyari date khusus petty cash
+                            let globalDate = "-"; 
 
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
@@ -870,7 +900,6 @@
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
-                                    // Ambil kata-kata bulan buat dijadiin Date (misal "Bulan Agustus 2026")
                                     let dateMatch = title.match(/Bulan\s+[A-Za-z]+\s+\d{4}/i);
                                     if(dateMatch) globalDate = dateMatch[0];
 
@@ -882,7 +911,7 @@
                                         skipSection = false;
                                     }
 
-                                    let rowHTML = `<tr><td colspan="11" class="px-6 py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
+                                    let rowHTML = `<tr><td colspan="11" class="px-4 md:px-6 py-4 md:py-5 bg-emerald-500/10 text-emerald-400 font-bold text-center text-[10px] md:text-xs tracking-widest uppercase border-b border-white/5 shadow-inner">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
@@ -917,14 +946,14 @@
                                 let permStr = formatRp(permVal);
 
                                 let formatCheck = (val) => {
-                                    if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
+                                    if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                     let strVal = String(val).toUpperCase();
                                     let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
                                     
                                     if (isTrue) {
-                                        return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-blue-500 border border-blue-400 shadow-sm mx-auto"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                                     } else {
-                                        return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
+                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                     }
                                 };
                                 let lpjHTML = formatCheck(lpjVal);
@@ -936,23 +965,23 @@
                                 let progHTML = '-';
 
                                 if (isPaid) {
-                                    progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
+                                    progHTML = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
                                 } else if (isReview) {
-                                    progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-purple-500/20 text-purple-400 border border-purple-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
+                                    progHTML = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide bg-purple-500/20 text-purple-400 border border-purple-500/30 inline-block whitespace-nowrap">${progVal}</span>`;
                                 } else if (progVal !== '-' && progVal !== '') {
-                                    progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-slate-500/10 text-slate-400 border border-slate-500/20 inline-block whitespace-nowrap">${progVal}</span>`;
+                                    progHTML = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide bg-slate-500/10 text-slate-400 border border-slate-500/20 inline-block whitespace-nowrap">${progVal}</span>`;
                                 }
 
                                 let dokHTML = '-';
                                 if (dokVal !== '-' && dokVal !== '') {
                                     const urlRegex = /(https?:\/\/[^\s]+)/g;
                                     if (urlRegex.test(dokVal)) {
-                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
+                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
                                     } else {
                                         const safeName = dokVal.replace(/'/g, "\\'");
                                         dokHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px]" title="${safeName}">
-                                                <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
+                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px]" title="${safeName}">
+                                                <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
                                                 <span class="underline decoration-sky-500/30 underline-offset-4 truncate">${dokVal}</span>
                                             </button>
                                         `;
@@ -961,14 +990,14 @@
 
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
-                                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
-                                            <div class="pr-2">
-                                                <p class="text-white font-medium text-xs mb-1 truncate max-w-[220px]" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500">(${wilVal})</span></p>
-                                                <p class="text-[10px] text-gray-400 truncate max-w-[220px]" title="${ketVal}">Ket: <span class="text-blue-400 font-semibold">${ketVal}</span></p>
+                                        <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors gap-2">
+                                            <div class="pr-2 min-w-0">
+                                                <p class="text-white font-medium text-[11px] md:text-xs mb-1 truncate" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-500">(${wilVal})</span></p>
+                                                <p class="text-[9px] md:text-[10px] text-gray-400 truncate" title="${ketVal}">Ket: <span class="text-blue-400 font-semibold">${ketVal}</span></p>
                                                 <p class="text-[10px] font-bold text-emerald-400 mt-1">${permStr}</p>
                                             </div>
-                                            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase">
-                                                ${progVal}
+                                            <span class="px-2 md:px-2.5 py-1 rounded-md text-[9px] md:text-[10px] font-bold ${isPaid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'} whitespace-nowrap uppercase flex-shrink-0">
+                                                ${isPaid ? 'PAID' : 'REVIEW'}
                                             </span>
                                         </div>
                                     `;
@@ -986,19 +1015,19 @@
 
                                 let rowHTML = '<tr class="hover:bg-white/[0.03] transition-colors duration-200 group">';
                                 cellData.forEach((cellVal, c) => {
-                                    let cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm whitespace-nowrap";
-                                    if (c === 8) cellClasses = "px-6 py-4 border-b border-white/5 align-middle text-gray-300 text-sm min-w-[200px] whitespace-normal leading-relaxed";
+                                    let cellClasses = "px-4 md:px-6 py-3 md:py-4 border-b border-white/5 align-middle text-gray-300 whitespace-nowrap";
+                                    if (c === 8) cellClasses = "px-4 md:px-6 py-3 md:py-4 border-b border-white/5 align-middle text-gray-300 min-w-[150px] md:min-w-[200px] whitespace-normal leading-relaxed";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid) <span class="ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] shadow-sm">${paidCount} Paid</span>`;
-                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Dir.Ops) <span class="ml-2 px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-400 text-[10px] shadow-sm">${unpaidCount} Review</span>`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas <span class="ml-auto md:ml-2 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[9px] md:text-[10px] shadow-sm flex-shrink-0">${paidCount} Paid</span>`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review <span class="ml-auto md:ml-2 px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-400 text-[9px] md:text-[10px] shadow-sm flex-shrink-0">${unpaidCount} Review</span>`;
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada pengajuan yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-[11px] md:text-xs text-gray-500 italic px-2">Belum ada pengajuan yang lunas.</p>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-[11px] md:text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
@@ -1006,7 +1035,9 @@
                                 renderTablePage();
                             }
                             
-                            // SET DATE FOR PETTY CASH (karena gak ada di summary card)
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data Sinkron: Live API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
+                            
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
                             if (globalDate && globalDate !== '-') {
@@ -1037,7 +1068,7 @@
                                 let headerText = data[tableHeadIdx][c] ? data[tableHeadIdx][c].toString().trim() : "";
                                 if (headerText !== "") {
                                     validColIndices.push(c);
-                                    headHTML += `<th class="px-6 py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
+                                    headHTML += `<th class="px-4 md:px-6 py-3 md:py-4 font-bold bg-[#1a1e27]/80 backdrop-blur-md sticky top-0 z-10 border-b border-white/10 whitespace-nowrap align-bottom">${headerText}</th>`;
                                 }
                             }
                             headHTML += '</tr>';
@@ -1053,7 +1084,7 @@
                                     let cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? row[colIndex] : '-';
                                     if (cellVal !== '-') cellVal = formatCellDate(cellVal);
                                     if (cellVal === 'nan' || cellVal === '') cellVal = '-';
-                                    rowHTML += `<td class="px-6 py-4 border-b border-white/5 text-gray-300 text-sm whitespace-nowrap">${cellVal}</td>`;
+                                    rowHTML += `<td class="px-4 md:px-6 py-3 md:py-4 border-b border-white/5 text-gray-300 whitespace-nowrap">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
@@ -1066,21 +1097,28 @@
                                 renderTablePage();
                             }
                             
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data Sinkron: Live API <span class="text-emerald-400 font-bold ml-1">${syncTime}</span>`;
                             const dateDisplay = document.getElementById('top-date-display');
                             dateDisplay.classList.add('hidden');
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        document.getElementById('table-head').innerHTML = '';
-                        document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-red-500">Gagal memuat data dari server. Pastikan nama sheet benar.</td></tr>`;
-                        if (document.getElementById('dashboard-widgets')) document.getElementById('dashboard-widgets').classList.add('hidden');
-                        if (document.getElementById('pdo-status-breakdown')) document.getElementById('pdo-status-breakdown').classList.add('hidden');
+                        if (!isSilent) {
+                            document.getElementById('table-head').innerHTML = '';
+                            document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-12 text-center text-red-500">Gagal memuat data dari server. Pastikan nama sheet benar.</td></tr>`;
+                        }
                     });
             }
 
             renderMenu();
             fetchJsonData(); 
+            
+            // JALANKAN AUTO REFRESH TIAP 10 DETIK
+            setInterval(() => {
+                fetchJsonData(true); // true = mode silent (tanpa loading spinner)
+            }, 10000);
         });
     </script>
 </body>
