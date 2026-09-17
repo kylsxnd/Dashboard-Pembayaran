@@ -98,20 +98,20 @@
                 </div>
             </div>
 
-            <!-- PANEL BREAKDOWN STATUS TASK (DIGUNAKAN BERSAMA OLEH PDO & PETTY CASH) -->
+            <!-- PANEL BREAKDOWN STATUS TASK KHUSUS PDO (DI ATAS TABEL) -->
             <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 id="panel-title-paid" class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 class="text-emerald-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Task Sudah Paid (Lunas)
+                        <span id="panel-title-paid">Task Sudah Paid (Lunas)</span>
                     </h3>
                     <div id="paid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
 
                 <div class="bg-[#12151c] border border-white/5 rounded-2xl p-6 shadow-2xl flex flex-col">
-                    <h3 id="panel-title-unpaid" class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <h3 class="text-rose-400 font-bold text-xs tracking-widest uppercase mb-4 flex items-center gap-2">
                         <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Task Belum Paid (Pending)
+                        <span id="panel-title-unpaid">Task Belum Paid (Pending)</span>
                     </h3>
                     <div id="unpaid-task-container" class="flex flex-col gap-3 overflow-y-auto max-h-[300px] custom-scrollbar pr-1"></div>
                 </div>
@@ -391,8 +391,8 @@
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
-                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas)`;
-                            titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending)`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Sudah Paid (Lunas)`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Task Belum Paid (Pending)`;
 
                             let tTask = data[4] && data[4][1] !== undefined ? data[4][1] : 0;
                             let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
@@ -532,7 +532,7 @@
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
 
-                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid)`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Data Pembayaran Lunas (Paid)`;
 
                             paidContainer.innerHTML = '';
                             paidContainer.classList.remove('flex', 'flex-col');
@@ -576,6 +576,7 @@
                                 let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
                                 if (vendorCol === '' || vendorCol === 'nan') continue;
 
+                                // --- LOGIKA MENGISI KOTAK PAID (HANYA JIKA LUNAS) ---
                                 let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
                                 let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
                                 let invName = row[6] !== undefined && row[6] !== null ? row[6].toString().trim() : '-';
@@ -674,7 +675,7 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH (FIXED INDEXING & SCANNER)
+                        // KONDISI 3: PETTY CASH (FIXED INDEXING)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
@@ -685,8 +686,8 @@
                             document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
                             document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
 
-                            titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid)`;
-                            titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Dir.Ops)`;
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Lunas (Paid)`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Status Review (Dir.Ops)`;
 
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
@@ -705,54 +706,21 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // 1. DYNAMIC HEADER SCANNER YANG LEBIH PINTAR
-                            // Scanner ini akan mencari judul kolom di 10 baris pertama
-                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 }; // Default Fallback
-
-                            for (let r = 0; r < Math.min(10, data.length); r++) {
-                                if (!data[r]) continue;
-                                let rowStr = data[r].join('').toLowerCase();
-                                // Deteksi baris yang berisi header utama
-                                if (rowStr.includes('cro') && rowStr.includes('wilayah') && rowStr.includes('keterangan')) {
-                                    let headerRow = data[r];
-                                    for(let c = 0; c < headerRow.length; c++) {
-                                        let str = (headerRow[c] || '').toString().toLowerCase().trim();
-                                        if(!str) continue;
-                                        if(str === 'no') colIdx.no = c;
-                                        else if(str === 'cro') colIdx.cro = c;
-                                        else if(str === 'wilayah') colIdx.wil = c;
-                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c; // Kolom Permintaan Petty Cash
-                                        else if(str.includes('status lpj')) colIdx.slpj = c;
-                                        else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
-                                        else if(str === 'keterangan' || str.includes('keterangan')) colIdx.ket = c;
-                                        else if(str === 'progress' || str.includes('progress')) colIdx.prog = c;
-                                        else if(str === 'dokumen' || str.includes('dokumen')) colIdx.dok = c;
-                                    }
-                                    
-                                    // Pemakaian dan Sisa ada di baris tepat di bawahnya (karena header di-merge di Excel)
-                                    if (data[r+1]) {
-                                        let subHeaderRow = data[r+1];
-                                        for(let c = 0; c < subHeaderRow.length; c++) {
-                                            let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
-                                            if (str.includes('pemakaian')) colIdx.pem = c;
-                                            else if (str.includes('sisa')) colIdx.sisa = c;
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
+                            // INDEX MUTLAK UNTUK PETTY CASH BERDASARKAN URUTAN KOLOM EXCEL
+                            // Karena kolom H, I, J, K disembunyikan (hidden) di Excel, maka urutan asli Array-nya adalah:
+                            // A(0), B(1), C(2), D(3), E(4), F(5), G(6), L(11), M(12), N(13), O(14)
+                            let colIdx = { no: 0, cro: 1, wil: 2, pem: 3, sisa: 4, perm: 5, slpj: 6, sreq: 11, ket: 12, prog: 13, dok: 14 };
 
                             let skipSection = false;
 
-                            // Mulai parsing dari baris ke-4 (karena baris 0-3 biasanya header)
-                            for (let i = 4; i < data.length; i++) {
+                            for (let i = 3; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                // CEK BANNER BULAN (FILTER JUNI / JULI)
+                                // CEK BANNER BULAN (OTOMATIS MENGABAIKAN DATA BULAN LALU YANG DI-HIDE)
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
@@ -786,6 +754,7 @@
                                 let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
                                 let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
 
+                                // Fungsi memformat Rupiah
                                 let formatRp = (val) => {
                                     if (val === '-' || val === '' || val === null || val === undefined) return '-';
                                     let cleanStr = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
@@ -798,6 +767,7 @@
                                 let sisaStr = formatRp(sisaVal);
                                 let permStr = formatRp(permVal);
 
+                                // Fungsi merender Checkbox Biru
                                 let formatCheck = (val) => {
                                     if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-6 h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
                                     let strVal = String(val).toUpperCase();
@@ -812,6 +782,7 @@
                                 let lpjHTML = formatCheck(lpjVal);
                                 let sreqHTML = formatCheck(sreqVal);
 
+                                // Fungsi merender Badge Progress
                                 let rawProg = (progVal || '').toString().toLowerCase();
                                 let isPaid = rawProg.includes('paid');
                                 let isReview = rawProg.includes('review') || rawProg.includes('dirops');
@@ -825,13 +796,14 @@
                                     progHTML = `<span class="px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-slate-500/10 text-slate-400 border border-slate-500/20 inline-block whitespace-nowrap">${progVal}</span>`;
                                 }
 
+                                // Fungsi merender Link Dokumen Smart Chip
                                 let dokHTML = '-';
                                 if (dokVal !== '-' && dokVal !== '') {
-                                    const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                    const urlRegex = /(https?:\\/\\/[^\\s]+)/g;
                                     if (urlRegex.test(dokVal)) {
                                         dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide bg-sky-500/10 text-sky-400 border border-sky-500/25 shadow-sm hover:bg-sky-500/20 transition-colors">Buka Dokumen</a>`);
                                     } else {
-                                        const safeName = dokVal.replace(/'/g, "\\'");
+                                        const safeName = dokVal.replace(/'/g, "\\\\'");
                                         dokHTML = `
                                             <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-1.5 text-sky-300 font-medium hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px]" title="${safeName}">
                                                 <svg class="w-4 h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
@@ -841,7 +813,7 @@
                                     }
                                 }
 
-                                // KOTAK PAID/PENDING KHUSUS PETTY CASH
+                                // LOGIKA MEMASUKKAN DATA KE KOTAK PAID/PENDING KHUSUS PETTY CASH
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
                                         <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex justify-between items-center hover:bg-white/[0.04] transition-colors">
@@ -875,15 +847,15 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Belum ada pengajuan yang lunas.</p>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<p class="text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>`;
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = \`<p class="text-xs text-gray-500 italic px-2">Belum ada pengajuan yang lunas.</p>\`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = \`<p class="text-xs text-gray-500 italic px-2">Tidak ada pengajuan yang sedang di-review.</p>\`;
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = \`<tr><td colspan="11" class="px-6 py-12 text-center text-gray-500">Tidak ada baris data di sheet Petty Cash ini.</td></tr>\`;
                             } else {
                                 renderTablePage();
                             }
-                            document.getElementById('last-update').innerText = `Data Sinkron: Live Excel API`;
+                            document.getElementById('last-update').innerText = \`Data Sinkron: Live Excel API\`;
                         }
 
                         // =========================================================
