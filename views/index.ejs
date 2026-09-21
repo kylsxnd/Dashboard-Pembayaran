@@ -54,6 +54,7 @@
         body.theme-pink .bg-zinc-900\/40,
         body.theme-pink .bg-zinc-950\/40,
         body.theme-pink #custom-pdf-modal > div,
+        body.theme-pink #profile-modal > div,
         body.theme-pink #auth-card {
             background-color: rgba(255, 255, 255, 0.7) !important;
             backdrop-filter: blur(16px) !important;
@@ -149,10 +150,10 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
                     <input type="password" id="login-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder-gray-600" placeholder="••••••••">
                 </div>
-                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
+                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
                     MASUK SEKARANG
                 </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline">Daftar di sini</button></p>
+                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline cursor-pointer focus:outline-none">Daftar di sini</button></p>
             </form>
 
             <!-- FORM REGISTER -->
@@ -169,16 +170,16 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
                     <input type="password" id="reg-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="Minimal 6 karakter">
                 </div>
-                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
+                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
                     DAFTAR AKUN BARU
                 </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline">Masuk</button></p>
+                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline cursor-pointer focus:outline-none">Masuk</button></p>
             </form>
         </div>
     </div>
 
     <!-- ========================================================
-         WRAPPER DASHBOARD (Disembunyikan saat belum login)
+         WRAPPER DASHBOARD
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
         
@@ -197,7 +198,7 @@
                         <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-0.5">Executive On-Farm</p>
                     </div>
                 </div>
-                <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-300 hover:text-white rounded-lg bg-white/10 focus:outline-none">
+                <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-300 hover:text-white rounded-lg bg-white/10 focus:outline-none cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -207,20 +208,26 @@
                 <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
             </div>
 
-            <!-- PROFIL USER DINAMIS -->
-            <div class="p-5 border-t border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between gap-2">
-                <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0">
-                        <div class="w-full h-full bg-zinc-800 rounded-full flex items-center justify-center">
+            <!-- PROFIL USER DINAMIS (BISA DI KLIK UNTUK SETTING) -->
+            <div class="p-5 border-t border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between gap-2 group hover:bg-white/[0.02] transition-colors">
+                <div class="flex items-center gap-3 overflow-hidden flex-1 cursor-pointer" id="edit-profile-btn" title="Edit Profil & Foto">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0 relative">
+                        <div class="w-full h-full bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden">
                             <span id="profile-initials" class="text-xs font-bold text-white">PIC</span>
+                            <!-- Tempat render foto asli kalau ada -->
+                            <img id="profile-photo" class="w-full h-full object-cover hidden" src="" alt="Profile">
+                        </div>
+                        <!-- Ikon Hover Edit -->
+                        <div class="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <svg class="w-4 h-4 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                         </div>
                     </div>
                     <div class="overflow-hidden">
-                        <p id="profile-name" class="text-sm text-white font-semibold drop-shadow-md truncate">Staf PIC HO</p>
+                        <p id="profile-name" class="text-sm text-white font-semibold drop-shadow-md truncate group-hover:text-emerald-300 transition-colors">Staf PIC HO</p>
                         <p id="profile-email" class="text-[10px] text-gray-400 truncate">pic.ho@agrinas.id</p>
                     </div>
                 </div>
-                <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0" title="Keluar">
+                <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0 cursor-pointer" title="Keluar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </button>
             </div>
@@ -229,7 +236,7 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
             <header class="h-16 md:h-20 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-zinc-950/40 backdrop-blur-xl relative z-10 w-full shadow-md">
                 <div class="flex items-center gap-2 md:gap-4">
-                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white transition-colors focus:outline-none shadow-sm">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white transition-colors focus:outline-none shadow-sm cursor-pointer">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/30 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
@@ -238,7 +245,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 md:gap-4">
-                    <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white hover:bg-white/20 hover:shadow-lg transition-all duration-300 group" title="Ganti Tema">
+                    <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white hover:bg-white/20 hover:shadow-lg transition-all duration-300 group cursor-pointer" title="Ganti Tema">
                         <svg class="w-4 h-4 group-hover:scale-110 transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                     </button>
                     <div class="bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-400/30 text-[9px] md:text-[10px] font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-lg flex items-center shadow-[0_0_20px_rgba(16,185,129,0.3)] tracking-wider">
@@ -258,33 +265,35 @@
                             Sinkronisasi langsung dari Google Sheets.
                         </p>
                     </div>
-                    <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end">
+                    <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end flex-wrap">
                         <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/40 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/20 shadow-lg whitespace-nowrap" id="last-update">
                             Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-md">--:--:--</span>
                         </div>
-                        <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap">
-                            TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
-                        </div>
+                        
+                        <div class="flex items-center gap-2 mt-1 md:mt-0 w-full md:w-auto justify-end order-last md:order-none">
+                            <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-2 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap flex-shrink-0">
+                                TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
+                            </div>
 
-                        <!-- ================= DROPDOWN BULAN UNIVERSAL ================= -->
-                        <div id="universal-month-filter-container" class="flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)]">
-                            <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <select id="universal-month-filter" class="bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
-                                <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
-                                <option value="JANUARI" class="bg-zinc-900 text-white">Januari</option>
-                                <option value="FEBRUARI" class="bg-zinc-900 text-white">Februari</option>
-                                <option value="MARET" class="bg-zinc-900 text-white">Maret</option>
-                                <option value="APRIL" class="bg-zinc-900 text-white">April</option>
-                                <option value="MEI" class="bg-zinc-900 text-white">Mei</option>
-                                <option value="JUNI" class="bg-zinc-900 text-white">Juni</option>
-                                <option value="JULI" class="bg-zinc-900 text-white">Juli</option>
-                                <option value="AGUSTUS" class="bg-zinc-900 text-white">Agustus</option>
-                                <option value="SEPTEMBER" class="bg-zinc-900 text-white">September</option>
-                                <option value="OKTOBER" class="bg-zinc-900 text-white">Oktober</option>
-                                <option value="NOVEMBER" class="bg-zinc-900 text-white">November</option>
-                                <option value="DESEMBER" class="bg-zinc-900 text-white">Desember</option>
-                            </select>
-                            <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                            <!-- ================= DROPDOWN BULAN UNIVERSAL ================= -->
+                            <div id="universal-month-filter-container" class="flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]">
+                                <select id="universal-month-filter" class="bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
+                                    <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
+                                    <option value="JANUARI" class="bg-zinc-900 text-white">Januari</option>
+                                    <option value="FEBRUARI" class="bg-zinc-900 text-white">Februari</option>
+                                    <option value="MARET" class="bg-zinc-900 text-white">Maret</option>
+                                    <option value="APRIL" class="bg-zinc-900 text-white">April</option>
+                                    <option value="MEI" class="bg-zinc-900 text-white">Mei</option>
+                                    <option value="JUNI" class="bg-zinc-900 text-white">Juni</option>
+                                    <option value="JULI" class="bg-zinc-900 text-white">Juli</option>
+                                    <option value="AGUSTUS" class="bg-zinc-900 text-white">Agustus</option>
+                                    <option value="SEPTEMBER" class="bg-zinc-900 text-white">September</option>
+                                    <option value="OKTOBER" class="bg-zinc-900 text-white">Oktober</option>
+                                    <option value="NOVEMBER" class="bg-zinc-900 text-white">November</option>
+                                    <option value="DESEMBER" class="bg-zinc-900 text-white">Desember</option>
+                                </select>
+                                <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
                         </div>
 
                     </div>
@@ -373,6 +382,50 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT PROFILE -->
+    <div id="profile-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[300] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-zinc-900/80 backdrop-blur-2xl border border-white/20 rounded-3xl w-full max-w-sm flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.5)] transform scale-95 transition-transform duration-300 overflow-hidden" id="profile-modal-box">
+            <div class="px-6 py-5 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+                        <svg class="w-4 h-4 text-emerald-400 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <h3 class="text-white font-bold text-sm md:text-base drop-shadow-md tracking-wide">Pengaturan Profil</h3>
+                </div>
+                <button id="profile-modal-close" class="text-gray-300 hover:text-white hover:bg-rose-500/30 p-2 rounded-xl border border-transparent hover:border-rose-500/50 transition-all focus:outline-none cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form id="edit-profile-form" class="p-6 md:p-8 flex flex-col gap-5">
+                <div class="flex flex-col items-center justify-center mb-2">
+                    <div class="relative w-24 h-24 rounded-full border-2 border-dashed border-emerald-500/50 p-1 group cursor-pointer hover:border-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                        <div class="w-full h-full rounded-full overflow-hidden bg-zinc-800 relative flex items-center justify-center">
+                            <span id="edit-photo-initials" class="text-2xl font-black text-white">PIC</span>
+                            <img id="edit-photo-preview" class="w-full h-full object-cover absolute inset-0 hidden" src="" alt="">
+                            <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg class="w-6 h-6 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                        </div>
+                        <input type="file" id="edit-photo-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    </div>
+                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-3">Klik untuk ganti foto</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Nama Lengkap</label>
+                    <input type="text" id="edit-name-input" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
+                    <input type="email" id="edit-email-input" required class="w-full bg-black/50 border border-white/5 rounded-xl px-4 py-3 text-sm text-gray-500 focus:outline-none cursor-not-allowed" readonly title="Email tidak dapat diubah">
+                </div>
+                <div id="profile-save-msg" class="hidden text-emerald-300 text-xs font-bold text-center bg-emerald-500/20 border border-emerald-400/30 py-2.5 rounded-xl shadow-inner mt-1 uppercase tracking-wide">Berhasil disimpan!</div>
+                <button type="submit" class="mt-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                    SIMPAN PERUBAHAN
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Global State untuk Filter Bulan Semua Sheet 
         window.selectedMonthFilter = 'ALL';
@@ -389,7 +442,7 @@
             }
 
             // =========================================================
-            // 1. SISTEM AUTENTIKASI 
+            // 1. SISTEM AUTENTIKASI & PROFILE
             // =========================================================
             const authPage = document.getElementById('auth-page');
             const dashboardWrapper = document.getElementById('dashboard-wrapper');
@@ -409,6 +462,19 @@
                     
                     let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     document.getElementById('profile-initials').innerText = initials || 'PIC';
+
+                    // Cek apakah ada foto profil tersimpan
+                    const profilePhotoEl = document.getElementById('profile-photo');
+                    const initialsEl = document.getElementById('profile-initials');
+                    
+                    if (activeUser.photo) {
+                        profilePhotoEl.src = activeUser.photo;
+                        profilePhotoEl.classList.remove('hidden');
+                        initialsEl.classList.add('hidden');
+                    } else {
+                        profilePhotoEl.classList.add('hidden');
+                        initialsEl.classList.remove('hidden');
+                    }
 
                     authPage.classList.add('opacity-0');
                     setTimeout(() => {
@@ -479,7 +545,7 @@
                 const user = usersDB.find(u => u.email === email && u.password === password);
 
                 if (user) {
-                    activeUser = { name: user.name, email: user.email };
+                    activeUser = { name: user.name, email: user.email, photo: user.photo };
                     localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
                     loginForm.reset();
                     checkAuth();
@@ -499,24 +565,106 @@
             });
 
             // =========================================================
-            // 2. LOGIKA DASHBOARD 
+            // FITUR EDIT PROFILE (NAMA & FOTO)
             // =========================================================
-            let fetchInterval = null;
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            const profileModal = document.getElementById('profile-modal');
+            const profileModalBox = document.getElementById('profile-modal-box');
+            const profileModalClose = document.getElementById('profile-modal-close');
+            const editProfileForm = document.getElementById('edit-profile-form');
+            const editPhotoInput = document.getElementById('edit-photo-input');
+            const editPhotoPreview = document.getElementById('edit-photo-preview');
+            const editPhotoInitials = document.getElementById('edit-photo-initials');
+            
+            let tempPhotoBase64 = null;
 
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-            const sidebar = document.getElementById('sidebar');
-            const mobileOverlay = document.getElementById('mobile-overlay');
+            function openProfileModal() {
+                if(!activeUser) return;
+                
+                document.getElementById('edit-name-input').value = activeUser.name;
+                document.getElementById('edit-email-input').value = activeUser.email;
+                
+                let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                editPhotoInitials.innerText = initials || 'PIC';
 
-            function toggleSidebar() {
-                sidebar.classList.toggle('-translate-x-full');
-                mobileOverlay.classList.toggle('hidden');
+                if (activeUser.photo) {
+                    editPhotoPreview.src = activeUser.photo;
+                    editPhotoPreview.classList.remove('hidden');
+                    editPhotoInitials.classList.add('hidden');
+                    tempPhotoBase64 = activeUser.photo;
+                } else {
+                    editPhotoPreview.src = "";
+                    editPhotoPreview.classList.add('hidden');
+                    editPhotoInitials.classList.remove('hidden');
+                    tempPhotoBase64 = null;
+                }
+
+                document.getElementById('profile-save-msg').classList.add('hidden');
+                
+                profileModal.classList.remove('hidden');
+                setTimeout(() => { 
+                    profileModal.classList.add('opacity-100'); 
+                    profileModalBox.classList.add('scale-100'); 
+                }, 10);
             }
 
-            mobileMenuBtn.addEventListener('click', toggleSidebar);
-            closeSidebarBtn.addEventListener('click', toggleSidebar);
-            mobileOverlay.addEventListener('click', toggleSidebar);
+            function closeProfileModal() {
+                profileModal.classList.remove('opacity-100');
+                profileModalBox.classList.remove('scale-100');
+                setTimeout(() => profileModal.classList.add('hidden'), 300);
+            }
 
+            editProfileBtn.addEventListener('click', openProfileModal);
+            profileModalClose.addEventListener('click', (e) => { e.preventDefault(); closeProfileModal(); });
+            profileModal.addEventListener('click', (e) => { if(e.target === profileModal) closeProfileModal(); });
+
+            editPhotoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        tempPhotoBase64 = event.target.result;
+                        editPhotoPreview.src = tempPhotoBase64;
+                        editPhotoPreview.classList.remove('hidden');
+                        editPhotoInitials.classList.add('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            editProfileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newName = document.getElementById('edit-name-input').value.trim();
+                
+                if (newName && activeUser) {
+                    activeUser.name = newName;
+                    if (tempPhotoBase64) activeUser.photo = tempPhotoBase64;
+
+                    localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
+
+                    let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
+                    const userIndex = usersDB.findIndex(u => u.email === activeUser.email);
+                    if (userIndex !== -1) {
+                        usersDB[userIndex].name = newName;
+                        if (tempPhotoBase64) usersDB[userIndex].photo = tempPhotoBase64;
+                        localStorage.setItem('agrinas_users_db', JSON.stringify(usersDB));
+                    }
+
+                    checkAuth();
+
+                    const msg = document.getElementById('profile-save-msg');
+                    msg.classList.remove('hidden');
+                    setTimeout(() => {
+                        msg.classList.add('hidden');
+                        closeProfileModal();
+                    }, 1500);
+                }
+            });
+
+
+            // =========================================================
+            // 2. LOGIKA DASHBOARD 
+            // =========================================================
             const themeToggleBtn = document.getElementById('theme-toggle');
             const logoIcon = document.getElementById('logo-icon');
             
@@ -628,19 +776,19 @@
 
                         if (sheetName === 'PDO') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-emerald-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-emerald-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Petty Cash') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
@@ -1143,7 +1291,7 @@
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Pembayaran Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas di bulan ini.</p></div>`;
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada data yang lunas (Paid).</p></div>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
@@ -1497,7 +1645,10 @@
                     });
             }
 
+            // Render menu sidebar pertama kali
             renderMenu();
+            
+            // Jalankan cek autentikasi pertama kali
             checkAuth();
             
         });
