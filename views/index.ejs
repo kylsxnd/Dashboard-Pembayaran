@@ -127,8 +127,8 @@
          ======================================================== -->
     <div id="auth-page" class="fixed inset-0 z-[200] flex items-center justify-center bg-zinc-950/40 backdrop-blur-xl transition-all duration-700">
         <div id="auth-card" class="bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 w-11/12 max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group transform transition-all duration-500">
-            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-24 h-24 flex items-center justify-center mb-3">
@@ -179,7 +179,7 @@
     </div>
 
     <!-- ========================================================
-         WRAPPER DASHBOARD
+         WRAPPER DASHBOARD (Disembunyikan saat belum login)
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
         
@@ -277,6 +277,7 @@
 
                             <!-- ================= DROPDOWN BULAN UNIVERSAL ================= -->
                             <div id="universal-month-filter-container" class="flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]">
+                                <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 <select id="universal-month-filter" class="bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
                                     <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
                                     <option value="JANUARI" class="bg-zinc-900 text-white">Januari</option>
@@ -442,7 +443,7 @@
             }
 
             // =========================================================
-            // 1. SISTEM AUTENTIKASI & PROFILE
+            // 1. SISTEM AUTENTIKASI 
             // =========================================================
             const authPage = document.getElementById('auth-page');
             const dashboardWrapper = document.getElementById('dashboard-wrapper');
@@ -463,15 +464,14 @@
                     let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     document.getElementById('profile-initials').innerText = initials || 'PIC';
 
-                    // Cek apakah ada foto profil tersimpan
                     const profilePhotoEl = document.getElementById('profile-photo');
                     const initialsEl = document.getElementById('profile-initials');
                     
-                    if (activeUser.photo) {
+                    if (activeUser.photo && profilePhotoEl && initialsEl) {
                         profilePhotoEl.src = activeUser.photo;
                         profilePhotoEl.classList.remove('hidden');
                         initialsEl.classList.add('hidden');
-                    } else {
+                    } else if (profilePhotoEl && initialsEl) {
                         profilePhotoEl.classList.add('hidden');
                         initialsEl.classList.remove('hidden');
                     }
@@ -578,93 +578,116 @@
             
             let tempPhotoBase64 = null;
 
-            function openProfileModal() {
-                if(!activeUser) return;
-                
-                document.getElementById('edit-name-input').value = activeUser.name;
-                document.getElementById('edit-email-input').value = activeUser.email;
-                
-                let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                editPhotoInitials.innerText = initials || 'PIC';
+            if(editProfileBtn) {
+                editProfileBtn.addEventListener('click', () => {
+                    if(!activeUser) return;
+                    
+                    document.getElementById('edit-name-input').value = activeUser.name;
+                    document.getElementById('edit-email-input').value = activeUser.email;
+                    
+                    let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    editPhotoInitials.innerText = initials || 'PIC';
 
-                if (activeUser.photo) {
-                    editPhotoPreview.src = activeUser.photo;
-                    editPhotoPreview.classList.remove('hidden');
-                    editPhotoInitials.classList.add('hidden');
-                    tempPhotoBase64 = activeUser.photo;
-                } else {
-                    editPhotoPreview.src = "";
-                    editPhotoPreview.classList.add('hidden');
-                    editPhotoInitials.classList.remove('hidden');
-                    tempPhotoBase64 = null;
-                }
+                    if (activeUser.photo) {
+                        editPhotoPreview.src = activeUser.photo;
+                        editPhotoPreview.classList.remove('hidden');
+                        editPhotoInitials.classList.add('hidden');
+                        tempPhotoBase64 = activeUser.photo;
+                    } else {
+                        editPhotoPreview.src = "";
+                        editPhotoPreview.classList.add('hidden');
+                        editPhotoInitials.classList.remove('hidden');
+                        tempPhotoBase64 = null;
+                    }
 
-                document.getElementById('profile-save-msg').classList.add('hidden');
-                
-                profileModal.classList.remove('hidden');
-                setTimeout(() => { 
-                    profileModal.classList.add('opacity-100'); 
-                    profileModalBox.classList.add('scale-100'); 
-                }, 10);
+                    document.getElementById('profile-save-msg').classList.add('hidden');
+                    
+                    profileModal.classList.remove('hidden');
+                    setTimeout(() => { 
+                        profileModal.classList.add('opacity-100'); 
+                        profileModalBox.classList.add('scale-100'); 
+                    }, 10);
+                });
             }
 
             function closeProfileModal() {
-                profileModal.classList.remove('opacity-100');
-                profileModalBox.classList.remove('scale-100');
-                setTimeout(() => profileModal.classList.add('hidden'), 300);
+                if(profileModal && profileModalBox) {
+                    profileModal.classList.remove('opacity-100');
+                    profileModalBox.classList.remove('scale-100');
+                    setTimeout(() => profileModal.classList.add('hidden'), 300);
+                }
             }
 
-            editProfileBtn.addEventListener('click', openProfileModal);
-            profileModalClose.addEventListener('click', (e) => { e.preventDefault(); closeProfileModal(); });
-            profileModal.addEventListener('click', (e) => { if(e.target === profileModal) closeProfileModal(); });
+            if(profileModalClose) profileModalClose.addEventListener('click', (e) => { e.preventDefault(); closeProfileModal(); });
+            if(profileModal) profileModal.addEventListener('click', (e) => { if(e.target === profileModal) closeProfileModal(); });
 
-            editPhotoInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        tempPhotoBase64 = event.target.result;
-                        editPhotoPreview.src = tempPhotoBase64;
-                        editPhotoPreview.classList.remove('hidden');
-                        editPhotoInitials.classList.add('hidden');
+            if(editPhotoInput) {
+                editPhotoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            tempPhotoBase64 = event.target.result;
+                            editPhotoPreview.src = tempPhotoBase64;
+                            editPhotoPreview.classList.remove('hidden');
+                            editPhotoInitials.classList.add('hidden');
+                        }
+                        reader.readAsDataURL(file);
                     }
-                    reader.readAsDataURL(file);
-                }
-            });
+                });
+            }
 
-            editProfileForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const newName = document.getElementById('edit-name-input').value.trim();
-                
-                if (newName && activeUser) {
-                    activeUser.name = newName;
-                    if (tempPhotoBase64) activeUser.photo = tempPhotoBase64;
+            if(editProfileForm) {
+                editProfileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const newName = document.getElementById('edit-name-input').value.trim();
+                    
+                    if (newName && activeUser) {
+                        activeUser.name = newName;
+                        if (tempPhotoBase64) activeUser.photo = tempPhotoBase64;
 
-                    localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
+                        localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
 
-                    let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
-                    const userIndex = usersDB.findIndex(u => u.email === activeUser.email);
-                    if (userIndex !== -1) {
-                        usersDB[userIndex].name = newName;
-                        if (tempPhotoBase64) usersDB[userIndex].photo = tempPhotoBase64;
-                        localStorage.setItem('agrinas_users_db', JSON.stringify(usersDB));
+                        let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
+                        const userIndex = usersDB.findIndex(u => u.email === activeUser.email);
+                        if (userIndex !== -1) {
+                            usersDB[userIndex].name = newName;
+                            if (tempPhotoBase64) usersDB[userIndex].photo = tempPhotoBase64;
+                            localStorage.setItem('agrinas_users_db', JSON.stringify(usersDB));
+                        }
+
+                        checkAuth();
+
+                        const msg = document.getElementById('profile-save-msg');
+                        msg.classList.remove('hidden');
+                        setTimeout(() => {
+                            msg.classList.add('hidden');
+                            closeProfileModal();
+                        }, 1500);
                     }
-
-                    checkAuth();
-
-                    const msg = document.getElementById('profile-save-msg');
-                    msg.classList.remove('hidden');
-                    setTimeout(() => {
-                        msg.classList.add('hidden');
-                        closeProfileModal();
-                    }, 1500);
-                }
-            });
+                });
+            }
 
 
             // =========================================================
             // 2. LOGIKA DASHBOARD 
             // =========================================================
+            let fetchInterval = null;
+
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+            const sidebar = document.getElementById('sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                mobileOverlay.classList.toggle('hidden');
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleSidebar);
+            closeSidebarBtn.addEventListener('click', toggleSidebar);
+            mobileOverlay.addEventListener('click', toggleSidebar);
+
             const themeToggleBtn = document.getElementById('theme-toggle');
             const logoIcon = document.getElementById('logo-icon');
             
