@@ -250,6 +250,7 @@
             </header>
 
             <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10">
+                <!-- HEADER KONTEN RESPONSIVE -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 opacity-0 animate-fade-in-up">
                     <div class="w-full md:w-auto">
                         <h1 class="text-3xl md:text-4xl font-black text-white mb-1.5 md:mb-2 tracking-tight drop-shadow-xl" id="page-title">Loading...</h1>
@@ -265,6 +266,28 @@
                         <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap">
                             TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
                         </div>
+                        
+                        <!-- ================= FILTER BULAN PDO ================= -->
+                        <div id="pdo-month-filter-container" class="hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <select id="pdo-month-filter" class="bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md">
+                                <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
+                                <option value="januari" class="bg-zinc-900 text-white">Januari</option>
+                                <option value="februari" class="bg-zinc-900 text-white">Februari</option>
+                                <option value="maret" class="bg-zinc-900 text-white">Maret</option>
+                                <option value="april" class="bg-zinc-900 text-white">April</option>
+                                <option value="mei" class="bg-zinc-900 text-white">Mei</option>
+                                <option value="juni" class="bg-zinc-900 text-white">Juni</option>
+                                <option value="juli" class="bg-zinc-900 text-white">Juli</option>
+                                <option value="agustus" class="bg-zinc-900 text-white">Agustus</option>
+                                <option value="september" class="bg-zinc-900 text-white">September</option>
+                                <option value="oktober" class="bg-zinc-900 text-white">Oktober</option>
+                                <option value="november" class="bg-zinc-900 text-white">November</option>
+                                <option value="desember" class="bg-zinc-900 text-white">Desember</option>
+                            </select>
+                            <svg class="w-3 h-3 text-sky-400 absolute right-3 pointer-events-none group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                        
                     </div>
                 </div>
 
@@ -305,6 +328,7 @@
                     Sheet ini tidak memiliki ringkasan (Total/Summary).
                 </div>
 
+                <!-- Tabel Data Utama -->
                 <div class="bg-zinc-900/40 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col opacity-0 animate-fade-in-up delay-200">
                     <div class="px-5 md:px-8 py-5 md:py-6 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
                         <h3 class="text-white font-bold text-xs md:text-sm tracking-widest uppercase flex items-center gap-3 drop-shadow-lg">
@@ -354,8 +378,21 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
+            // Global State untuk Filter Bulan PDO 
+            window.selectedPdoMonth = 'ALL';
+
+            setTimeout(() => {
+                const filterEl = document.getElementById('pdo-month-filter');
+                if (filterEl) {
+                    filterEl.addEventListener('change', (e) => {
+                        window.selectedPdoMonth = e.target.value.toLowerCase();
+                        fetchJsonData(true); 
+                    });
+                }
+            }, 100);
+
             // =========================================================
-            // 1. SISTEM AUTENTIKASI (LOGIN & REGISTER VIA LOCALSTORAGE)
+            // 1. SISTEM AUTENTIKASI 
             // =========================================================
             const authPage = document.getElementById('auth-page');
             const dashboardWrapper = document.getElementById('dashboard-wrapper');
@@ -584,6 +621,14 @@
                         currentActiveSheet = sheetName;
                         currentPage = 1;
                         
+                        if (sheetName === 'PDO') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
+                        } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
+                        } else if (sheetName === 'Petty Cash') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
+                        }
+
                         renderMenu(); 
                         fetchJsonData();
                         
@@ -719,6 +764,12 @@
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
 
+                        const pdoFilterContainer = document.getElementById('pdo-month-filter-container');
+                        if (pdoFilterContainer) {
+                            pdoFilterContainer.classList.add('hidden');
+                            pdoFilterContainer.classList.remove('flex');
+                        }
+
                         // =========================================================
                         // KONDISI 1: PDO
                         // =========================================================
@@ -733,6 +784,11 @@
 
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
+
+                            if (pdoFilterContainer) {
+                                pdoFilterContainer.classList.remove('hidden');
+                                pdoFilterContainer.classList.add('flex');
+                            }
 
                             let pdoSumIdx = { task: 0, doc: 1, surat: 2, rev: 3, appr: 4, pajak: 5, umum: 6, keu: 7, paid: 8, dip: 9, date: 10 };
                             let pdoSumRowData = 4;
@@ -774,11 +830,10 @@
                             let tDip   = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.dip] !== undefined ? data[pdoSumRowData][pdoSumIdx.dip] : 0;
 
                             let chartLabels = [
-                                "Total Task", "Dokumen", "Buat Surat", "Revisi Reg", 
+                                "Total Task", "Dokumen", "Pembuatan Surat", "Revisi Reg", 
                                 "Progres Aproved Kadiv dan Dir Ops", "Verifikasi Pajak", "Umum", "Keuangan", "Paid", "Diperoses di Direktorat Terkait"
                             ];
                             let chartValues = [tTask, tDoc, tSurat, tRev, tAppr, tPajak, tUmum, tKeu, tPaid, tDip];
-                            let dateValue = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.date] !== undefined ? formatCellDate(data[pdoSumRowData][pdoSumIdx.date]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
                             noSummaryMsg.classList.add('hidden');
@@ -805,6 +860,11 @@
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
                                 if (colZero === '' || isNaN(colZero)) continue;
+
+                                let dateCell = row[1] ? row[1].toString().toLowerCase() : '';
+                                if (window.selectedPdoMonth !== 'ALL' && !dateCell.includes(window.selectedPdoMonth)) {
+                                    continue; 
+                                }
 
                                 let taskCol = row[2] !== undefined && row[2] !== null ? row[2].toString().trim() : '';
                                 if (taskCol === '' || taskCol === 'nan') continue;
@@ -874,7 +934,7 @@
                                         if (lProg.includes('approved')) progColor = 'bg-purple-500/30 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
                                         else if (lProg.includes('revisi')) progColor = 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]';
                                         else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
-                                        cellVal = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase">${cellVal}</span>`;
+                                        cellVal = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${progColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
                                     }
 
                                     let cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
@@ -889,11 +949,14 @@
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas.</p></div>`;
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas di bulan ini.</p></div>`;
+                            }
+                            if (unpaidContainer.innerHTML === '') {
+                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Tidak ada task yang pending di bulan ini.</p></div>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
@@ -918,10 +981,8 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Sembunyikan Unpaid Panel
                             document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
-                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -1075,8 +1136,8 @@
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
-                            if (globalDate && globalDate !== '-') {
-                                dateValueEl.innerText = globalDate;
+                            if (dateValue && dateValue !== '-') {
+                                dateValueEl.innerText = dateValue;
                                 dateDisplay.classList.remove('hidden');
                             } else {
                                 dateDisplay.classList.add('hidden');
@@ -1289,8 +1350,12 @@
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
 
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<div class="p-5 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas.</p></div>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review.</p></div>`;
+                            if (paidContainer.innerHTML === '') {
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas.</p></div>`;
+                            }
+                            if (unpaidContainer.innerHTML === '') {
+                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review.</p></div>`;
+                            }
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
@@ -1375,10 +1440,7 @@
                     });
             }
 
-            // Render menu sidebar pertama kali
             renderMenu();
-            
-            // Jalankan cek autentikasi pertama kali
             checkAuth();
             
         });
