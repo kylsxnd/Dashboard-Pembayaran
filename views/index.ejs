@@ -122,65 +122,9 @@
 <body class="text-gray-200 flex h-screen overflow-hidden selection:bg-emerald-500/30">
 
     <!-- ========================================================
-         HALAMAN LOGIN & REGISTER (AUTH)
+         WRAPPER DASHBOARD
          ======================================================== -->
-    <div id="auth-page" class="fixed inset-0 z-[200] flex items-center justify-center bg-zinc-950/40 backdrop-blur-xl transition-all duration-700">
-        <div id="auth-card" class="bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 w-11/12 max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group transform transition-all duration-500">
-            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
-
-            <div class="flex flex-col items-center mb-8 relative z-10">
-                <div class="w-24 h-24 flex items-center justify-center mb-3">
-                    <img src="/bg2.png" onerror="this.src='/bg2.jpeg'" alt="Logo Agrinas" class="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                </div>
-                <h2 class="text-white font-black tracking-widest text-xl drop-shadow-md mt-2">AGRINAS OPS</h2>
-                <p class="text-xs text-emerald-400 font-bold uppercase tracking-wider mt-1">Executive Portal</p>
-            </div>
-
-            <div id="auth-error" class="hidden mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs text-center font-medium relative z-10"></div>
-
-            <!-- FORM LOGIN -->
-            <form id="login-form" class="flex flex-col gap-4 relative z-10">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
-                    <input type="email" id="login-email" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder-gray-600" placeholder="admin@agrinas.id">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
-                    <input type="password" id="login-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder-gray-600" placeholder="••••••••">
-                </div>
-                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
-                    MASUK SEKARANG
-                </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline">Daftar di sini</button></p>
-            </form>
-
-            <!-- FORM REGISTER -->
-            <form id="register-form" class="hidden flex flex-col gap-4 relative z-10">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Nama Lengkap</label>
-                    <input type="text" id="reg-name" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="John Doe">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
-                    <input type="email" id="reg-email" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="nama@agrinas.id">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
-                    <input type="password" id="reg-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="Minimal 6 karakter">
-                </div>
-                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
-                    DAFTAR AKUN BARU
-                </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline">Masuk</button></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- ========================================================
-         WRAPPER DASHBOARD (Disembunyikan saat belum login)
-         ======================================================== -->
-    <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
+    <div id="dashboard-wrapper" class="flex h-screen w-full transition-opacity duration-700">
         
         <!-- OVERLAY UNTUK HP -->
         <div id="mobile-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
@@ -212,12 +156,12 @@
                 <div class="flex items-center gap-3 overflow-hidden">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0">
                         <div class="w-full h-full bg-zinc-800 rounded-full flex items-center justify-center">
-                            <span id="profile-initials" class="text-xs font-bold text-white">PIC</span>
+                            <span id="profile-initials" class="text-xs font-bold text-white">MF</span>
                         </div>
                     </div>
                     <div class="overflow-hidden">
-                        <p id="profile-name" class="text-sm text-white font-semibold drop-shadow-md truncate">Staf PIC HO</p>
-                        <p id="profile-email" class="text-[10px] text-gray-400 truncate">pic.ho@agrinas.id</p>
+                        <p id="profile-name" class="text-sm text-white font-semibold drop-shadow-md truncate">Muhammad Fauzan</p>
+                        <p id="profile-email" class="text-[10px] text-gray-400 truncate">fauzan@agrinas.id</p>
                     </div>
                 </div>
                 <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0" title="Keluar">
@@ -258,23 +202,34 @@
                             Sinkronisasi langsung dari Google Sheets.
                         </p>
                     </div>
-                    <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end">
+                    <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end flex-wrap">
                         <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/40 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/20 shadow-lg whitespace-nowrap" id="last-update">
                             Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-md">--:--:--</span>
                         </div>
                         <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap">
                             TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
                         </div>
-                        
-                        <!-- ================= FILTER BULAN PDO ================= -->
-                        <div id="pdo-month-filter-container" class="hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 mt-1.5 w-full">
+
+                        <!-- ================= FITUR BARU: FILTER BULAN PDO ================= -->
+                        <div id="pdo-month-filter-container" class="hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] cursor-pointer hover:bg-black/80 transition-all group w-full mt-1">
                             <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <select id="pdo-month-filter" class="bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center text-center-last">
-                                <!-- Options diinjeksi via JS -->
+                            <select id="pdo-month-filter" class="bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
+                                <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
+                                <option value="januari" class="bg-zinc-900 text-white">Januari</option>
+                                <option value="februari" class="bg-zinc-900 text-white">Februari</option>
+                                <option value="maret" class="bg-zinc-900 text-white">Maret</option>
+                                <option value="april" class="bg-zinc-900 text-white">April</option>
+                                <option value="mei" class="bg-zinc-900 text-white">Mei</option>
+                                <option value="juni" class="bg-zinc-900 text-white">Juni</option>
+                                <option value="juli" class="bg-zinc-900 text-white">Juli</option>
+                                <option value="agustus" class="bg-zinc-900 text-white">Agustus</option>
+                                <option value="september" class="bg-zinc-900 text-white">September</option>
+                                <option value="oktober" class="bg-zinc-900 text-white">Oktober</option>
+                                <option value="november" class="bg-zinc-900 text-white">November</option>
+                                <option value="desember" class="bg-zinc-900 text-white">Desember</option>
                             </select>
-                            <svg class="w-3 h-3 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
                         </div>
-                        
                     </div>
                 </div>
 
@@ -363,131 +318,21 @@
     </div>
 
     <script>
-        // Global State untuk Filter Bulan PDO 
-        window.selectedPdoMonth = 'ALL';
-
         document.addEventListener('DOMContentLoaded', () => {
 
-            // Event listener Dropdown Bulan (KHUSUS PDO)
+            // STATE FILTER BULAN (Hanya untuk PDO)
+            window.selectedPdoMonth = 'ALL';
+
+            // Mendaftarkan Event Listener Filter Bulan (Dropdown)
             setTimeout(() => {
                 const filterEl = document.getElementById('pdo-month-filter');
                 if (filterEl) {
                     filterEl.addEventListener('change', (e) => {
-                        window.selectedPdoMonth = e.target.value;
+                        window.selectedPdoMonth = e.target.value.toLowerCase();
                         fetchJsonData(true); 
                     });
                 }
             }, 100);
-
-            // =========================================================
-            // 1. SISTEM AUTENTIKASI 
-            // =========================================================
-            const authPage = document.getElementById('auth-page');
-            const dashboardWrapper = document.getElementById('dashboard-wrapper');
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const goToRegisterBtn = document.getElementById('go-to-register');
-            const goToLoginBtn = document.getElementById('go-to-login');
-            const authError = document.getElementById('auth-error');
-            const logoutBtn = document.getElementById('logout-btn');
-
-            let activeUser = JSON.parse(localStorage.getItem('agrinas_active_user'));
-
-            function checkAuth() {
-                if (activeUser && activeUser.email) {
-                    document.getElementById('profile-name').innerText = activeUser.name;
-                    document.getElementById('profile-email').innerText = activeUser.email;
-                    
-                    let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                    document.getElementById('profile-initials').innerText = initials || 'PIC';
-
-                    authPage.classList.add('opacity-0');
-                    setTimeout(() => {
-                        authPage.classList.add('hidden');
-                        dashboardWrapper.classList.remove('hidden');
-                        setTimeout(() => {
-                            dashboardWrapper.classList.remove('opacity-0');
-                        }, 50);
-                    }, 700);
-
-                    if(!fetchInterval) {
-                        fetchJsonData(); 
-                        fetchInterval = setInterval(() => { fetchJsonData(true); }, 10000);
-                    }
-                } else {
-                    dashboardWrapper.classList.add('hidden', 'opacity-0');
-                    authPage.classList.remove('hidden');
-                    setTimeout(() => authPage.classList.remove('opacity-0'), 50);
-                }
-            }
-
-            function showError(msg) {
-                authError.innerText = msg;
-                authError.classList.remove('hidden');
-                setTimeout(() => authError.classList.add('hidden'), 5000);
-            }
-
-            goToRegisterBtn.addEventListener('click', () => {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-                authError.classList.add('hidden');
-            });
-
-            goToLoginBtn.addEventListener('click', () => {
-                registerForm.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-                authError.classList.add('hidden');
-            });
-
-            registerForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('reg-name').value.trim();
-                const email = document.getElementById('reg-email').value.trim();
-                const password = document.getElementById('reg-password').value;
-
-                if(password.length < 6) return showError("Password harus minimal 6 karakter!");
-
-                let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
-                
-                if(usersDB.find(u => u.email === email)) return showError("Email sudah terdaftar. Silakan login.");
-
-                usersDB.push({ name, email, password });
-                localStorage.setItem('agrinas_users_db', JSON.stringify(usersDB));
-
-                activeUser = { name, email };
-                localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
-                
-                registerForm.reset();
-                checkAuth();
-            });
-
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const email = document.getElementById('login-email').value.trim();
-                const password = document.getElementById('login-password').value;
-
-                let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
-                const user = usersDB.find(u => u.email === email && u.password === password);
-
-                if (user) {
-                    activeUser = { name: user.name, email: user.email };
-                    localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
-                    loginForm.reset();
-                    checkAuth();
-                } else {
-                    showError("Email atau Password salah!");
-                }
-            });
-
-            logoutBtn.addEventListener('click', () => {
-                localStorage.removeItem('agrinas_active_user');
-                activeUser = null;
-                if(fetchInterval) {
-                    clearInterval(fetchInterval);
-                    fetchInterval = null;
-                }
-                window.location.reload(); 
-            });
 
             // =========================================================
             // 2. LOGIKA DASHBOARD 
@@ -607,17 +452,9 @@
                         currentPage = 1;
                         
                         window.selectedPdoMonth = 'ALL';
-                        const pdoFilterEl = document.getElementById('pdo-month-filter');
-                        if (pdoFilterEl) pdoFilterEl.value = 'ALL';
-
-                        if (sheetName === 'PDO') {
-                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
-                        } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
-                        } else if (sheetName === 'Petty Cash') {
-                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
-                        }
-
+                        const filterEl = document.getElementById('pdo-month-filter');
+                        if (filterEl) filterEl.value = 'ALL';
+                        
                         renderMenu(); 
                         fetchJsonData();
                         
@@ -756,6 +593,7 @@
                         const pdoFilterContainer = document.getElementById('pdo-month-filter-container');
                         if (pdoFilterContainer) {
                             pdoFilterContainer.classList.add('hidden');
+                            pdoFilterContainer.classList.remove('flex');
                         }
 
                         // =========================================================
@@ -765,6 +603,7 @@
                             
                             if (pdoFilterContainer) {
                                 pdoFilterContainer.classList.remove('hidden');
+                                pdoFilterContainer.classList.add('flex');
                             }
 
                             pdoBreakdown.classList.remove('hidden');
@@ -851,7 +690,6 @@
 
                                 let dateCell = row[1] ? row[1].toString().toLowerCase() : '';
                                 
-                                // LOGIKA FILTER BULAN PDO YANG SUDAH DIPERBAIKI (TIDAK AKAN NGE-BLANK KALAU "ALL")
                                 if (window.selectedPdoMonth !== 'ALL' && window.selectedPdoMonth !== 'all') {
                                     if (!dateCell.includes(window.selectedPdoMonth)) {
                                         continue; 
@@ -948,7 +786,8 @@
                             }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="13" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
                             }
@@ -995,7 +834,6 @@
 
                             let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
-                            let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
                             renderSummaryCards(chartLabels, chartValues);
@@ -1121,6 +959,7 @@
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
                             }
@@ -1130,240 +969,9 @@
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
+                            let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
                             if (dateValue && dateValue !== '-') {
                                 dateValueEl.innerText = dateValue;
-                                dateDisplay.classList.remove('hidden');
-                            } else {
-                                dateDisplay.classList.add('hidden');
-                            }
-                        }
-
-                        // =========================================================
-                        // KONDISI 3: PETTY CASH
-                        // =========================================================
-                        else if (currentActiveSheet === 'Petty Cash') {
-                            pdoBreakdown.classList.remove('hidden');
-                            pdoBreakdown.classList.add('grid');
-                            noSummaryMsg.classList.remove('hidden');
-
-                            document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
-                            document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
-                            
-                            document.getElementById('unpaid-panel-wrapper').classList.remove('hidden');
-
-                            paidContainer.innerHTML = '';
-                            unpaidContainer.innerHTML = '';
-                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
-
-                            const displayHeaders = [
-                                "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
-                                "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
-                                "Status LPJ", "Status Permintaan", "Keterangan", "Progress", "Dokumen"
-                            ];
-                            
-                            let headHTML = '<tr>';
-                            displayHeaders.forEach(h => {
-                                headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
-                            });
-                            headHTML += '</tr>';
-                            thead.innerHTML = headHTML;
-
-                            let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
-
-                            for (let r = 0; r < Math.min(10, data.length); r++) {
-                                if (!data[r]) continue;
-                                let rowStr = data[r].join('').toLowerCase();
-                                
-                                if (rowStr.includes('cro') && rowStr.includes('wilayah') && rowStr.includes('keterangan')) {
-                                    let headerRow = data[r];
-                                    for(let c = 0; c < headerRow.length; c++) {
-                                        let str = (headerRow[c] || '').toString().toLowerCase().trim();
-                                        if(!str) continue;
-                                        if(str === 'no') colIdx.no = c;
-                                        else if(str === 'cro') colIdx.cro = c;
-                                        else if(str === 'wilayah') colIdx.wil = c;
-                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c;
-                                        else if(str.includes('status lpj')) colIdx.slpj = c;
-                                        else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
-                                        else if(str === 'keterangan' || str.includes('keterangan')) colIdx.ket = c;
-                                        else if(str === 'progress' || str.includes('progress')) colIdx.prog = c;
-                                        else if(str === 'dokumen' || str.includes('dokumen')) colIdx.dok = c;
-                                    }
-                                    
-                                    if (data[r+1]) {
-                                        let subHeaderRow = data[r+1];
-                                        for(let c = 0; c < subHeaderRow.length; c++) {
-                                            let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
-                                            if (str.includes('pemakaian')) colIdx.pem = c;
-                                            else if (str.includes('sisa petty')) colIdx.sisa = c; 
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-
-                            let skipSection = false;
-                            let paidCount = 0;
-                            let unpaidCount = 0;
-                            let globalDate = "-"; 
-
-                            for (let i = 4; i < data.length; i++) {
-                                let row = data[i];
-                                if (!row || row.every(val => val === null || val === '')) continue;
-                                
-                                let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
-                                let fullText = row.join(' ').replace(/,/g, '').trim();
-
-                                if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
-                                    let title = row.find(v => v !== null && v !== '') || fullText;
-                                    
-                                    let dateMatch = title.match(/Bulan\s+[A-Za-z]+\s+\d{4}/i);
-                                    if(dateMatch) globalDate = dateMatch[0];
-
-                                    let lowerTitle = title.toLowerCase();
-                                    if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
-                                        skipSection = true;
-                                        continue;
-                                    } else {
-                                        skipSection = false;
-                                    }
-
-                                    let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
-                                    allTableRowsHTML.push(rowHTML);
-                                    continue;
-                                }
-
-                                if (skipSection) continue;
-                                if (colZero === '' || isNaN(colZero)) continue;
-
-                                let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
-                                let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
-                                
-                                let pemVal = row[colIdx.pem] !== undefined && row[colIdx.pem] !== null ? row[colIdx.pem] : '-';
-                                let sisaVal = row[colIdx.sisa] !== undefined && row[colIdx.sisa] !== null ? row[colIdx.sisa] : '-';
-                                let permVal = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm] : '-';
-                                
-                                let lpjVal = row[colIdx.slpj];
-                                let sreqVal = row[colIdx.sreq];
-                                
-                                let ketVal = row[colIdx.ket] !== undefined && row[colIdx.ket] !== null ? row[colIdx.ket].toString().trim() : '-';
-                                let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
-                                let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
-
-                                let formatRp = (val) => {
-                                    if (val === '-' || val === '' || val === null || val === undefined) return '-';
-                                    let cleanStr = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
-                                    if (cleanStr === '' || cleanStr === '-') return '-';
-                                    let numVal = parseFloat(cleanStr);
-                                    return isNaN(numVal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
-                                };
-
-                                let pemStr = formatRp(pemVal);
-                                let sisaStr = formatRp(sisaVal);
-                                let permStr = formatRp(permVal);
-
-                                let formatCheck = (val) => {
-                                    if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                    let strVal = String(val).toUpperCase();
-                                    let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
-                                    
-                                    if (isTrue) {
-                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-600 border border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
-                                    } else {
-                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                    }
-                                };
-                                let lpjHTML = formatCheck(lpjVal);
-                                let sreqHTML = formatCheck(sreqVal);
-
-                                let rawProg = (progVal || '').toString().toLowerCase();
-                                let isPaid = rawProg.includes('paid');
-                                let isReview = rawProg.includes('review') || rawProg.includes('dirops');
-                                let progHTML = '-';
-
-                                if (isPaid) {
-                                    progHTML = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] inline-block whitespace-nowrap">${progVal}</span>`;
-                                } else if (isReview) {
-                                    progHTML = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide bg-purple-500/30 text-purple-300 border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.2)] inline-block whitespace-nowrap">${progVal}</span>`;
-                                } else if (progVal !== '-' && progVal !== '') {
-                                    progHTML = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide bg-slate-500/30 text-slate-300 border border-slate-400/50 shadow-sm inline-block whitespace-nowrap">${progVal}</span>`;
-                                }
-
-                                let dokHTML = '-';
-                                if (dokVal !== '-' && dokVal !== '') {
-                                    const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                    if (urlRegex.test(dokVal)) {
-                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold tracking-wide bg-pink-500/20 text-pink-300 border border-pink-400/50 shadow-[0_0_10px_rgba(236,72,153,0.2)] hover:bg-pink-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
-                                    } else {
-                                        const safeName = dokVal.replace(/'/g, "\\'");
-                                        dokHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-pink-300 font-bold hover:text-pink-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px] md:max-w-[250px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}">
-                                                <svg class="w-4 h-4 md:w-5 md:h-5 text-pink-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 
-                                                <span class="underline decoration-pink-500/50 underline-offset-4 truncate">${dokVal}</span>
-                                            </button>
-                                        `;
-                                    }
-                                }
-
-                                if (isPaid || isReview) {
-                                    let taskItemHTML = `
-                                        <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-black/50 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-300 gap-4 cursor-default group relative overflow-hidden backdrop-blur-sm">
-                                            <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] ${isPaid ? 'bg-emerald-500 text-emerald-400' : 'bg-purple-500 text-purple-400'}"></div>
-                                            <div class="flex-1 min-w-0 pl-3">
-                                                <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-${isPaid ? 'emerald' : 'purple'}-200 transition-colors truncate drop-shadow-md" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-400 font-medium ml-1">(${wilVal})</span></p>
-                                                <p class="text-[10px] md:text-xs text-gray-300 mb-2 truncate font-medium drop-shadow-sm" title="${ketVal}">Ket: <span class="text-pink-300 font-bold">${ketVal}</span></p>
-                                                <p class="text-[11px] md:text-sm font-black text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]">${permStr}</p>
-                                            </div>
-                                            <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-purple-500/30 text-purple-300 border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.2)]'} whitespace-nowrap uppercase flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
-                                                ${progVal}
-                                            </span>
-                                        </div>
-                                    `;
-
-                                    if (isPaid) {
-                                        paidCount++;
-                                        paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                    } else {
-                                        unpaidCount++;
-                                        unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                    }
-                                }
-
-                                let cellData = [ colZero, croVal, wilVal, pemStr, sisaStr, permStr, lpjHTML, sreqHTML, ketVal, progHTML, dokHTML ];
-
-                                let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
-                                cellData.forEach((cellVal, c) => {
-                                    let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
-                                    if (c === 8) cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-white font-bold min-w-[250px] md:min-w-[300px] max-w-[400px] md:max-w-[500px] whitespace-normal leading-relaxed drop-shadow-md";
-                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
-                                });
-                                rowHTML += '</tr>';
-                                allTableRowsHTML.push(rowHTML);
-                            }
-
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
-                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
-
-                            if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas.</p></div>`;
-                            }
-                            if (unpaidContainer.innerHTML === '') {
-                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review.</p></div>`;
-                            }
-
-                            if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
-                            } else {
-                                renderTablePage();
-                            }
-                            
-                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
-                            
-                            const dateDisplay = document.getElementById('top-date-display');
-                            const dateValueEl = document.getElementById('top-date-value');
-                            if (globalDate && globalDate !== '-') {
-                                dateValueEl.innerText = globalDate;
                                 dateDisplay.classList.remove('hidden');
                             } else {
                                 dateDisplay.classList.add('hidden');
@@ -1434,11 +1042,8 @@
                     });
             }
 
-            // Render menu sidebar pertama kali
             renderMenu();
-            
-            // Bypass Auth (Langsung panggil fungsi fetch dan interval)
-            checkAuth(); // Menjalankan logika otentikasi seperti yang diminta
+            checkAuth();
             
         });
     </script>
