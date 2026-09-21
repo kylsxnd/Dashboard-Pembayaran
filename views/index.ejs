@@ -126,8 +126,8 @@
          ======================================================== -->
     <div id="auth-page" class="fixed inset-0 z-[200] flex items-center justify-center bg-zinc-950/40 backdrop-blur-xl transition-all duration-700">
         <div id="auth-card" class="bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 w-11/12 max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group transform transition-all duration-500">
-            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
 
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-24 h-24 flex items-center justify-center mb-3">
@@ -149,10 +149,10 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
                     <input type="password" id="login-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder-gray-600" placeholder="••••••••">
                 </div>
-                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
                     MASUK SEKARANG
                 </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline cursor-pointer focus:outline-none">Daftar di sini</button></p>
+                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline">Daftar di sini</button></p>
             </form>
 
             <!-- FORM REGISTER -->
@@ -169,10 +169,10 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
                     <input type="password" id="reg-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="Minimal 6 karakter">
                 </div>
-                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
                     DAFTAR AKUN BARU
                 </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline cursor-pointer focus:outline-none">Masuk</button></p>
+                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline">Masuk</button></p>
             </form>
         </div>
     </div>
@@ -197,7 +197,7 @@
                         <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-0.5">Executive On-Farm</p>
                     </div>
                 </div>
-                <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-300 hover:text-white rounded-lg bg-white/10 focus:outline-none cursor-pointer">
+                <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-300 hover:text-white rounded-lg bg-white/10 focus:outline-none">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -220,7 +220,7 @@
                         <p id="profile-email" class="text-[10px] text-gray-400 truncate">pic.ho@agrinas.id</p>
                     </div>
                 </div>
-                <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0 cursor-pointer" title="Keluar">
+                <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0" title="Keluar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </button>
             </div>
@@ -229,7 +229,7 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
             <header class="h-16 md:h-20 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-zinc-950/40 backdrop-blur-xl relative z-10 w-full shadow-md">
                 <div class="flex items-center gap-2 md:gap-4">
-                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white transition-colors focus:outline-none shadow-sm cursor-pointer">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white transition-colors focus:outline-none shadow-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/30 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
@@ -238,7 +238,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 md:gap-4">
-                    <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white hover:bg-white/20 hover:shadow-lg transition-all duration-300 group cursor-pointer" title="Ganti Tema">
+                    <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white hover:bg-white/20 hover:shadow-lg transition-all duration-300 group" title="Ganti Tema">
                         <svg class="w-4 h-4 group-hover:scale-110 transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                     </button>
                     <div class="bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-400/30 text-[9px] md:text-[10px] font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-lg flex items-center shadow-[0_0_20px_rgba(16,185,129,0.3)] tracking-wider">
@@ -258,23 +258,35 @@
                             Sinkronisasi langsung dari Google Sheets.
                         </p>
                     </div>
-                    <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end flex-wrap">
-                        
-                        <!-- ================= FILTER BULAN (Dinamis SEMUA MENU) ================= -->
-                        <div id="month-filter-container" class="hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 order-last md:order-none">
-                            <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-white pointer-events-none drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <select id="month-filter" class="bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
-                                <!-- Options di-inject JS -->
-                            </select>
-                            <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-white absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                        
+                    <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end">
                         <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/40 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/20 shadow-lg whitespace-nowrap" id="last-update">
                             Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-md">--:--:--</span>
                         </div>
                         <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap">
                             TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
                         </div>
+
+                        <!-- ================= DROPDOWN BULAN UNIVERSAL ================= -->
+                        <div id="universal-month-filter-container" class="flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)]">
+                            <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <select id="universal-month-filter" class="bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
+                                <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
+                                <option value="JANUARI" class="bg-zinc-900 text-white">Januari</option>
+                                <option value="FEBRUARI" class="bg-zinc-900 text-white">Februari</option>
+                                <option value="MARET" class="bg-zinc-900 text-white">Maret</option>
+                                <option value="APRIL" class="bg-zinc-900 text-white">April</option>
+                                <option value="MEI" class="bg-zinc-900 text-white">Mei</option>
+                                <option value="JUNI" class="bg-zinc-900 text-white">Juni</option>
+                                <option value="JULI" class="bg-zinc-900 text-white">Juli</option>
+                                <option value="AGUSTUS" class="bg-zinc-900 text-white">Agustus</option>
+                                <option value="SEPTEMBER" class="bg-zinc-900 text-white">September</option>
+                                <option value="OKTOBER" class="bg-zinc-900 text-white">Oktober</option>
+                                <option value="NOVEMBER" class="bg-zinc-900 text-white">November</option>
+                                <option value="DESEMBER" class="bg-zinc-900 text-white">Desember</option>
+                            </select>
+                            <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+
                     </div>
                 </div>
 
@@ -363,15 +375,15 @@
 
     <script>
         // Global State untuk Filter Bulan Semua Sheet 
-        window.selectedMonthFilter = 'all';
+        window.selectedMonthFilter = 'ALL';
 
         document.addEventListener('DOMContentLoaded', () => {
 
             // Event listener Dropdown Bulan Universal
-            const filterEl = document.getElementById('month-filter');
+            const filterEl = document.getElementById('universal-month-filter');
             if (filterEl) {
                 filterEl.addEventListener('change', (e) => {
-                    window.selectedMonthFilter = e.target.value.toLowerCase();
+                    window.selectedMonthFilter = e.target.value.toUpperCase();
                     fetchJsonData(true); 
                 });
             }
@@ -604,18 +616,34 @@
                         currentActiveSheet = sheetName;
                         currentPage = 1;
                         
-                        // Kembalikan ke SEMUA BULAN kalau pindah sheet
-                        window.selectedMonthFilter = 'all';
-                        const filterEl = document.getElementById('month-filter');
-                        if (filterEl) filterEl.value = 'all';
+                        // Kembalikan filter ke SEMUA BULAN kalau pindah sheet
+                        window.selectedMonthFilter = 'ALL';
+                        const filterEl = document.getElementById('universal-month-filter');
+                        if (filterEl) filterEl.value = 'ALL';
                         
-                        // Update Icon di Logo Kiri Atas sesuai menu
+                        // Ubah warna container Filter Dropdown sesuai menu
+                        const filterContainer = document.getElementById('universal-month-filter-container');
+                        const filterIcon = document.getElementById('month-filter-icon');
+                        const filterArrow = document.getElementById('month-filter-arrow');
+
                         if (sheetName === 'PDO') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-emerald-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-emerald-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Petty Cash') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         }
 
                         renderMenu(); 
@@ -753,31 +781,6 @@
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
 
-                        // Reset Color Dropdown Theme berdasarkan Sheet
-                        const filterContainer = document.getElementById('month-filter-container');
-                        const filterSelect = document.getElementById('month-filter');
-                        if (filterContainer && filterSelect) {
-                            filterContainer.classList.remove('hidden');
-                            filterContainer.classList.add('flex');
-                            
-                            if (currentActiveSheet === 'PDO') {
-                                filterContainer.className = 'hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 order-last md:order-none flex border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)]';
-                                filterSelect.className = 'w-full bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 drop-shadow-md text-center text-sky-400';
-                                document.getElementById('month-filter-icon').className = 'w-3.5 h-3.5 md:w-4 md:h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]';
-                                document.getElementById('month-filter-arrow').className = 'w-3 h-3 md:w-4 md:h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform text-sky-400 drop-shadow-md';
-                            } else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                                filterContainer.className = 'hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 order-last md:order-none flex border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)]';
-                                filterSelect.className = 'w-full bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 drop-shadow-md text-center text-emerald-400';
-                                document.getElementById('month-filter-icon').className = 'w-3.5 h-3.5 md:w-4 md:h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]';
-                                document.getElementById('month-filter-arrow').className = 'w-3 h-3 md:w-4 md:h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform text-emerald-400 drop-shadow-md';
-                            } else if (currentActiveSheet === 'Petty Cash') {
-                                filterContainer.className = 'hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 order-last md:order-none flex border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)]';
-                                filterSelect.className = 'w-full bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 drop-shadow-md text-center text-pink-400';
-                                document.getElementById('month-filter-icon').className = 'w-3.5 h-3.5 md:w-4 md:h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]';
-                                document.getElementById('month-filter-arrow').className = 'w-3 h-3 md:w-4 md:h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform text-pink-400 drop-shadow-md';
-                            }
-                        }
-
                         // =========================================================
                         // KONDISI 1: PDO
                         // =========================================================
@@ -859,50 +862,17 @@
                             let paidCount = 0;
                             let unpaidCount = 0;
 
-                            // FILTER BULAN: Kumpulkan daftar bulan yang ada
-                            let availableMonths = [];
-                            for (let i = 7; i < data.length; i++) {
-                                let row = data[i];
-                                if (!row) continue;
-                                let dateCell = row[1];
-                                if (dateCell) {
-                                    let dateStr = dateCell.toString();
-                                    let monthMatch = dateStr.match(/[A-Za-z]+\s\d{4}/);
-                                    if (monthMatch && !availableMonths.includes(monthMatch[0])) {
-                                        availableMonths.push(monthMatch[0]);
-                                    }
-                                }
-                            }
-
-                            // Kalau user belum filter, default ke ALL
-                            if (availableMonths.length > 0) {
-                                if (!window.selectedMonthFilter || (!availableMonths.map(m=>m.toLowerCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'all')) {
-                                    window.selectedMonthFilter = 'all'; 
-                                }
-                            }
-
-                            let optionsHTML = '<option value="all" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
-                            availableMonths.forEach(m => {
-                                let val = m.toLowerCase();
-                                let selected = (val === window.selectedMonthFilter) ? 'selected' : '';
-                                optionsHTML += `<option value="${val}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
-                            });
-                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
-
-
                             for (let i = 7; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
                                 if (colZero === '' || isNaN(colZero)) continue;
 
-                                let dateCell = row[1] ? row[1].toString().toLowerCase() : '';
+                                let dateCell = row[1] ? row[1].toString().toUpperCase() : '';
                                 
-                                // LOGIKA FILTER BULAN
-                                if (window.selectedMonthFilter !== 'all') {
-                                    if (!dateCell.includes(window.selectedMonthFilter)) {
-                                        continue; 
-                                    }
+                                // LOGIKA FILTER BULAN UNIVERSAL
+                                if (window.selectedMonthFilter !== 'ALL') {
+                                    if (!dateCell.includes(window.selectedMonthFilter)) continue; 
                                 }
 
                                 let taskCol = row[2] !== undefined && row[2] !== null ? row[2].toString().trim() : '';
@@ -988,10 +958,10 @@
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada data yang lunas di bulan ini.</p></div>`;
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas di bulan ini.</p></div>`;
                             }
                             if (unpaidContainer.innerHTML === '') {
-                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Tidak ada data yang pending di bulan ini.</p></div>`;
+                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Tidak ada task yang pending di bulan ini.</p></div>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
@@ -1005,11 +975,17 @@
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
-                            if (dateValue && dateValue !== '-') {
-                                dateValueEl.innerText = dateValue;
+                            if (window.selectedMonthFilter !== 'ALL') {
+                                dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
                                 dateDisplay.classList.remove('hidden');
                             } else {
-                                dateDisplay.classList.add('hidden');
+                                let dateValue = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.date] !== undefined ? formatCellDate(data[pdoSumRowData][pdoSumIdx.date]) : "-";
+                                if (dateValue && dateValue !== '-') {
+                                    dateValueEl.innerText = dateValue;
+                                    dateDisplay.classList.remove('hidden');
+                                } else {
+                                    dateDisplay.classList.add('hidden');
+                                }
                             }
                         }
                         
@@ -1042,7 +1018,6 @@
 
                             let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
-                            let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
                             renderSummaryCards(chartLabels, chartValues);
@@ -1063,35 +1038,6 @@
 
                             let paidCount = 0;
 
-                            // LOGIKA FILTER BULAN UNTUK MONITORING
-                            let monitoringAvailableMonths = [];
-                            for (let i = 7; i < data.length; i++) {
-                                let row = data[i];
-                                if (!row) continue;
-                                let dateCell = row[1];
-                                if (dateCell) {
-                                    let dateStr = dateCell.toString();
-                                    let monthMatch = dateStr.match(/[A-Za-z]+\s\d{4}/);
-                                    if (monthMatch && !monitoringAvailableMonths.includes(monthMatch[0])) {
-                                        monitoringAvailableMonths.push(monthMatch[0]);
-                                    }
-                                }
-                            }
-
-                            if (monitoringAvailableMonths.length > 0) {
-                                if (!window.selectedMonthFilter || (!monitoringAvailableMonths.map(m=>m.toLowerCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'all')) {
-                                    window.selectedMonthFilter = 'all'; 
-                                }
-                            }
-
-                            let optionsHTML = '<option value="all" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
-                            monitoringAvailableMonths.forEach(m => {
-                                let val = m.toLowerCase();
-                                let selected = (val === window.selectedMonthFilter) ? 'selected' : '';
-                                optionsHTML += `<option value="${val}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
-                            });
-                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
-
                             for (let i = 7; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
@@ -1101,11 +1047,9 @@
                                 let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
                                 if (vendorCol === '' || vendorCol === 'nan') continue;
 
-                                let dateCell = row[1] ? row[1].toString().toLowerCase() : '';
-                                if (window.selectedMonthFilter !== 'all') {
-                                    if (!dateCell.includes(window.selectedMonthFilter)) {
-                                        continue; 
-                                    }
+                                let dateCell = row[1] ? row[1].toString().toUpperCase() : '';
+                                if (window.selectedMonthFilter !== 'ALL') {
+                                    if (!dateCell.includes(window.selectedMonthFilter)) continue; 
                                 }
 
                                 let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
@@ -1199,11 +1143,12 @@
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Pembayaran Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada data yang lunas di bulan ini.</p></div>`;
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas di bulan ini.</p></div>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
                             }
@@ -1213,11 +1158,17 @@
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
-                            if (dateValue && dateValue !== '-') {
-                                dateValueEl.innerText = dateValue;
+                            if (window.selectedMonthFilter !== 'ALL') {
+                                dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
                                 dateDisplay.classList.remove('hidden');
                             } else {
-                                dateDisplay.classList.add('hidden');
+                                let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
+                                if (dateValue && dateValue !== '-') {
+                                    dateValueEl.innerText = dateValue;
+                                    dateDisplay.classList.remove('hidden');
+                                } else {
+                                    dateDisplay.classList.add('hidden');
+                                }
                             }
                         }
 
@@ -1285,43 +1236,11 @@
                                 }
                             }
 
-                            // FILTER BULAN UNTUK PETTY CASH
-                            let availableMonths = [];
-                            for (let r = 4; r < data.length; r++) {
-                                let row = data[r];
-                                if (!row || row.every(val => val === null || val === '')) continue;
-                                let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
-                                let fullText = row.join(' ').replace(/,/g, '').trim();
-
-                                if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
-                                    let title = row.find(v => v !== null && v !== '') || fullText;
-                                    let dateMatch = title.match(/Bulan\s+([A-Za-z]+)\s+\d{4}/i);
-                                    if(dateMatch) {
-                                        let m = dateMatch[1];
-                                        if (!availableMonths.includes(m)) availableMonths.push(m);
-                                    }
-                                }
-                            }
-
-                            if (availableMonths.length > 0) {
-                                if (!window.selectedMonthFilter || (!availableMonths.map(m=>m.toLowerCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'all')) {
-                                    window.selectedMonthFilter = 'all'; 
-                                }
-                            }
-
-                            let optionsHTML = '<option value="all" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
-                            availableMonths.forEach(m => {
-                                let val = m.toLowerCase();
-                                let selected = (val === window.selectedMonthFilter) ? 'selected' : '';
-                                optionsHTML += `<option value="${val}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
-                            });
-                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
-
                             let skipSection = false;
                             let paidCount = 0;
                             let unpaidCount = 0;
                             let globalDate = "-"; 
-                            let currentMonthSection = ""; 
+                            let currentMonthSection = "";
 
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
@@ -1336,7 +1255,7 @@
                                     let dateMatch = title.match(/Bulan\s+([A-Za-z]+)\s+(\d{4})/i);
                                     if(dateMatch) {
                                         globalDate = `Bulan ${dateMatch[1]} ${dateMatch[2]}`;
-                                        currentMonthSection = dateMatch[1].toLowerCase();
+                                        currentMonthSection = dateMatch[1].toUpperCase();
                                     }
 
                                     let lowerTitle = title.toLowerCase();
@@ -1347,11 +1266,11 @@
                                         skipSection = false;
                                     }
 
-                                    if (window.selectedMonthFilter === 'all' || currentMonthSection === window.selectedMonthFilter) {
+                                    if (window.selectedMonthFilter === 'ALL' || currentMonthSection === window.selectedMonthFilter) {
                                         let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
                                         allTableRowsHTML.push(rowHTML);
-                                        
-                                        if (window.selectedMonthFilter === 'all') {
+
+                                        if (window.selectedMonthFilter === 'ALL') {
                                             let monthHeaderHTML = `
                                                 <div class="flex items-center gap-3 my-2 opacity-80">
                                                     <div class="h-px bg-white/20 flex-1"></div>
@@ -1367,8 +1286,12 @@
                                 }
 
                                 if (skipSection) continue;
-                                if (window.selectedMonthFilter !== 'all' && currentMonthSection !== window.selectedMonthFilter) continue;
                                 if (colZero === '' || isNaN(colZero)) continue;
+
+                                // LOGIKA FILTER BULAN PETTY CASH
+                                if (window.selectedMonthFilter !== 'ALL' && currentMonthSection !== window.selectedMonthFilter) {
+                                    continue;
+                                }
 
                                 let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
                                 let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
@@ -1487,6 +1410,7 @@
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
                             }
@@ -1496,11 +1420,16 @@
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
-                            if (globalDate && globalDate !== '-') {
-                                dateValueEl.innerText = globalDate;
+                            if (window.selectedMonthFilter !== 'ALL') {
+                                dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
                                 dateDisplay.classList.remove('hidden');
                             } else {
-                                dateDisplay.classList.add('hidden');
+                                if (globalDate && globalDate !== '-') {
+                                    dateValueEl.innerText = globalDate;
+                                    dateDisplay.classList.remove('hidden');
+                                } else {
+                                    dateDisplay.classList.add('hidden');
+                                }
                             }
                         }
 
