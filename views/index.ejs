@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* ========================================================
+           BACKGROUND IMAGE SETTINGS
+           ======================================================== */
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #09090b; 
@@ -173,11 +176,13 @@
     </div>
 
     <!-- ========================================================
-         WRAPPER DASHBOARD
+         WRAPPER DASHBOARD (Disembunyikan saat belum login)
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
+        
         <div id="mobile-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
+        <!-- SIDEBAR -->
         <aside id="sidebar" class="w-72 bg-zinc-900/60 backdrop-blur-2xl border-r border-white/10 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-[4px_0_24px_rgba(0,0,0,0.5)] md:shadow-none">
             <div class="p-6 border-b border-white/10 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
@@ -250,9 +255,21 @@
                         </p>
                     </div>
                     <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end">
+                        
+                        <!-- ================= FILTER BULAN (Dinamis PDO & Petty Cash) ================= -->
+                        <div id="month-filter-container" class="hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border border-white/20 shadow-lg cursor-pointer hover:bg-black/80 transition-all group z-20">
+                            <!-- Icon & Line Color di-manage via JS sesuai Theme Active -->
+                            <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <select id="month-filter" class="bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md">
+                                <!-- Options diinjeksi via JS -->
+                            </select>
+                            <svg id="month-filter-arrow" class="w-3 h-3 text-white absolute right-3 pointer-events-none group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+
                         <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/40 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/20 shadow-lg whitespace-nowrap" id="last-update">
                             Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-md">--:--:--</span>
                         </div>
+                        
                         <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap">
                             TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
                         </div>
@@ -296,6 +313,7 @@
                     Sheet ini tidak memiliki ringkasan (Total/Summary).
                 </div>
 
+                <!-- Tabel Data Utama -->
                 <div class="bg-zinc-900/40 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col opacity-0 animate-fade-in-up delay-200">
                     <div class="px-5 md:px-8 py-5 md:py-6 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
                         <h3 class="text-white font-bold text-xs md:text-sm tracking-widest uppercase flex items-center gap-3 drop-shadow-lg">
@@ -344,6 +362,15 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // Global State untuk Filter Bulan (Bisa dipakai PDO & Petty Cash)
+            window.selectedMonthFilter = null;
+
+            // Event listener Dropdown
+            document.getElementById('month-filter').addEventListener('change', (e) => {
+                window.selectedMonthFilter = e.target.value;
+                fetchJsonData(true); // reload table silently tanpa loading animasi
+            });
 
             // =========================================================
             // 1. SISTEM AUTENTIKASI 
@@ -571,7 +598,17 @@
                     btn.onclick = () => {
                         currentActiveSheet = sheetName;
                         currentPage = 1;
+                        window.selectedMonthFilter = null; // Reset filter pas pindah sheet
                         
+                        // Update Icon di Logo Kiri Atas sesuai menu
+                        if (sheetName === 'PDO') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
+                        } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
+                        } else if (sheetName === 'Petty Cash') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
+                        }
+
                         renderMenu(); 
                         fetchJsonData();
                         
@@ -707,8 +744,13 @@
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
 
+                        // Reset display filter dan date bawaan tiap pindah sheet
+                        document.getElementById('month-filter-container').classList.add('hidden');
+                        document.getElementById('month-filter-container').classList.remove('flex');
+                        document.getElementById('top-date-display').classList.add('hidden');
+
                         // =========================================================
-                        // KONDISI 1: PDO
+                        // KONDISI 1: PDO (DENGAN FILTER BULAN)
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
                             pdoBreakdown.classList.remove('hidden');
@@ -766,7 +808,6 @@
                                 "Progres Aproved Kadiv dan Dir Ops", "Verifikasi Pajak", "Umum", "Keuangan", "Paid", "Diperoses di Direktorat Terkait"
                             ];
                             let chartValues = [tTask, tDoc, tSurat, tRev, tAppr, tPajak, tUmum, tKeu, tPaid, tDip];
-                            let dateValue = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.date] !== undefined ? formatCellDate(data[pdoSumRowData][pdoSumIdx.date]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
                             noSummaryMsg.classList.add('hidden');
@@ -785,6 +826,48 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
+                            // LOGIKA FILTER BULAN UNTUK PDO
+                            let pdoAvailableMonths = [];
+                            
+                            // Ambil list bulan unik dari kolom ke-2 (Date after diproses QC)
+                            for (let i = 7; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row) continue;
+                                let dateCell = row[1];
+                                if (dateCell) {
+                                    let dateStr = dateCell.toString();
+                                    // Deteksi pola teks bulan spt "Agustus", "September 2026"
+                                    let monthMatch = dateStr.match(/[A-Za-z]+\s\d{4}/);
+                                    if (monthMatch && !pdoAvailableMonths.includes(monthMatch[0])) {
+                                        pdoAvailableMonths.push(monthMatch[0]);
+                                    }
+                                }
+                            }
+
+                            // Jadikan bulan terakhir sebagai default kalau belum difilter
+                            if (pdoAvailableMonths.length > 0) {
+                                if (!window.selectedMonthFilter || (!pdoAvailableMonths.includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = pdoAvailableMonths[pdoAvailableMonths.length - 1]; 
+                                }
+                            }
+
+                            const filterContainer = document.getElementById('month-filter-container');
+                            const filterSelect = document.getElementById('month-filter');
+                            filterContainer.classList.remove('hidden');
+                            filterContainer.classList.add('flex');
+                            
+                            // Ganti warna Dropdown Container buat PDO
+                            filterContainer.className = 'hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 flex border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)]';
+                            document.getElementById('month-filter-icon').className = 'w-3.5 h-3.5 md:w-4 md:h-4 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] text-sky-400';
+                            document.getElementById('month-filter-arrow').className = 'w-3 h-3 absolute right-3 pointer-events-none group-hover:translate-y-0.5 transition-transform text-sky-400';
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-800 text-white font-bold">SEMUA BULAN</option>';
+                            pdoAvailableMonths.forEach(m => {
+                                let selected = (m === window.selectedMonthFilter) ? 'selected' : '';
+                                optionsHTML += `<option value="${m}" class="bg-zinc-800 text-white font-bold" ${selected}>${m}</option>`;
+                            });
+                            filterSelect.innerHTML = optionsHTML;
+
                             let paidCount = 0;
                             let unpaidCount = 0;
 
@@ -796,6 +879,13 @@
 
                                 let taskCol = row[2] !== undefined && row[2] !== null ? row[2].toString().trim() : '';
                                 if (taskCol === '' || taskCol === 'nan') continue;
+
+                                let dateCell = row[1] ? row[1].toString() : '';
+
+                                // FILTER DATA: Lewati jika tidak match dengan dropdown bulan
+                                if (window.selectedMonthFilter !== 'ALL' && !dateCell.includes(window.selectedMonthFilter)) {
+                                    continue;
+                                }
 
                                 let paidCell = row[11];
                                 let isPaid = paidCell === true || paidCell === '1' || paidCell === 1 || String(paidCell).toUpperCase() === 'TRUE';
@@ -877,25 +967,16 @@
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas.</p></div>`;
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas di bulan ini.</p></div>`;
+                            }
+                            if (unpaidContainer.innerHTML === '') {
+                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Tidak ada task yang pending di bulan ini.</p></div>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
                             } else {
                                 renderTablePage();
-                            }
-                            
-                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
-                            
-                            const dateDisplay = document.getElementById('top-date-display');
-                            const dateValueEl = document.getElementById('top-date-value');
-                            if (dateValue && dateValue !== '-') {
-                                dateValueEl.innerText = dateValue;
-                                dateDisplay.classList.remove('hidden');
-                            } else {
-                                dateDisplay.classList.add('hidden');
                             }
                         }
                         
@@ -926,7 +1007,6 @@
 
                             let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
-                            let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
                             renderSummaryCards(chartLabels, chartValues);
@@ -995,12 +1075,10 @@
                                 for (let c = 0; c < 16; c++) {
                                     let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
                                     
-                                    if (cellVal !== '-') {
-                                        if (c === 1 || c === 7 || c === 14) {
-                                            cellVal = formatCellDate(cellVal);
-                                        } else {
-                                            cellVal = cellVal.toString().trim();
-                                        }
+                                    if (cellVal !== '-' && (c === 1 || c === 7 || c === 14) {
+                                        cellVal = formatCellDate(cellVal);
+                                    } else {
+                                        cellVal = cellVal.toString().trim();
                                     }
                                     if (cellVal === 'nan' || cellVal === '') cellVal = '-';
 
@@ -1058,19 +1136,10 @@
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                             document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
-                            
-                            const dateDisplay = document.getElementById('top-date-display');
-                            const dateValueEl = document.getElementById('top-date-value');
-                            if (globalDate && globalDate !== '-') {
-                                dateValueEl.innerText = globalDate;
-                                dateDisplay.classList.remove('hidden');
-                            } else {
-                                dateDisplay.classList.add('hidden');
-                            }
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH (DENGAN PEMISAH BULAN)
+                        // KONDISI 3: PETTY CASH (DENGAN FILTER BULAN)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
@@ -1101,44 +1170,52 @@
 
                             let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
 
-                            for (let r = 0; r < Math.min(10, data.length); r++) {
-                                if (!data[r]) continue;
-                                let rowStr = data[r].join('').toLowerCase();
-                                
-                                if (rowStr.includes('cro') && rowStr.includes('wilayah') && rowStr.includes('keterangan')) {
-                                    let headerRow = data[r];
-                                    for(let c = 0; c < headerRow.length; c++) {
-                                        let str = (headerRow[c] || '').toString().toLowerCase().trim();
-                                        if(!str) continue;
-                                        if(str === 'no') colIdx.no = c;
-                                        else if(str === 'cro') colIdx.cro = c;
-                                        else if(str === 'wilayah') colIdx.wil = c;
-                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c;
-                                        else if(str.includes('status lpj')) colIdx.slpj = c;
-                                        else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
-                                        else if(str === 'keterangan' || str.includes('keterangan')) colIdx.ket = c;
-                                        else if(str === 'progress' || str.includes('progress')) colIdx.prog = c;
-                                        else if(str === 'dokumen' || str.includes('dokumen')) colIdx.dok = c;
+                            // FILTER BULAN UNTUK PETTY CASH
+                            let availableMonths = [];
+                            for (let r = 4; r < data.length; r++) {
+                                let row = data[r];
+                                if (!row || row.every(val => val === null || val === '')) continue;
+                                let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
+                                let fullText = row.join(' ').replace(/,/g, '').trim();
+
+                                if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
+                                    let title = row.find(v => v !== null && v !== '') || fullText;
+                                    if (title && !availableMonths.includes(title)) {
+                                        availableMonths.push(title);
                                     }
-                                    
-                                    if (data[r+1]) {
-                                        let subHeaderRow = data[r+1];
-                                        for(let c = 0; c < subHeaderRow.length; c++) {
-                                            let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
-                                            if (str.includes('pemakaian')) colIdx.pem = c;
-                                            else if (str.includes('sisa petty')) colIdx.sisa = c; 
-                                        }
-                                    }
-                                    break;
                                 }
                             }
+
+                            if (availableMonths.length > 0) {
+                                if (!window.selectedMonthFilter || (!availableMonths.includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = availableMonths[availableMonths.length - 1]; 
+                                }
+                            }
+
+                            const filterContainer = document.getElementById('month-filter-container');
+                            const filterSelect = document.getElementById('month-filter');
+                            filterContainer.classList.remove('hidden');
+                            filterContainer.classList.add('flex');
+                            
+                            // Ganti warna Dropdown Container buat Petty Cash
+                            filterContainer.className = 'hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 flex border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)]';
+                            document.getElementById('month-filter-icon').className = 'w-3.5 h-3.5 md:w-4 md:h-4 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] text-pink-400';
+                            document.getElementById('month-filter-arrow').className = 'w-3 h-3 absolute right-3 pointer-events-none group-hover:translate-y-0.5 transition-transform text-pink-400';
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-800 text-white font-bold">SEMUA BULAN</option>';
+                            availableMonths.forEach(m => {
+                                let selected = (m === window.selectedMonthFilter) ? 'selected' : '';
+                                let displayName = m;
+                                let match = m.match(/Bulan\s+(.*)/i);
+                                if (match && match[1]) displayName = match[1];
+                                optionsHTML += `<option value="${m}" class="bg-zinc-800 text-white font-bold" ${selected}>${displayName}</option>`;
+                            });
+                            filterSelect.innerHTML = optionsHTML;
 
                             let skipSection = false;
                             let paidCount = 0;
                             let unpaidCount = 0;
-                            
-                            // Variabel pelacak bulan (dikotak list)
-                            let currentMonthSection = "";
+                            let currentMonthSection = ""; 
 
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
@@ -1147,20 +1224,11 @@
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                // DETEKSI HEADER BULAN (Ex: "Laporan Pengajuan Petty Cash Bulan Agustus 2026")
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
-                                    
-                                    currentMonthSection = title; // Simpan judul bulan yang lagi aktif
+                                    currentMonthSection = title;
 
-                                    let lowerTitle = title.toLowerCase();
-                                    if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
-                                        skipSection = true;
-                                        continue;
-                                    } else {
-                                        skipSection = false;
-                                        
-                                        // CETAK HEADER BULAN DI DALAM KOTAK TASK PAID / UNPAID
+                                    if (window.selectedMonthFilter === 'ALL') {
                                         let monthHeaderHTML = `
                                             <div class="flex items-center gap-3 my-2 opacity-80">
                                                 <div class="h-px bg-white/20 flex-1"></div>
@@ -1170,15 +1238,17 @@
                                         `;
                                         paidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
                                         unpaidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
-                                    }
 
-                                    // HEADER BULAN UNTUK TABEL UTAMA
-                                    let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
-                                    allTableRowsHTML.push(rowHTML);
+                                        let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
+                                        allTableRowsHTML.push(rowHTML);
+                                    }
                                     continue;
                                 }
 
-                                if (skipSection) continue;
+                                if (window.selectedMonthFilter !== 'ALL' && currentMonthSection !== window.selectedMonthFilter) {
+                                    continue;
+                                }
+
                                 if (colZero === '' || isNaN(colZero)) continue;
 
                                 let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
@@ -1286,24 +1356,24 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            // Bersihin elemen kosong jika tidak ada data di satu bulan tertentu
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<div class="p-5 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas.</p></div>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada task yang sedang di-review.</p></div>`;
-
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
 
+                            if (paidContainer.innerHTML === '') {
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas di bulan ini.</p></div>`;
+                            }
+                            if (unpaidContainer.innerHTML === '') {
+                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review di bulan ini.</p></div>`;
+                            }
+
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                             document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
-                            
-                            const dateDisplay = document.getElementById('top-date-display');
-                            dateDisplay.classList.add('hidden'); // Sembunyikan tanggal global karena udah dipecah per list
                         }
 
                         // =========================================================
@@ -1373,8 +1443,8 @@
             // Render menu sidebar pertama kali
             renderMenu();
             
-            // Jalankan cek autentikasi pertama kali
-            checkAuth();
+            // Bypass Auth (Langsung panggil fungsi fetch dan interval)
+            checkAuth(); // Menjalankan logika otentikasi seperti yang diminta
             
         });
     </script>
