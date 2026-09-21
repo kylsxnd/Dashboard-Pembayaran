@@ -126,8 +126,8 @@
          ======================================================== -->
     <div id="auth-page" class="fixed inset-0 z-[200] flex items-center justify-center bg-zinc-950/40 backdrop-blur-xl transition-all duration-700">
         <div id="auth-card" class="bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 w-11/12 max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group transform transition-all duration-500">
-            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
 
             <div class="flex flex-col items-center mb-8 relative z-10">
                 <div class="w-24 h-24 flex items-center justify-center mb-3">
@@ -139,6 +139,7 @@
 
             <div id="auth-error" class="hidden mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs text-center font-medium relative z-10"></div>
 
+            <!-- FORM LOGIN -->
             <form id="login-form" class="flex flex-col gap-4 relative z-10">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
@@ -148,12 +149,13 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
                     <input type="password" id="login-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder-gray-600" placeholder="••••••••">
                 </div>
-                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
                     MASUK SEKARANG
                 </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline cursor-pointer focus:outline-none">Daftar di sini</button></p>
+                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline">Daftar di sini</button></p>
             </form>
 
+            <!-- FORM REGISTER -->
             <form id="register-form" class="hidden flex flex-col gap-4 relative z-10">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Nama Lengkap</label>
@@ -167,10 +169,10 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
                     <input type="password" id="reg-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="Minimal 6 karakter">
                 </div>
-                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide">
                     DAFTAR AKUN BARU
                 </button>
-                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline cursor-pointer focus:outline-none">Masuk</button></p>
+                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline">Masuk</button></p>
             </form>
         </div>
     </div>
@@ -180,6 +182,7 @@
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
         
+        <!-- OVERLAY UNTUK HP -->
         <div id="mobile-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
         <!-- SIDEBAR -->
@@ -194,7 +197,7 @@
                         <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-0.5">Executive On-Farm</p>
                     </div>
                 </div>
-                <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-300 hover:text-white rounded-lg bg-white/10 focus:outline-none cursor-pointer">
+                <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-300 hover:text-white rounded-lg bg-white/10 focus:outline-none">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -204,6 +207,7 @@
                 <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
             </div>
 
+            <!-- PROFIL USER DINAMIS -->
             <div class="p-5 border-t border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between gap-2">
                 <div class="flex items-center gap-3 overflow-hidden">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0">
@@ -216,7 +220,7 @@
                         <p id="profile-email" class="text-[10px] text-gray-400 truncate">pic.ho@agrinas.id</p>
                     </div>
                 </div>
-                <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0 cursor-pointer" title="Keluar">
+                <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0" title="Keluar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 </button>
             </div>
@@ -225,7 +229,7 @@
         <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
             <header class="h-16 md:h-20 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-zinc-950/40 backdrop-blur-xl relative z-10 w-full shadow-md">
                 <div class="flex items-center gap-2 md:gap-4">
-                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white transition-colors focus:outline-none shadow-sm cursor-pointer">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white transition-colors focus:outline-none shadow-sm">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/30 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
@@ -234,7 +238,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 md:gap-4">
-                    <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white hover:bg-white/20 hover:shadow-lg transition-all duration-300 group cursor-pointer" title="Ganti Tema">
+                    <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white hover:bg-white/20 hover:shadow-lg transition-all duration-300 group" title="Ganti Tema">
                         <svg class="w-4 h-4 group-hover:scale-110 transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
                     </button>
                     <div class="bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-400/30 text-[9px] md:text-[10px] font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-lg flex items-center shadow-[0_0_20px_rgba(16,185,129,0.3)] tracking-wider">
@@ -255,21 +259,9 @@
                         </p>
                     </div>
                     <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end">
-                        
-                        <!-- ================= FILTER BULAN (Dropdown PDO & Petty Cash) ================= -->
-                        <!-- BAGIAN INI YANG KEMAREN KELUPAAN DIMASUKIN KE HTML -->
-                        <div id="month-filter-container" class="hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border border-white/20 shadow-lg cursor-pointer hover:bg-black/80 transition-all group z-20">
-                            <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <select id="month-filter" class="bg-transparent text-white font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md">
-                                <!-- Options diinjeksi via JS -->
-                            </select>
-                            <svg id="month-filter-arrow" class="w-3 h-3 text-white absolute right-3 pointer-events-none group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-
                         <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/40 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/20 shadow-lg whitespace-nowrap" id="last-update">
                             Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-md">--:--:--</span>
                         </div>
-                        
                         <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-1.5 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap">
                             TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
                         </div>
@@ -278,23 +270,19 @@
 
                 <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
-                        <div class="absolute -top-24 -right-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl pointer-events-none"></div>
-                        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-zinc-500/5 rounded-full blur-3xl pointer-events-none"></div>
-
                         <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 md:mb-8 flex items-center gap-3 relative z-10 drop-shadow-lg">
                             <div class="p-2 rounded-lg bg-white/10 backdrop-blur-md text-white border border-white/20 shadow-inner">
                                 <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                             </div>
                             Summary Data Panel
                         </h3>
-                        
                         <div id="summaryCardsContainer" class="relative z-10"></div>
                     </div>
                 </div>
 
                 <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 mb-6 md:mb-8 opacity-0 animate-fade-in-up delay-200">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl flex flex-col hover:border-emerald-400/50 hover:shadow-[0_15px_40px_rgba(16,185,129,0.15)] transition-all duration-300 relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
                         <h3 id="panel-title-paid" class="text-emerald-300 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10 drop-shadow-md">
                             <div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/40"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                             Task Sudah Paid
@@ -303,7 +291,7 @@
                     </div>
 
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl flex flex-col hover:border-rose-400/50 hover:shadow-[0_15px_40px_rgba(244,63,94,0.15)] transition-all duration-300 relative overflow-hidden group" id="unpaid-panel-wrapper">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-colors"></div>
                         <h3 id="panel-title-unpaid" class="text-rose-300 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10 drop-shadow-md">
                             <div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/40"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                             Task Belum Paid
@@ -317,7 +305,6 @@
                     Sheet ini tidak memiliki ringkasan (Total/Summary).
                 </div>
 
-                <!-- Tabel Data Utama -->
                 <div class="bg-zinc-900/40 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col opacity-0 animate-fade-in-up delay-200">
                     <div class="px-5 md:px-8 py-5 md:py-6 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
                         <h3 class="text-white font-bold text-xs md:text-sm tracking-widest uppercase flex items-center gap-3 drop-shadow-lg">
@@ -367,20 +354,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // Global State untuk Filter Bulan (Bisa dipakai PDO & Petty Cash)
-            window.selectedMonthFilter = null;
-
-            // Event listener Dropdown (TADINYA INI BIKIN CRASH KARENA KOTAKNYA BELUM ADA)
-            const monthFilterEl = document.getElementById('month-filter');
-            if (monthFilterEl) {
-                monthFilterEl.addEventListener('change', (e) => {
-                    window.selectedMonthFilter = e.target.value;
-                    fetchJsonData(true); // reload table silently tanpa loading animasi
-                });
-            }
-
             // =========================================================
-            // 1. SISTEM AUTENTIKASI 
+            // 1. SISTEM AUTENTIKASI (LOGIN & REGISTER VIA LOCALSTORAGE)
             // =========================================================
             const authPage = document.getElementById('auth-page');
             const dashboardWrapper = document.getElementById('dashboard-wrapper');
@@ -509,7 +484,6 @@
             mobileOverlay.addEventListener('click', toggleSidebar);
 
             const themeToggleBtn = document.getElementById('theme-toggle');
-            const logoIcon = document.getElementById('logo-icon');
             
             if (localStorage.getItem('agrinas_theme') === 'pink') {
                 document.body.classList.add('theme-pink');
@@ -580,7 +554,9 @@
                     let activeClassesStr = '';
                     let activeIconStr = '';
 
+                    // ==============================
                     // WARNA KHUSUS PER MENU
+                    // ==============================
                     if (sheetName === 'PDO') {
                         activeClassesStr = 'bg-sky-500/20 backdrop-blur-md text-white border-l-4 border-sky-400 shadow-[inset_0_0_20px_rgba(14,165,233,0.1)] theme-pink:border-sky-500 theme-pink:bg-sky-500/10';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-sky-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
@@ -607,7 +583,6 @@
                     btn.onclick = () => {
                         currentActiveSheet = sheetName;
                         currentPage = 1;
-                        window.selectedMonthFilter = null; // Reset filter pas pindah sheet
                         
                         renderMenu(); 
                         fetchJsonData();
@@ -744,13 +719,8 @@
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
 
-                        // Reset display filter dan date bawaan tiap pindah sheet
-                        document.getElementById('month-filter-container').classList.add('hidden');
-                        document.getElementById('month-filter-container').classList.remove('flex');
-                        document.getElementById('top-date-display').classList.add('hidden');
-
                         // =========================================================
-                        // KONDISI 1: PDO (DENGAN FILTER BULAN)
+                        // KONDISI 1: PDO
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
                             pdoBreakdown.classList.remove('hidden');
@@ -804,10 +774,11 @@
                             let tDip   = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.dip] !== undefined ? data[pdoSumRowData][pdoSumIdx.dip] : 0;
 
                             let chartLabels = [
-                                "Total Task", "Dokumen", "Pembuatan Surat", "Revisi Reg", 
+                                "Total Task", "Dokumen", "Buat Surat", "Revisi Reg", 
                                 "Progres Aproved Kadiv dan Dir Ops", "Verifikasi Pajak", "Umum", "Keuangan", "Paid", "Diperoses di Direktorat Terkait"
                             ];
                             let chartValues = [tTask, tDoc, tSurat, tRev, tAppr, tPajak, tUmum, tKeu, tPaid, tDip];
+                            let dateValue = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.date] !== undefined ? formatCellDate(data[pdoSumRowData][pdoSumIdx.date]) : "-";
 
                             dashboardWidgets.classList.remove('hidden');
                             noSummaryMsg.classList.add('hidden');
@@ -826,48 +797,6 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            // LOGIKA FILTER BULAN UNTUK PDO
-                            let pdoAvailableMonths = [];
-                            
-                            // Ambil list bulan unik dari kolom ke-2 (Date after diproses QC)
-                            for (let i = 7; i < data.length; i++) {
-                                let row = data[i];
-                                if (!row) continue;
-                                let dateCell = row[1];
-                                if (dateCell) {
-                                    let dateStr = dateCell.toString();
-                                    // Deteksi pola teks bulan spt "Agustus", "September 2026"
-                                    let monthMatch = dateStr.match(/[A-Za-z]+\s\d{4}/);
-                                    if (monthMatch && !pdoAvailableMonths.includes(monthMatch[0])) {
-                                        pdoAvailableMonths.push(monthMatch[0]);
-                                    }
-                                }
-                            }
-
-                            // Jadikan bulan terakhir sebagai default kalau belum difilter
-                            if (pdoAvailableMonths.length > 0) {
-                                if (!window.selectedMonthFilter || (!pdoAvailableMonths.includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
-                                    window.selectedMonthFilter = pdoAvailableMonths[pdoAvailableMonths.length - 1]; 
-                                }
-                            }
-
-                            const filterContainer = document.getElementById('month-filter-container');
-                            const filterSelect = document.getElementById('month-filter');
-                            filterContainer.classList.remove('hidden');
-                            filterContainer.classList.add('flex');
-                            
-                            // Ganti warna Dropdown Container buat PDO
-                            filterContainer.className = 'hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 flex border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)]';
-                            document.getElementById('month-filter-icon').className = 'w-3.5 h-3.5 md:w-4 md:h-4 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] text-sky-400';
-                            document.getElementById('month-filter-arrow').className = 'w-3 h-3 absolute right-3 pointer-events-none group-hover:translate-y-0.5 transition-transform text-sky-400';
-
-                            let optionsHTML = '<option value="ALL" class="bg-zinc-800 text-white font-bold">SEMUA BULAN</option>';
-                            pdoAvailableMonths.forEach(m => {
-                                let selected = (m === window.selectedMonthFilter) ? 'selected' : '';
-                                optionsHTML += `<option value="${m}" class="bg-zinc-800 text-white font-bold" ${selected}>${m}</option>`;
-                            });
-                            filterSelect.innerHTML = optionsHTML;
-
                             let paidCount = 0;
                             let unpaidCount = 0;
 
@@ -879,13 +808,6 @@
 
                                 let taskCol = row[2] !== undefined && row[2] !== null ? row[2].toString().trim() : '';
                                 if (taskCol === '' || taskCol === 'nan') continue;
-
-                                let dateCell = row[1] ? row[1].toString() : '';
-
-                                // FILTER DATA: Lewati jika tidak match dengan dropdown bulan
-                                if (window.selectedMonthFilter !== 'ALL' && !dateCell.includes(window.selectedMonthFilter)) {
-                                    continue;
-                                }
 
                                 let paidCell = row[11];
                                 let isPaid = paidCell === true || paidCell === '1' || paidCell === 1 || String(paidCell).toUpperCase() === 'TRUE';
@@ -952,7 +874,7 @@
                                         if (lProg.includes('approved')) progColor = 'bg-purple-500/30 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
                                         else if (lProg.includes('revisi')) progColor = 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]';
                                         else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
-                                        cellVal = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
+                                        cellVal = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase">${cellVal}</span>`;
                                     }
 
                                     let cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
@@ -967,20 +889,26 @@
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas di bulan ini.</p></div>`;
-                            }
-                            if (unpaidContainer.innerHTML === '') {
-                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Tidak ada task yang pending di bulan ini.</p></div>`;
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas.</p></div>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet ini.</td></tr>`;
                             } else {
                                 renderTablePage();
                             }
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                             document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
+                            
+                            const dateDisplay = document.getElementById('top-date-display');
+                            const dateValueEl = document.getElementById('top-date-value');
+                            if (dateValue && dateValue !== '-') {
+                                dateValueEl.innerText = dateValue;
+                                dateDisplay.classList.remove('hidden');
+                            } else {
+                                dateDisplay.classList.add('hidden');
+                            }
                         }
                         
                         // =========================================================
@@ -990,8 +918,10 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
+                            // Sembunyikan Unpaid Panel
                             document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
+                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -1145,8 +1075,8 @@
                             
                             const dateDisplay = document.getElementById('top-date-display');
                             const dateValueEl = document.getElementById('top-date-value');
-                            if (dateValue && dateValue !== '-') {
-                                dateValueEl.innerText = dateValue;
+                            if (globalDate && globalDate !== '-') {
+                                dateValueEl.innerText = globalDate;
                                 dateDisplay.classList.remove('hidden');
                             } else {
                                 dateDisplay.classList.add('hidden');
@@ -1185,52 +1115,42 @@
 
                             let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
 
-                            // FILTER BULAN UNTUK PETTY CASH
-                            let availableMonths = [];
-                            for (let r = 4; r < data.length; r++) {
-                                let row = data[r];
-                                if (!row || row.every(val => val === null || val === '')) continue;
-                                let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
-                                let fullText = row.join(' ').replace(/,/g, '').trim();
-
-                                if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
-                                    let title = row.find(v => v !== null && v !== '') || fullText;
-                                    if (title && !availableMonths.includes(title)) {
-                                        availableMonths.push(title);
+                            for (let r = 0; r < Math.min(10, data.length); r++) {
+                                if (!data[r]) continue;
+                                let rowStr = data[r].join('').toLowerCase();
+                                
+                                if (rowStr.includes('cro') && rowStr.includes('wilayah') && rowStr.includes('keterangan')) {
+                                    let headerRow = data[r];
+                                    for(let c = 0; c < headerRow.length; c++) {
+                                        let str = (headerRow[c] || '').toString().toLowerCase().trim();
+                                        if(!str) continue;
+                                        if(str === 'no') colIdx.no = c;
+                                        else if(str === 'cro') colIdx.cro = c;
+                                        else if(str === 'wilayah') colIdx.wil = c;
+                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c;
+                                        else if(str.includes('status lpj')) colIdx.slpj = c;
+                                        else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
+                                        else if(str === 'keterangan' || str.includes('keterangan')) colIdx.ket = c;
+                                        else if(str === 'progress' || str.includes('progress')) colIdx.prog = c;
+                                        else if(str === 'dokumen' || str.includes('dokumen')) colIdx.dok = c;
                                     }
+                                    
+                                    if (data[r+1]) {
+                                        let subHeaderRow = data[r+1];
+                                        for(let c = 0; c < subHeaderRow.length; c++) {
+                                            let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
+                                            if (str.includes('pemakaian')) colIdx.pem = c;
+                                            else if (str.includes('sisa petty')) colIdx.sisa = c; 
+                                        }
+                                    }
+                                    break;
                                 }
                             }
-
-                            if (availableMonths.length > 0) {
-                                if (!window.selectedMonthFilter || (!availableMonths.includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
-                                    window.selectedMonthFilter = availableMonths[availableMonths.length - 1]; 
-                                }
-                            }
-
-                            const filterContainer = document.getElementById('month-filter-container');
-                            const filterSelect = document.getElementById('month-filter');
-                            filterContainer.classList.remove('hidden');
-                            filterContainer.classList.add('flex');
-                            
-                            // Ganti warna Dropdown Container buat Petty Cash
-                            filterContainer.className = 'hidden relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-xl border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 flex border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)]';
-                            document.getElementById('month-filter-icon').className = 'w-3.5 h-3.5 md:w-4 md:h-4 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] text-pink-400';
-                            document.getElementById('month-filter-arrow').className = 'w-3 h-3 absolute right-3 pointer-events-none group-hover:translate-y-0.5 transition-transform text-pink-400';
-
-                            let optionsHTML = '<option value="ALL" class="bg-zinc-800 text-white font-bold">SEMUA BULAN</option>';
-                            availableMonths.forEach(m => {
-                                let selected = (m === window.selectedMonthFilter) ? 'selected' : '';
-                                let displayName = m;
-                                let match = m.match(/Bulan\s+(.*)/i);
-                                if (match && match[1]) displayName = match[1];
-                                optionsHTML += `<option value="${m}" class="bg-zinc-800 text-white font-bold" ${selected}>${displayName}</option>`;
-                            });
-                            filterSelect.innerHTML = optionsHTML;
 
                             let skipSection = false;
                             let paidCount = 0;
                             let unpaidCount = 0;
-                            let currentMonthSection = ""; 
+                            let globalDate = "-"; 
 
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
@@ -1241,29 +1161,24 @@
 
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
-                                    currentMonthSection = title;
+                                    
+                                    let dateMatch = title.match(/Bulan\s+[A-Za-z]+\s+\d{4}/i);
+                                    if(dateMatch) globalDate = dateMatch[0];
 
-                                    if (window.selectedMonthFilter === 'ALL') {
-                                        let monthHeaderHTML = `
-                                            <div class="flex items-center gap-3 my-2 opacity-80">
-                                                <div class="h-px bg-white/20 flex-1"></div>
-                                                <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-black/40 px-3 py-1 rounded-full border border-white/10 shadow-inner">${title}</span>
-                                                <div class="h-px bg-white/20 flex-1"></div>
-                                            </div>
-                                        `;
-                                        paidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
-                                        unpaidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
-
-                                        let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
-                                        allTableRowsHTML.push(rowHTML);
+                                    let lowerTitle = title.toLowerCase();
+                                    if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
+                                        skipSection = true;
+                                        continue;
+                                    } else {
+                                        skipSection = false;
                                     }
+
+                                    let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
+                                    allTableRowsHTML.push(rowHTML);
                                     continue;
                                 }
 
-                                if (window.selectedMonthFilter !== 'ALL' && currentMonthSection !== window.selectedMonthFilter) {
-                                    continue;
-                                }
-
+                                if (skipSection) continue;
                                 if (colZero === '' || isNaN(colZero)) continue;
 
                                 let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
@@ -1374,12 +1289,8 @@
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
 
-                            if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas di bulan ini.</p></div>`;
-                            }
-                            if (unpaidContainer.innerHTML === '') {
-                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review di bulan ini.</p></div>`;
-                            }
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<div class="p-5 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas.</p></div>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review.</p></div>`;
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
