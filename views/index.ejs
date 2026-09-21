@@ -7,9 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ========================================================
-           BACKGROUND IMAGE SETTINGS
-           ======================================================== */
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #09090b; 
@@ -139,7 +136,6 @@
 
             <div id="auth-error" class="hidden mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs text-center font-medium relative z-10"></div>
 
-            <!-- FORM LOGIN -->
             <form id="login-form" class="flex flex-col gap-4 relative z-10">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
@@ -155,7 +151,6 @@
                 <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline">Daftar di sini</button></p>
             </form>
 
-            <!-- FORM REGISTER -->
             <form id="register-form" class="hidden flex flex-col gap-4 relative z-10">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Nama Lengkap</label>
@@ -178,14 +173,11 @@
     </div>
 
     <!-- ========================================================
-         WRAPPER DASHBOARD (Disembunyikan saat belum login)
+         WRAPPER DASHBOARD
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
-        
-        <!-- OVERLAY UNTUK HP -->
         <div id="mobile-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
-        <!-- SIDEBAR -->
         <aside id="sidebar" class="w-72 bg-zinc-900/60 backdrop-blur-2xl border-r border-white/10 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-[4px_0_24px_rgba(0,0,0,0.5)] md:shadow-none">
             <div class="p-6 border-b border-white/10 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
@@ -207,7 +199,6 @@
                 <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
             </div>
 
-            <!-- PROFIL USER DINAMIS -->
             <div class="p-5 border-t border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between gap-2">
                 <div class="flex items-center gap-3 overflow-hidden">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0">
@@ -355,7 +346,7 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // =========================================================
-            // 1. SISTEM AUTENTIKASI (LOGIN & REGISTER VIA LOCALSTORAGE)
+            // 1. SISTEM AUTENTIKASI 
             // =========================================================
             const authPage = document.getElementById('auth-page');
             const dashboardWrapper = document.getElementById('dashboard-wrapper');
@@ -554,9 +545,6 @@
                     let activeClassesStr = '';
                     let activeIconStr = '';
 
-                    // ==============================
-                    // WARNA KHUSUS PER MENU
-                    // ==============================
                     if (sheetName === 'PDO') {
                         activeClassesStr = 'bg-sky-500/20 backdrop-blur-md text-white border-l-4 border-sky-400 shadow-[inset_0_0_20px_rgba(14,165,233,0.1)] theme-pink:border-sky-500 theme-pink:bg-sky-500/10';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-sky-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
@@ -774,7 +762,7 @@
                             let tDip   = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.dip] !== undefined ? data[pdoSumRowData][pdoSumIdx.dip] : 0;
 
                             let chartLabels = [
-                                "Total Task", "Dokumen", "Buat Surat", "Revisi Reg", 
+                                "Total Task", "Dokumen", "Pembuatan Surat", "Revisi Reg", 
                                 "Progres Aproved Kadiv dan Dir Ops", "Verifikasi Pajak", "Umum", "Keuangan", "Paid", "Diperoses di Direktorat Terkait"
                             ];
                             let chartValues = [tTask, tDoc, tSurat, tRev, tAppr, tPajak, tUmum, tKeu, tPaid, tDip];
@@ -918,10 +906,8 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Sembunyikan Unpaid Panel
                             document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
-                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -1084,7 +1070,7 @@
                         }
 
                         // =========================================================
-                        // KONDISI 3: PETTY CASH
+                        // KONDISI 3: PETTY CASH (DENGAN PEMISAH BULAN)
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             pdoBreakdown.classList.remove('hidden');
@@ -1150,7 +1136,9 @@
                             let skipSection = false;
                             let paidCount = 0;
                             let unpaidCount = 0;
-                            let globalDate = "-"; 
+                            
+                            // Variabel pelacak bulan (dikotak list)
+                            let currentMonthSection = "";
 
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
@@ -1159,11 +1147,11 @@
                                 let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
+                                // DETEKSI HEADER BULAN (Ex: "Laporan Pengajuan Petty Cash Bulan Agustus 2026")
                                 if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
-                                    let dateMatch = title.match(/Bulan\s+[A-Za-z]+\s+\d{4}/i);
-                                    if(dateMatch) globalDate = dateMatch[0];
+                                    currentMonthSection = title; // Simpan judul bulan yang lagi aktif
 
                                     let lowerTitle = title.toLowerCase();
                                     if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
@@ -1171,8 +1159,20 @@
                                         continue;
                                     } else {
                                         skipSection = false;
+                                        
+                                        // CETAK HEADER BULAN DI DALAM KOTAK TASK PAID / UNPAID
+                                        let monthHeaderHTML = `
+                                            <div class="flex items-center gap-3 my-2 opacity-80">
+                                                <div class="h-px bg-white/20 flex-1"></div>
+                                                <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-black/40 px-3 py-1 rounded-full border border-white/10 shadow-inner">${title}</span>
+                                                <div class="h-px bg-white/20 flex-1"></div>
+                                            </div>
+                                        `;
+                                        paidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
+                                        unpaidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
                                     }
 
+                                    // HEADER BULAN UNTUK TABEL UTAMA
                                     let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
                                     allTableRowsHTML.push(rowHTML);
                                     continue;
@@ -1286,11 +1286,12 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
+                            // Bersihin elemen kosong jika tidak ada data di satu bulan tertentu
+                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<div class="p-5 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas.</p></div>`;
+                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada task yang sedang di-review.</p></div>`;
+
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
-
-                            if (paidContainer.innerHTML === '') paidContainer.innerHTML = `<div class="p-5 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas.</p></div>`;
-                            if (unpaidContainer.innerHTML === '') unpaidContainer.innerHTML = `<div class="p-5 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review.</p></div>`;
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet Petty Cash ini.</td></tr>`;
@@ -1302,13 +1303,7 @@
                             document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
                             
                             const dateDisplay = document.getElementById('top-date-display');
-                            const dateValueEl = document.getElementById('top-date-value');
-                            if (globalDate && globalDate !== '-') {
-                                dateValueEl.innerText = globalDate;
-                                dateDisplay.classList.remove('hidden');
-                            } else {
-                                dateDisplay.classList.add('hidden');
-                            }
+                            dateDisplay.classList.add('hidden'); // Sembunyikan tanggal global karena udah dipecah per list
                         }
 
                         // =========================================================
