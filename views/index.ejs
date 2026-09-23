@@ -214,10 +214,8 @@
                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0 relative">
                         <div class="w-full h-full bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden">
                             <span id="profile-initials" class="text-xs font-bold text-white">PIC</span>
-                            <!-- Tempat render foto asli kalau ada -->
                             <img id="profile-photo" class="w-full h-full object-cover hidden" src="" alt="Profile">
                         </div>
-                        <!-- Ikon Hover Edit -->
                         <div class="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                             <svg class="w-4 h-4 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                         </div>
@@ -296,7 +294,6 @@
                                 <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -349,7 +346,7 @@
                         <table class="w-full text-left border-collapse min-w-max">
                             <thead id="table-head" class="text-[10px] md:text-xs text-gray-300 uppercase tracking-wider font-bold"></thead>
                             <tbody id="table-body" class="text-xs md:text-sm divide-y divide-white/10">
-                                <tr><td colspan="16" class="p-16 text-center text-gray-300 flex flex-col justify-center items-center gap-4">
+                                <tr><td colspan="20" class="p-16 text-center text-gray-300 flex flex-col justify-center items-center gap-4">
                                     <svg class="animate-spin w-10 h-10 text-emerald-400 drop-shadow-lg" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                     <span class="font-bold text-sm md:text-base tracking-wide drop-shadow-md">Mengambil data live dari Google Sheets...</span>
                                 </td></tr>
@@ -432,6 +429,49 @@
         window.selectedMonthFilter = 'ALL';
 
         document.addEventListener('DOMContentLoaded', () => {
+
+            // =========================================================
+            // FUNGSI UMUM UNTUK MENGAMBIL DATA DARI CELL DENGAN AMAN
+            // Mencegah error 'undefined' jika kolom digeser/ditambah
+            // =========================================================
+            let getCell = (row, idx) => {
+                if (idx !== undefined && idx !== -1 && row[idx] !== undefined && row[idx] !== null && String(row[idx]) !== 'nan' && String(row[idx]) !== '') {
+                    return String(row[idx]).trim();
+                }
+                return '-';
+            };
+
+            let getSumData = (data, rowIdx, colIdx) => {
+                if (colIdx !== -1 && data[rowIdx] && data[rowIdx][colIdx] !== undefined && data[rowIdx][colIdx] !== null) {
+                    return data[rowIdx][colIdx];
+                }
+                return 0;
+            };
+
+            // Helper format nilai Progress PDO & Monitoring
+            let formatProgBadge = (val) => {
+                if (val === '-' || !val) return '-';
+                let str = String(val).trim();
+                if (str === '') return '-';
+                let lProg = str.toLowerCase();
+                let progColor = 'bg-slate-500/20 text-slate-300 border-slate-400/30';
+                if (lProg.includes('approved')) progColor = 'bg-purple-500/30 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
+                else if (lProg.includes('revisi')) progColor = 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]';
+                else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
+                return `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
+            };
+
+            // Helper format Checkmark (Centang)
+            let formatCheckmark = (val) => {
+                if (val === '-' || val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
+                let strVal = String(val).toUpperCase();
+                let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
+                if (isTrue) {
+                    return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-500 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                } else {
+                    return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
+                }
+            };
 
             // Event listener Dropdown Bulan Universal
             const filterEl = document.getElementById('universal-month-filter');
@@ -968,10 +1008,37 @@
                             paidContainer.innerHTML = '';
                             unpaidContainer.innerHTML = '';
 
-                            let pdoSumIdx = { task: 0, doc: 1, surat: 2, rev: 3, appr: 4, pajak: 5, umum: 6, keu: 7, paid: 8, dip: 9, date: 10 };
-                            let pdoSumRowData = 4;
+                            let pdoIdx = { no: -1, date: -1, task: -1, link: -1, tipe: -1, prog: -1, kelengkapan: -1, pajak: -1, umum: -1, keu: -1, rev: -1, paid: -1, dip: -1 };
+                            let pdoHeaderRowIdx = 6;
+                            for (let r = 0; r < 15; r++) {
+                                if (!data[r]) continue;
+                                let str = data[r].join('').toLowerCase();
+                                if (str.includes('task') && str.includes('link dokumen')) {
+                                    pdoHeaderRowIdx = r;
+                                    let hr = data[r];
+                                    for (let c=0; c<hr.length; c++) {
+                                        let h = (hr[c]||'').toString().toLowerCase().trim();
+                                        if(h==='no') pdoIdx.no = c;
+                                        else if(h.includes('after diproses')) pdoIdx.date = c;
+                                        else if(h==='task') pdoIdx.task = c;
+                                        else if(h.includes('link')) pdoIdx.link = c;
+                                        else if(h.includes('tipe')) pdoIdx.tipe = c;
+                                        else if(h==='progress') pdoIdx.prog = c;
+                                        else if(h.includes('dokumen diterima')) pdoIdx.kelengkapan = c;
+                                        else if(h==='pajak') pdoIdx.pajak = c;
+                                        else if(h.includes('umum') || h.includes('khusus sp2')) pdoIdx.umum = c;
+                                        else if(h.includes('diserahkan keuangan') || h === 'keuangan') pdoIdx.keu = c;
+                                        else if(h.includes('revisi')) pdoIdx.rev = c;
+                                        else if(h==='paid') pdoIdx.paid = c;
+                                        else if(h.includes('direktorat')) pdoIdx.dip = c;
+                                    }
+                                    break;
+                                }
+                            }
 
-                            for (let r = 0; r < Math.min(10, data.length); r++) {
+                            let pdoSumIdx = { task: -1, doc: -1, surat: -1, rev: -1, appr: -1, pajak: -1, umum: -1, keu: -1, paid: -1, dip: -1, date: -1 };
+                            let pdoSumRowData = 4;
+                            for (let r = 0; r < 10; r++) {
                                 if (!data[r]) continue;
                                 let rowStr = data[r].join('').toLowerCase();
                                 if (rowStr.includes('total task') && rowStr.includes('paid')) {
@@ -996,35 +1063,30 @@
                                 }
                             }
 
-                            let tTask  = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.task] !== undefined ? data[pdoSumRowData][pdoSumIdx.task] : 0;
-                            let tDoc   = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.doc] !== undefined ? data[pdoSumRowData][pdoSumIdx.doc] : 0;
-                            let tSurat = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.surat] !== undefined ? data[pdoSumRowData][pdoSumIdx.surat] : 0;
-                            let tRev   = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.rev] !== undefined ? data[pdoSumRowData][pdoSumIdx.rev] : 0;
-                            let tAppr  = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.appr] !== undefined ? data[pdoSumRowData][pdoSumIdx.appr] : 0;
-                            let tPajak = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.pajak] !== undefined ? data[pdoSumRowData][pdoSumIdx.pajak] : 0;
-                            let tUmum  = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.umum] !== undefined ? data[pdoSumRowData][pdoSumIdx.umum] : 0;
-                            let tKeu   = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.keu] !== undefined ? data[pdoSumRowData][pdoSumIdx.keu] : 0;
-                            let tPaid  = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.paid] !== undefined ? data[pdoSumRowData][pdoSumIdx.paid] : 0;
-                            let tDip   = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.dip] !== undefined ? data[pdoSumRowData][pdoSumIdx.dip] : 0;
+                            let getPdoSum = (idx) => (idx !== -1 && data[pdoSumRowData] && data[pdoSumRowData][idx] !== undefined && data[pdoSumRowData][idx] !== null) ? data[pdoSumRowData][idx] : 0;
 
                             let chartLabels = [
                                 "Total Task", "Dokumen", "Pembuatan Surat", "Revisi Reg", 
                                 "Progres Aproved Kadiv dan Dir Ops", "Verifikasi Pajak", "Umum", "Keuangan", "Paid", "Diperoses di Direktorat Terkait"
                             ];
-                            let chartValues = [tTask, tDoc, tSurat, tRev, tAppr, tPajak, tUmum, tKeu, tPaid, tDip];
+                            let chartValues = [
+                                getPdoSum(pdoSumIdx.task), getPdoSum(pdoSumIdx.doc), getPdoSum(pdoSumIdx.surat), getPdoSum(pdoSumIdx.rev),
+                                getPdoSum(pdoSumIdx.appr), getPdoSum(pdoSumIdx.pajak), getPdoSum(pdoSumIdx.umum), getPdoSum(pdoSumIdx.keu),
+                                getPdoSum(pdoSumIdx.paid), getPdoSum(pdoSumIdx.dip)
+                            ];
 
                             dashboardWidgets.classList.remove('hidden');
                             noSummaryMsg.classList.add('hidden');
                             renderSummaryCards(chartLabels, chartValues);
 
-                            const headers = [
+                            const pdoHeaders = [
                                 "No", "Date (after diproses QC)", "Task", "Link Dokumen", 
                                 "Tipe Pengajuan", "Progress", "Dokumen Diterima", "Pajak", 
                                 "Diserahkan Umum ( Khusus SP2)", "Diserahkan Keuangan", "Revisi Regional", "Paid", "Diperoses di Direktorat Terkait"
                             ];
 
                             let headHTML = '<tr>';
-                            headers.forEach(h => {
+                            pdoHeaders.forEach(h => {
                                 headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
                             });
                             headHTML += '</tr>';
@@ -1033,31 +1095,44 @@
                             let paidCount = 0;
                             let unpaidCount = 0;
 
-                            for (let i = 7; i < data.length; i++) {
+                            let formatLink = (str) => {
+                                if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
+                                str = String(str).trim();
+                                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                if (urlRegex.test(str)) {
+                                    return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-sky-500/20 text-sky-300 border border-sky-400/50 shadow-[0_0_10px_rgba(14,165,233,0.2)] hover:bg-sky-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                } else {
+                                    const safeName = str.replace(/'/g, "\\'");
+                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-sky-300 font-bold hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-sky-400/50 underline-offset-4 truncate">${str}</span></button>`;
+                                }
+                            };
+
+                            for (let i = pdoHeaderRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
-                                let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
-                                if (colZero === '' || isNaN(colZero)) continue;
+                                let colZero = getCell(row, pdoIdx.no);
+                                if (colZero === '-' || colZero === '' || isNaN(colZero)) continue;
 
-                                let dateCell = row[1] ? row[1].toString().toUpperCase() : '';
-                                
-                                // LOGIKA FILTER BULAN UNIVERSAL
+                                let dateCell = getCell(row, pdoIdx.date).toUpperCase();
                                 if (window.selectedMonthFilter !== 'ALL') {
                                     if (!dateCell.includes(window.selectedMonthFilter)) continue; 
                                 }
 
-                                let taskCol = row[2] !== undefined && row[2] !== null ? row[2].toString().trim() : '';
-                                if (taskCol === '' || taskCol === 'nan') continue;
+                                let taskCol = getCell(row, pdoIdx.task);
+                                if (taskCol === '-') continue;
 
-                                let paidCell = row[11];
-                                let isPaid = paidCell === true || paidCell === '1' || paidCell === 1 || String(paidCell).toUpperCase() === 'TRUE';
+                                let paidCell = getCell(row, pdoIdx.paid).toUpperCase();
+                                let isPaid = (paidCell === 'TRUE' || paidCell === '1' || paidCell === '1.0' || paidCell.includes('☑'));
+
+                                let tipeVal = getCell(row, pdoIdx.tipe);
+                                let progVal = getCell(row, pdoIdx.prog);
 
                                 let taskItemHTML = `
                                     <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-black/50 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-300 gap-4 cursor-default group relative overflow-hidden backdrop-blur-sm">
                                         <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] ${isPaid ? 'bg-emerald-500 text-emerald-400' : 'bg-rose-500 text-rose-400'}"></div>
                                         <div class="flex-1 min-w-0 pl-3">
                                             <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-${isPaid ? 'emerald' : 'rose'}-200 transition-colors truncate drop-shadow-md" title="${taskCol}">${taskCol}</p>
-                                            <p class="text-[10px] md:text-xs text-gray-300 truncate font-medium drop-shadow-sm">Tipe: <span class="text-sky-300 font-bold">${row[4] || '-'}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-300 font-bold">${row[5] || '-'}</span></p>
+                                            <p class="text-[10px] md:text-xs text-gray-300 truncate font-medium drop-shadow-sm">Tipe: <span class="text-sky-300 font-bold">${tipeVal}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-300 font-bold">${progVal}</span></p>
                                         </div>
                                         <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-rose-500/30 text-rose-300 border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.2)]'} whitespace-nowrap flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
                                             ${isPaid ? 'PAID' : 'BELUM PAID'}
@@ -1073,54 +1148,28 @@
                                     unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
                                 }
 
+                                let cellData = [
+                                    colZero,
+                                    formatCellDate(getCell(row, pdoIdx.date)),
+                                    taskCol,
+                                    formatLink(getCell(row, pdoIdx.link)),
+                                    tipeVal,
+                                    formatProgBadge(progVal),
+                                    formatCheckmark(getCell(row, pdoIdx.kelengkapan)),
+                                    formatCheckmark(getCell(row, pdoIdx.pajak)),
+                                    formatCheckmark(getCell(row, pdoIdx.umum)),
+                                    formatCheckmark(getCell(row, pdoIdx.keu)),
+                                    formatCheckmark(getCell(row, pdoIdx.rev)),
+                                    formatCheckmark(getCell(row, pdoIdx.paid)),
+                                    formatCheckmark(getCell(row, pdoIdx.dip))
+                                ];
+
                                 let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
-                                for (let c = 0; c < 13; c++) {
-                                    let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
-                                    
-                                    if (cellVal !== '-' && (c === 1 || c === 12)) {
-                                        cellVal = formatCellDate(cellVal);
-                                    } else {
-                                        cellVal = cellVal.toString().trim();
-                                    }
-                                    if (cellVal === 'nan' || cellVal === '') cellVal = '-';
-
-                                    if (c === 3 && cellVal !== '-') {
-                                        const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                        if (urlRegex.test(cellVal)) {
-                                            cellVal = cellVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-sky-500/20 text-sky-300 border border-sky-400/50 shadow-[0_0_10px_rgba(14,165,233,0.2)] hover:bg-sky-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
-                                        } else {
-                                            const safeName = cellVal.replace(/'/g, "\\'");
-                                            cellVal = `
-                                                <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-sky-300 font-bold hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}">
-                                                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> 
-                                                    <span class="underline decoration-sky-400/50 underline-offset-4 truncate">${cellVal}</span>
-                                                </button>
-                                            `;
-                                        }
-                                    }
-
-                                    if (c >= 6 && c <= 12) {
-                                        let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || upper === '1' || cellVal === 'true') {
-                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-500 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
-                                        } else {
-                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
-                                        }
-                                    }
-
-                                    if (c === 5 && cellVal !== '-') {
-                                        let lProg = cellVal.toLowerCase();
-                                        let progColor = 'bg-slate-500/20 text-slate-300 border-slate-400/30';
-                                        if (lProg.includes('approved')) progColor = 'bg-purple-500/30 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
-                                        else if (lProg.includes('revisi')) progColor = 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]';
-                                        else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
-                                        cellVal = `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
-                                    }
-
+                                cellData.forEach((cellVal, c) => {
                                     let cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
                                     if (c === 2) cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-white font-bold min-w-[250px] md:min-w-[300px] max-w-[400px] md:max-w-[500px] whitespace-normal leading-relaxed drop-shadow-md";
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
-                                }
+                                });
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
@@ -1179,46 +1228,81 @@
                             paidContainer.classList.remove('flex', 'flex-col');
                             paidContainer.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-5');
 
-                            let monSumIdx = { task: 0, doc: 2, pajak: 4, umum: 6, keu: 8, paid: 10, revReg: 12, date: 14 }; 
-                            let monSumRowData = 4;
-
-                            for (let r = 0; r < Math.min(10, data.length); r++) {
+                            let monIdx = { no: -1, date: -1, reg: -1, kel: -1, vendor: -1, kebun: -1, inv: -1, tglInv: -1, nominal: -1, doc: -1, pajak: -1, selPajak: -1, umum: -1, keu: -1, paid: -1, tglBayar: -1, ket: -1 };
+                            let monHeaderRowIdx = 6;
+                            for (let r = 0; r < 10; r++) {
                                 if (!data[r]) continue;
-                                let rowStr = data[r].join('').toLowerCase();
-                                if (rowStr.includes('total task') && (rowStr.includes('dokumen') || rowStr.includes('asli'))) {
-                                    let sumHeaderRow = data[r];
-                                    for(let c = 0; c < sumHeaderRow.length; c++) {
-                                        let str = (sumHeaderRow[c] || '').toString().toLowerCase().trim();
-                                        if(!str) continue;
-                                        if(str === 'total task') monSumIdx.task = c;
-                                        else if(str.includes('dokumen asli')) monSumIdx.doc = c;
-                                        else if(str === 'pajak') monSumIdx.pajak = c;
-                                        else if(str === 'umum') monSumIdx.umum = c;
-                                        else if(str === 'keuangan') monSumIdx.keu = c;
-                                        else if(str === 'paid') monSumIdx.paid = c;
-                                        else if(str.includes('revisi')) monSumIdx.revReg = c;
-                                        else if(str === 'date') monSumIdx.date = c;
+                                let str = data[r].join('').toLowerCase();
+                                if (str.includes('vendor') && str.includes('regional')) {
+                                    monHeaderRowIdx = r;
+                                    let hr = data[r];
+                                    for (let c=0; c<hr.length; c++) {
+                                        let h = (hr[c]||'').toString().toLowerCase().trim();
+                                        if(!h) continue;
+                                        if(h === 'no') monIdx.no = c;
+                                        else if(h.includes('after diproses')) monIdx.date = c;
+                                        else if(h === 'regional') monIdx.reg = c;
+                                        else if(h.includes('kelengkapan')) monIdx.kel = c;
+                                        else if(h === 'vendor') monIdx.vendor = c;
+                                        else if(h.includes('nama kebun') || h === 'kebun') monIdx.kebun = c;
+                                        else if(h.includes('nomor invoice')) monIdx.inv = c;
+                                        else if(h.includes('tanggal invoice')) monIdx.tglInv = c;
+                                        else if(h.includes('jumlah pembayaran')) monIdx.nominal = c;
+                                        else if(h.includes('dokumen asli diterima')) monIdx.doc = c;
+                                        else if(h === 'pajak') monIdx.pajak = c;
+                                        else if(h.includes('selesai verifikasi pajak') || h.includes('selesai verifikasi')) monIdx.selPajak = c;
+                                        else if(h === 'umum' || h.includes('diserahkan umum')) monIdx.umum = c;
+                                        else if(h === 'keuangan' || h.includes('diserahkan keuangan')) monIdx.keu = c;
+                                        else if(h === 'paid') monIdx.paid = c;
+                                        else if(h.includes('tanggal pembayaran')) monIdx.tglBayar = c;
+                                        else if(h === 'keterangan') monIdx.ket = c;
+                                    }
+                                    break;
+                                }
+                            }
+
+                            let monSumIdx = { task: -1, doc: -1, pajak: -1, selPajak: -1, umum: -1, keu: -1, paid: -1, revReg: -1, date: -1 };
+                            let monSumRowData = 4;
+                            for (let r = 0; r < 10; r++) {
+                                if (!data[r]) continue;
+                                let str = data[r].join('').toLowerCase();
+                                if (str.includes('total task') && (str.includes('dokumen') || str.includes('asli'))) {
+                                    let hr = data[r];
+                                    for (let c=0; c<hr.length; c++) {
+                                        let h = (hr[c]||'').toString().toLowerCase().trim();
+                                        if(h==='total task') monSumIdx.task = c;
+                                        else if(h.includes('dokumen asli')) monSumIdx.doc = c;
+                                        else if(h==='pajak') monSumIdx.pajak = c;
+                                        else if(h.includes('selesai verifikasi pajak') || h.includes('selesai verifikasi')) monSumIdx.selPajak = c;
+                                        else if(h==='umum') monSumIdx.umum = c;
+                                        else if(h==='keuangan') monSumIdx.keu = c;
+                                        else if(h==='paid') monSumIdx.paid = c;
+                                        else if(h.includes('revisi')) monSumIdx.revReg = c;
+                                        else if(h==='date') monSumIdx.date = c;
                                     }
                                     if (data[r+1]) monSumRowData = r + 1;
                                     break;
                                 }
                             }
 
-                            let tTask = data[monSumRowData] && data[monSumRowData][monSumIdx.task] !== undefined ? data[monSumRowData][monSumIdx.task] : 0;
-                            let tDoc = data[monSumRowData] && data[monSumRowData][monSumIdx.doc] !== undefined ? data[monSumRowData][monSumIdx.doc] : 0;
-                            let tPajak = data[monSumRowData] && data[monSumRowData][monSumIdx.pajak] !== undefined ? data[monSumRowData][monSumIdx.pajak] : 0;
-                            let tUmum = data[monSumRowData] && data[monSumRowData][monSumIdx.umum] !== undefined ? data[monSumRowData][monSumIdx.umum] : 0;
-                            let tKeu = data[monSumRowData] && data[monSumRowData][monSumIdx.keu] !== undefined ? data[monSumRowData][monSumIdx.keu] : 0;
-                            let tPaid = data[monSumRowData] && data[monSumRowData][monSumIdx.paid] !== undefined ? data[monSumRowData][monSumIdx.paid] : 0;
-                            let tRevReg = data[monSumRowData] && data[monSumRowData][monSumIdx.revReg] !== undefined ? data[monSumRowData][monSumIdx.revReg] : 0;
+                            let getMonSum = (idx) => (idx !== -1 && data[monSumRowData] && data[monSumRowData][idx] !== undefined && data[monSumRowData][idx] !== null) ? data[monSumRowData][idx] : 0;
 
-                            let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
-                            let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
+                            let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Selesai Verif Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
+                            let chartValues = [
+                                getMonSum(monSumIdx.task), 
+                                getMonSum(monSumIdx.doc), 
+                                getMonSum(monSumIdx.pajak), 
+                                getMonSum(monSumIdx.selPajak),
+                                getMonSum(monSumIdx.umum), 
+                                getMonSum(monSumIdx.keu), 
+                                getMonSum(monSumIdx.paid), 
+                                getMonSum(monSumIdx.revReg)
+                            ];
 
                             dashboardWidgets.classList.remove('hidden');
                             renderSummaryCards(chartLabels, chartValues);
 
-                            const headers = [
+                            const monHeaders = [
                                 "No", "Date (after diproses QC)", "Regional", "Kelengkapan Dokumen", 
                                 "Vendor", "Nama Kebun", "Nomor Invoice", "Tanggal Invoice", 
                                 "Jumlah Pembayaran", "Dokumen Asli Diterima", "Pajak", "Selesai Verifikasi Pajak",
@@ -1226,7 +1310,7 @@
                             ];
 
                             let headHTML = '<tr>';
-                            headers.forEach(h => {
+                            monHeaders.forEach(h => {
                                 headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
                             });
                             headHTML += '</tr>';
@@ -1234,37 +1318,46 @@
 
                             let paidCount = 0;
 
-                            for (let i = 7; i < data.length; i++) {
+                            let formatKelengkapan = (val) => {
+                                if (val === '-' || !val) return '-';
+                                let str = String(val).trim();
+                                if (str === '') return '-';
+                                let lKel = str.toLowerCase();
+                                let kelColor = 'bg-slate-500/20 text-slate-300 border-slate-400/30';
+                                if (lKel.includes('lengkap') && !lKel.includes('tidak') && !lKel.includes('kurang')) {
+                                    kelColor = 'bg-emerald-500/30 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]';
+                                } else if (lKel.includes('tidak') || lKel.includes('kurang')) {
+                                    kelColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
+                                }
+                                return `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
+                            };
+
+                            for (let i = monHeaderRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
-                                let colZero = row[0] !== undefined && row[0] !== null ? row[0].toString().trim() : '';
-                                if (colZero === '' || isNaN(colZero)) continue;
+                                let colZero = getCell(row, monIdx.no);
+                                if (colZero === '-' || isNaN(colZero)) continue;
 
-                                let vendorCol = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '';
-                                if (vendorCol === '' || vendorCol === 'nan') continue;
+                                let vendorName = getCell(row, monIdx.vendor);
+                                if (vendorName === '-') continue;
 
-                                let dateCell = row[1] ? row[1].toString().toUpperCase() : '';
+                                let dateCell = getCell(row, monIdx.date).toUpperCase();
                                 if (window.selectedMonthFilter !== 'ALL') {
                                     if (!dateCell.includes(window.selectedMonthFilter)) continue; 
                                 }
 
-                                let vendorName = row[4] !== undefined && row[4] !== null ? row[4].toString().trim() : '-';
-                                let kebunName = row[5] !== undefined && row[5] !== null ? row[5].toString().trim() : '-';
-                                let invName = row[6] !== undefined && row[6] !== null ? row[6].toString().trim() : '-';
+                                let kebunName = getCell(row, monIdx.kebun);
+                                let invName = getCell(row, monIdx.inv);
                                 
-                                let nominalRaw = row[8] !== undefined && row[8] !== null ? row[8].toString() : '0';
+                                let nominalRaw = getCell(row, monIdx.nominal);
                                 let cleanNominal = nominalRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
                                 let numNominal = parseFloat(cleanNominal);
                                 let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
 
-                                let paidCellMon = row[14];
-                                let isPaidMon = false;
-                                if (paidCellMon !== undefined && paidCellMon !== null) {
-                                    let upperPaid = paidCellMon.toString().toUpperCase();
-                                    isPaidMon = (upperPaid === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon === 1 || paidCellMon === true || paidCellMon.toString().includes('☑'));
-                                }
+                                let paidCellMon = getCell(row, monIdx.paid);
+                                let isPaidMon = (paidCellMon.toUpperCase() === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon.includes('☑'));
 
-                                if (isPaidMon && vendorName !== '-' && vendorName !== '') {
+                                if (isPaidMon) {
                                     paidCount++;
                                     let paidItemHTML = `
                                         <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-black/50 hover:border-emerald-400/50 hover:shadow-[0_15px_35px_rgba(16,185,129,0.2)] hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group cursor-default backdrop-blur-sm">
@@ -1283,55 +1376,34 @@
                                     paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
                                 }
 
+                                let cellData = [
+                                    colZero,
+                                    formatCellDate(getCell(row, monIdx.date)),
+                                    getCell(row, monIdx.reg),
+                                    formatKelengkapan(getCell(row, monIdx.kel)),
+                                    vendorName,
+                                    kebunName,
+                                    invName,
+                                    formatCellDate(getCell(row, monIdx.tglInv)),
+                                    isNaN(numNominal) ? '-' : `<span class="font-black text-emerald-300 drop-shadow-sm">${nominalFmt}</span>`,
+                                    formatCheckmark(getCell(row, monIdx.doc)),
+                                    formatCheckmark(getCell(row, monIdx.pajak)),
+                                    formatCheckmark(getCell(row, monIdx.selPajak)),
+                                    formatCheckmark(getCell(row, monIdx.umum)),
+                                    formatCheckmark(getCell(row, monIdx.keu)),
+                                    formatCheckmark(getCell(row, monIdx.paid)),
+                                    formatCellDate(getCell(row, monIdx.tglBayar)),
+                                    getCell(row, monIdx.ket)
+                                ];
+
                                 let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
-                                for (let c = 0; c < 17; c++) {
-                                    let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
-                                    
-                                    if (cellVal !== '-') {
-                                        if (c === 1 || c === 7 || c === 15) {
-                                            cellVal = formatCellDate(cellVal);
-                                        } else {
-                                            cellVal = cellVal.toString().trim();
-                                        }
-                                    }
-                                    if (cellVal === 'nan' || cellVal === '') cellVal = '-';
-
-                                    if (c >= 9 && c <= 14) {
-                                        let upper = cellVal.toString().toUpperCase();
-                                        if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || cellVal.toString().includes('☑')) {
-                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-500 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
-                                        } else {
-                                            cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
-                                        }
-                                    }
-
-                                    if (c === 3 && cellVal !== '-') {
-                                        let lKel = cellVal.toLowerCase();
-                                        let kelColor = 'bg-slate-500/20 text-slate-300 border-slate-400/30';
-                                        if (lKel.includes('lengkap') && !lKel.includes('tidak') && !lKel.includes('kurang')) {
-                                            kelColor = 'bg-emerald-500/30 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]';
-                                        } else if (lKel.includes('tidak') || lKel.includes('kurang')) {
-                                            kelColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
-                                        }
-                                        cellVal = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${cellVal}</span>`;
-                                    }
-
-                                    if (c === 8 && cellVal !== '-') {
-                                        let cleanStr = cellVal.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '');
-                                        let numVal = parseFloat(cleanStr);
-                                        if (!isNaN(numVal)) {
-                                            cellVal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
-                                            cellVal = `<span class="font-black text-emerald-300 drop-shadow-sm">${cellVal}</span>`;
-                                        }
-                                    }
-
+                                cellData.forEach((cellVal, c) => {
                                     let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
                                     if (c >= 4 && c <= 6 || c === 16) { 
                                         cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-white font-bold min-w-[200px] md:min-w-[250px] whitespace-normal leading-relaxed drop-shadow-md";
                                     }
-                                    
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
-                                }
+                                });
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
@@ -1358,7 +1430,7 @@
                                 dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
                                 dateDisplay.classList.remove('hidden');
                             } else {
-                                let dateValue = data[monSumRowData] && data[monSumRowData][monSumIdx.date] !== undefined ? formatCellDate(data[monSumRowData][monSumIdx.date]) : "-";
+                                let dateValue = data[monSumRowData] && data[monSumRowData][monSumIdx.date] !== undefined && data[monSumRowData][monSumIdx.date] !== null ? formatCellDate(data[monSumRowData][monSumIdx.date]) : "-";
                                 if (dateValue && dateValue !== '-') {
                                     dateValueEl.innerText = dateValue;
                                     dateDisplay.classList.remove('hidden');
@@ -1398,7 +1470,7 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
+                            let colIdx = { no: -1, cro: -1, wil: -1, pem: -1, sisa: -1, perm: -1, slpj: -1, sreq: -1, ket: -1, prog: -1, dok: -1 };
 
                             for (let r = 0; r < Math.min(10, data.length); r++) {
                                 if (!data[r]) continue;
@@ -1438,14 +1510,26 @@
                             let globalDate = "-"; 
                             let currentMonthSection = "";
 
+                            let formatLinkCustom = (str, color) => {
+                                if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
+                                str = String(str).trim();
+                                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                if (urlRegex.test(str)) {
+                                    return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-${color}-500/20 text-${color}-300 border border-${color}-400/50 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:bg-${color}-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                } else {
+                                    const safeName = str.replace(/'/g, "\\'");
+                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-${color}-300 font-bold hover:text-${color}-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-${color}-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-${color}-400/50 underline-offset-4 truncate">${str}</span></button>`;
+                                }
+                            };
+
                             for (let i = 4; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 
-                                let colZero = row[colIdx.no] !== undefined && row[colIdx.no] !== null ? row[colIdx.no].toString().trim() : '';
+                                let colZero = getCell(row, colIdx.no);
                                 let fullText = row.join(' ').replace(/,/g, '').trim();
 
-                                if ((colZero === '' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
+                                if ((colZero === '-' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
                                     let title = row.find(v => v !== null && v !== '') || fullText;
                                     
                                     let dateMatch = title.match(/Bulan\s+([A-Za-z]+)\s+(\d{4})/i);
@@ -1482,29 +1566,28 @@
                                 }
 
                                 if (skipSection) continue;
-                                if (colZero === '' || isNaN(colZero)) continue;
+                                if (colZero === '-' || isNaN(colZero)) continue;
 
-                                // LOGIKA FILTER BULAN PETTY CASH
                                 if (window.selectedMonthFilter !== 'ALL' && currentMonthSection !== window.selectedMonthFilter) {
                                     continue;
                                 }
 
-                                let croVal = row[colIdx.cro] !== undefined && row[colIdx.cro] !== null ? row[colIdx.cro].toString().trim() : '-';
-                                let wilVal = row[colIdx.wil] !== undefined && row[colIdx.wil] !== null ? row[colIdx.wil].toString().trim() : '-';
+                                let croVal = getCell(row, colIdx.cro);
+                                let wilVal = getCell(row, colIdx.wil);
                                 
-                                let pemVal = row[colIdx.pem] !== undefined && row[colIdx.pem] !== null ? row[colIdx.pem] : '-';
-                                let sisaVal = row[colIdx.sisa] !== undefined && row[colIdx.sisa] !== null ? row[colIdx.sisa] : '-';
-                                let permVal = row[colIdx.perm] !== undefined && row[colIdx.perm] !== null ? row[colIdx.perm] : '-';
+                                let pemVal = getCell(row, colIdx.pem);
+                                let sisaVal = getCell(row, colIdx.sisa);
+                                let permVal = getCell(row, colIdx.perm);
                                 
-                                let lpjVal = row[colIdx.slpj];
-                                let sreqVal = row[colIdx.sreq];
+                                let lpjVal = getCell(row, colIdx.slpj);
+                                let sreqVal = getCell(row, colIdx.sreq);
                                 
-                                let ketVal = row[colIdx.ket] !== undefined && row[colIdx.ket] !== null ? row[colIdx.ket].toString().trim() : '-';
-                                let progVal = row[colIdx.prog] !== undefined && row[colIdx.prog] !== null ? row[colIdx.prog].toString().trim() : '-';
-                                let dokVal = row[colIdx.dok] !== undefined && row[colIdx.dok] !== null ? row[colIdx.dok].toString().trim() : '-';
+                                let ketVal = getCell(row, colIdx.ket);
+                                let progVal = getCell(row, colIdx.prog);
+                                let dokVal = getCell(row, colIdx.dok);
 
                                 let formatRp = (val) => {
-                                    if (val === '-' || val === '' || val === null || val === undefined) return '-';
+                                    if (val === '-' || !val) return '-';
                                     let cleanStr = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
                                     if (cleanStr === '' || cleanStr === '-') return '-';
                                     let numVal = parseFloat(cleanStr);
@@ -1515,48 +1598,15 @@
                                 let sisaStr = formatRp(sisaVal);
                                 let permStr = formatRp(permVal);
 
-                                let formatCheck = (val) => {
-                                    if (val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                    let strVal = String(val).toUpperCase();
-                                    let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
-                                    
-                                    if (isTrue) {
-                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-600 border border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
-                                    } else {
-                                        return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/20 border border-white/10 mx-auto"></div>`;
-                                    }
-                                };
-                                let lpjHTML = formatCheck(lpjVal);
-                                let sreqHTML = formatCheck(sreqVal);
+                                let lpjHTML = formatCheckmark(lpjVal);
+                                let sreqHTML = formatCheckmark(sreqVal);
 
-                                let rawProg = (progVal || '').toString().toLowerCase();
+                                let rawProg = progVal.toLowerCase();
                                 let isPaid = rawProg.includes('paid');
                                 let isReview = rawProg.includes('review') || rawProg.includes('dirops');
-                                let progHTML = '-';
+                                let progHTML = formatProgBadge(progVal);
 
-                                if (isPaid) {
-                                    progHTML = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] inline-block whitespace-nowrap">${progVal}</span>`;
-                                } else if (isReview) {
-                                    progHTML = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide bg-purple-500/30 text-purple-300 border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.2)] inline-block whitespace-nowrap">${progVal}</span>`;
-                                } else if (progVal !== '-' && progVal !== '') {
-                                    progHTML = `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide bg-slate-500/30 text-slate-300 border border-slate-400/50 shadow-sm inline-block whitespace-nowrap">${progVal}</span>`;
-                                }
-
-                                let dokHTML = '-';
-                                if (dokVal !== '-' && dokVal !== '') {
-                                    const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                    if (urlRegex.test(dokVal)) {
-                                        dokHTML = dokVal.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-bold tracking-wide bg-pink-500/20 text-pink-300 border border-pink-400/50 shadow-[0_0_10px_rgba(236,72,153,0.2)] hover:bg-pink-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
-                                    } else {
-                                        const safeName = dokVal.replace(/'/g, "\\'");
-                                        dokHTML = `
-                                            <button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-pink-300 font-bold hover:text-pink-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[200px] md:max-w-[250px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}">
-                                                <svg class="w-4 h-4 md:w-5 md:h-5 text-pink-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> 
-                                                <span class="underline decoration-pink-500/50 underline-offset-4 truncate">${dokVal}</span>
-                                            </button>
-                                        `;
-                                    }
-                                }
+                                let dokHTML = formatLinkCustom(dokVal, 'pink');
 
                                 if (isPaid || isReview) {
                                     let taskItemHTML = `
