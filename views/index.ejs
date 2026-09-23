@@ -179,7 +179,7 @@
     </div>
 
     <!-- ========================================================
-         WRAPPER DASHBOARD (Disembunyikan saat belum login)
+         WRAPPER DASHBOARD
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
         
@@ -443,7 +443,7 @@
             }
 
             // =========================================================
-            // 1. SISTEM AUTENTIKASI 
+            // 1. SISTEM AUTENTIKASI & PROFILE
             // =========================================================
             const authPage = document.getElementById('auth-page');
             const dashboardWrapper = document.getElementById('dashboard-wrapper');
@@ -1179,13 +1179,38 @@
                             paidContainer.classList.remove('flex', 'flex-col');
                             paidContainer.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-5');
 
-                            let tTask = data[4] && data[4][0] !== undefined ? data[4][0] : 0;
-                            let tDoc = data[4] && data[4][2] !== undefined ? data[4][2] : 0;
-                            let tPajak = data[4] && data[4][4] !== undefined ? data[4][4] : 0;
-                            let tUmum = data[4] && data[4][6] !== undefined ? data[4][6] : 0;
-                            let tKeu = data[4] && data[4][8] !== undefined ? data[4][8] : 0;
-                            let tPaid = data[4] && data[4][10] !== undefined ? data[4][10] : 0;
-                            let tRevReg = data[4] && data[4][12] !== undefined ? data[4][12] : 0;
+                            let monSumIdx = { task: 0, doc: 2, pajak: 4, umum: 6, keu: 8, paid: 10, revReg: 12, date: 14 }; 
+                            let monSumRowData = 4;
+
+                            for (let r = 0; r < Math.min(10, data.length); r++) {
+                                if (!data[r]) continue;
+                                let rowStr = data[r].join('').toLowerCase();
+                                if (rowStr.includes('total task') && (rowStr.includes('dokumen') || rowStr.includes('asli'))) {
+                                    let sumHeaderRow = data[r];
+                                    for(let c = 0; c < sumHeaderRow.length; c++) {
+                                        let str = (sumHeaderRow[c] || '').toString().toLowerCase().trim();
+                                        if(!str) continue;
+                                        if(str === 'total task') monSumIdx.task = c;
+                                        else if(str.includes('dokumen asli')) monSumIdx.doc = c;
+                                        else if(str === 'pajak') monSumIdx.pajak = c;
+                                        else if(str === 'umum') monSumIdx.umum = c;
+                                        else if(str === 'keuangan') monSumIdx.keu = c;
+                                        else if(str === 'paid') monSumIdx.paid = c;
+                                        else if(str.includes('revisi')) monSumIdx.revReg = c;
+                                        else if(str === 'date') monSumIdx.date = c;
+                                    }
+                                    if (data[r+1]) monSumRowData = r + 1;
+                                    break;
+                                }
+                            }
+
+                            let tTask = data[monSumRowData] && data[monSumRowData][monSumIdx.task] !== undefined ? data[monSumRowData][monSumIdx.task] : 0;
+                            let tDoc = data[monSumRowData] && data[monSumRowData][monSumIdx.doc] !== undefined ? data[monSumRowData][monSumIdx.doc] : 0;
+                            let tPajak = data[monSumRowData] && data[monSumRowData][monSumIdx.pajak] !== undefined ? data[monSumRowData][monSumIdx.pajak] : 0;
+                            let tUmum = data[monSumRowData] && data[monSumRowData][monSumIdx.umum] !== undefined ? data[monSumRowData][monSumIdx.umum] : 0;
+                            let tKeu = data[monSumRowData] && data[monSumRowData][monSumIdx.keu] !== undefined ? data[monSumRowData][monSumIdx.keu] : 0;
+                            let tPaid = data[monSumRowData] && data[monSumRowData][monSumIdx.paid] !== undefined ? data[monSumRowData][monSumIdx.paid] : 0;
+                            let tRevReg = data[monSumRowData] && data[monSumRowData][monSumIdx.revReg] !== undefined ? data[monSumRowData][monSumIdx.revReg] : 0;
 
                             let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
                             let chartValues = [tTask, tDoc, tPajak, tUmum, tKeu, tPaid, tRevReg];
@@ -1196,7 +1221,7 @@
                             const headers = [
                                 "No", "Date (after diproses QC)", "Regional", "Kelengkapan Dokumen", 
                                 "Vendor", "Nama Kebun", "Nomor Invoice", "Tanggal Invoice", 
-                                "Jumlah Pembayaran", "Dokumen Asli Diterima", "Pajak", 
+                                "Jumlah Pembayaran", "Dokumen Asli Diterima", "Pajak", "Selesai Verifikasi Pajak",
                                 "Diserahkan Umum ( Khusus SP2)", "Diserahkan Keuangan", "Paid", "Tanggal Pembayaran", "Keterangan"
                             ];
 
@@ -1232,7 +1257,7 @@
                                 let numNominal = parseFloat(cleanNominal);
                                 let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
 
-                                let paidCellMon = row[13];
+                                let paidCellMon = row[14];
                                 let isPaidMon = false;
                                 if (paidCellMon !== undefined && paidCellMon !== null) {
                                     let upperPaid = paidCellMon.toString().toUpperCase();
@@ -1259,11 +1284,11 @@
                                 }
 
                                 let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
-                                for (let c = 0; c < 16; c++) {
+                                for (let c = 0; c < 17; c++) {
                                     let cellVal = (row[c] !== undefined && row[c] !== null) ? row[c] : '-';
                                     
                                     if (cellVal !== '-') {
-                                        if (c === 1 || c === 7 || c === 14) {
+                                        if (c === 1 || c === 7 || c === 15) {
                                             cellVal = formatCellDate(cellVal);
                                         } else {
                                             cellVal = cellVal.toString().trim();
@@ -1271,7 +1296,7 @@
                                     }
                                     if (cellVal === 'nan' || cellVal === '') cellVal = '-';
 
-                                    if (c >= 9 && c <= 13) {
+                                    if (c >= 9 && c <= 14) {
                                         let upper = cellVal.toString().toUpperCase();
                                         if (upper === 'TRUE' || cellVal === '1' || cellVal === '1.0' || cellVal.toString().includes('☑')) {
                                             cellVal = `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-500 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
@@ -1301,7 +1326,7 @@
                                     }
 
                                     let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
-                                    if (c >= 4 && c <= 6 || c === 15) { 
+                                    if (c >= 4 && c <= 6 || c === 16) { 
                                         cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-white font-bold min-w-[200px] md:min-w-[250px] whitespace-normal leading-relaxed drop-shadow-md";
                                     }
                                     
@@ -1318,7 +1343,7 @@
                             }
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="17" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
                                 document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
@@ -1333,7 +1358,7 @@
                                 dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
                                 dateDisplay.classList.remove('hidden');
                             } else {
-                                let dateValue = data[4] && data[4][14] !== undefined ? formatCellDate(data[4][14]) : "-";
+                                let dateValue = data[monSumRowData] && data[monSumRowData][monSumIdx.date] !== undefined ? formatCellDate(data[monSumRowData][monSumIdx.date]) : "-";
                                 if (dateValue && dateValue !== '-') {
                                     dateValueEl.innerText = dateValue;
                                     dateDisplay.classList.remove('hidden');
