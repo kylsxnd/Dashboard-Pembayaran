@@ -179,7 +179,7 @@
     </div>
 
     <!-- ========================================================
-         WRAPPER DASHBOARD
+         WRAPPER DASHBOARD (Disembunyikan saat belum login)
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
         
@@ -294,6 +294,7 @@
                                 <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -306,6 +307,19 @@
                             Summary Data Panel
                         </h3>
                         <div id="summaryCardsContainer" class="relative z-10"></div>
+                    </div>
+                </div>
+
+                <!-- ================= FITUR BARU: REKAPAN PER CRO (DI BAWAH SUMMARY) ================= -->
+                <div id="cro-breakdown-section" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-150">
+                    <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
+                        <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center gap-3 relative z-10 drop-shadow-lg">
+                            <div class="p-2 rounded-lg bg-white/10 backdrop-blur-md text-white border border-white/20 shadow-inner">
+                                <svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            Rekapan Status per CRO
+                        </h3>
+                        <div id="croCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10"></div>
                     </div>
                 </div>
 
@@ -432,7 +446,6 @@
 
             // =========================================================
             // FUNGSI UMUM UNTUK MENGAMBIL DATA DARI CELL DENGAN AMAN
-            // Mencegah error 'undefined' jika kolom digeser/ditambah
             // =========================================================
             let getCell = (row, idx) => {
                 if (idx !== undefined && idx !== -1 && row[idx] !== undefined && row[idx] !== null && String(row[idx]) !== 'nan' && String(row[idx]) !== '') {
@@ -441,14 +454,6 @@
                 return '-';
             };
 
-            let getSumData = (data, rowIdx, colIdx) => {
-                if (colIdx !== -1 && data[rowIdx] && data[rowIdx][colIdx] !== undefined && data[rowIdx][colIdx] !== null) {
-                    return data[rowIdx][colIdx];
-                }
-                return 0;
-            };
-
-            // Helper format nilai Progress PDO & Monitoring
             let formatProgBadge = (val) => {
                 if (val === '-' || !val) return '-';
                 let str = String(val).trim();
@@ -461,7 +466,6 @@
                 return `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
             };
 
-            // Helper format Checkmark (Centang)
             let formatCheckmark = (val) => {
                 if (val === '-' || val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
                 let strVal = String(val).toUpperCase();
@@ -471,6 +475,54 @@
                 } else {
                     return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
                 }
+            };
+
+            // Helper untuk mengekstrak nama CRO dari teks baris (misal: "PDO CRO I", "CRO V", dll)
+            let extractCroName = (text) => {
+                if (!text) return null;
+                let match = String(text).match(/CRO\s+[IVXLCDM\d]+/i);
+                if (match) return match[0].toUpperCase();
+                return null;
+            };
+
+            // Render Kartu Rekapan Per CRO di bawah Summary
+            let renderCroBreakdown = (itemsMap) => {
+                const container = document.getElementById('croCardsContainer');
+                const section = document.getElementById('cro-breakdown-section');
+                if (!container || !section) return;
+
+                container.innerHTML = '';
+                const keys = Object.keys(itemsMap).sort();
+
+                if (keys.length === 0) {
+                    section.classList.add('hidden');
+                    return;
+                }
+
+                section.classList.remove('hidden');
+                section.classList.remove('opacity-0');
+
+                const colors = ['sky', 'emerald', 'amber', 'rose', 'purple', 'cyan', 'pink', 'lime'];
+
+                keys.forEach((croKey, idx) => {
+                    let info = itemsMap[croKey];
+                    let col = colors[idx % colors.length];
+
+                    container.innerHTML += `
+                        <div class="bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-black/50 hover:border-${col}-400/50 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${col}-500/0 via-${col}-500/80 to-${col}-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] text-${col}-400"></div>
+                            <p class="text-xs md:text-sm font-black text-white group-hover:text-${col}-300 transition-colors uppercase tracking-wider mb-2 drop-shadow-md flex items-center justify-between">
+                                <span>${croKey}</span>
+                                <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-md font-bold text-gray-300">Total: ${info.total}</span>
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-gray-300 font-medium">
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Paid: <b class="text-emerald-300">${info.paid}</b></span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Pending: <b class="text-rose-300">${info.pending}</b></span>
+                            </div>
+                            ${info.nominalTotal ? `<p class="text-xs font-black text-emerald-400 mt-2.5 pt-2 border-t border-white/10 drop-shadow-sm">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(info.nominalTotal)}</p>` : ''}
+                        </div>
+                    `;
+                });
             };
 
             // Event listener Dropdown Bulan Universal
@@ -873,6 +925,8 @@
                 cardsContainer.className = 'grid gap-3 md:gap-5 relative z-10';
                 if (labels.length === 10) {
                     cardsContainer.classList.add('grid-cols-2', 'sm:grid-cols-5', 'lg:grid-cols-5');
+                } else if (labels.length === 8) {
+                    cardsContainer.classList.add('grid-cols-2', 'sm:grid-cols-4', 'lg:grid-cols-8');
                 } else if (labels.length === 7) {
                     cardsContainer.classList.add('grid-cols-2', 'sm:grid-cols-4', 'lg:grid-cols-7');
                 } else {
@@ -991,6 +1045,10 @@
                         pdoBreakdown.classList.add('hidden');
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
+                        
+                        // Sembunyikan section CRO default, nanti dimunculkan jika ada datanya
+                        const croSection = document.getElementById('cro-breakdown-section');
+                        if(croSection) croSection.classList.add('hidden');
 
                         // =========================================================
                         // KONDISI 1: PDO
@@ -1079,14 +1137,14 @@
                             noSummaryMsg.classList.add('hidden');
                             renderSummaryCards(chartLabels, chartValues);
 
-                            const pdoHeaders = [
+                            const headers = [
                                 "No", "Date (after diproses QC)", "Task", "Link Dokumen", 
                                 "Tipe Pengajuan", "Progress", "Dokumen Diterima", "Pajak", 
                                 "Diserahkan Umum ( Khusus SP2)", "Diserahkan Keuangan", "Revisi Regional", "Paid", "Diperoses di Direktorat Terkait"
                             ];
 
                             let headHTML = '<tr>';
-                            pdoHeaders.forEach(h => {
+                            headers.forEach(h => {
                                 headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
                             });
                             headHTML += '</tr>';
@@ -1094,6 +1152,7 @@
 
                             let paidCount = 0;
                             let unpaidCount = 0;
+                            let croMap = {};
 
                             let formatLink = (str) => {
                                 if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
@@ -1111,7 +1170,7 @@
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
                                 let colZero = getCell(row, pdoIdx.no);
-                                if (colZero === '-' || colZero === '' || isNaN(colZero)) continue;
+                                if (colZero === '-' || isNaN(colZero)) continue;
 
                                 let dateCell = getCell(row, pdoIdx.date).toUpperCase();
                                 if (window.selectedMonthFilter !== 'ALL') {
@@ -1119,13 +1178,22 @@
                                 }
 
                                 let taskCol = getCell(row, pdoIdx.task);
-                                if (taskCol === '-') continue;
+                                if (taskCol === '-' || taskCol === 'nan') continue;
 
                                 let paidCell = getCell(row, pdoIdx.paid).toUpperCase();
                                 let isPaid = (paidCell === 'TRUE' || paidCell === '1' || paidCell === '1.0' || paidCell.includes('☑'));
 
                                 let tipeVal = getCell(row, pdoIdx.tipe);
                                 let progVal = getCell(row, pdoIdx.prog);
+
+                                // Ekstraksi Nama CRO dari Task
+                                let croName = extractCroName(taskCol);
+                                if (croName) {
+                                    if (!croMap[croName]) croMap[croName] = { total: 0, paid: 0, pending: 0 };
+                                    croMap[croName].total++;
+                                    if (isPaid) croMap[croName].paid++;
+                                    else croMap[croName].pending++;
+                                }
 
                                 let taskItemHTML = `
                                     <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-black/50 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-300 gap-4 cursor-default group relative overflow-hidden backdrop-blur-sm">
@@ -1174,6 +1242,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
+                            renderCroBreakdown(croMap);
+
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Sudah Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
 
@@ -1216,10 +1286,8 @@
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
 
-                            // Sembunyikan Unpaid Panel
                             document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
-                            // Jadikan panel kiri full
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
                             pdoBreakdownContainer.classList.remove('md:grid-cols-2');
                             pdoBreakdownContainer.classList.add('grid-cols-1');
@@ -1230,10 +1298,10 @@
 
                             let monIdx = { no: -1, date: -1, reg: -1, kel: -1, vendor: -1, kebun: -1, inv: -1, tglInv: -1, nominal: -1, doc: -1, pajak: -1, selPajak: -1, umum: -1, keu: -1, paid: -1, tglBayar: -1, ket: -1 };
                             let monHeaderRowIdx = 6;
-                            for (let r = 0; r < 10; r++) {
+                            for (let r = 0; r < 12; r++) {
                                 if (!data[r]) continue;
                                 let str = data[r].join('').toLowerCase();
-                                if (str.includes('vendor') && str.includes('regional')) {
+                                if (str.includes('vendor') && (str.includes('regional') || str.includes('nama kebun'))) {
                                     monHeaderRowIdx = r;
                                     let hr = data[r];
                                     for (let c=0; c<hr.length; c++) {
@@ -1250,7 +1318,7 @@
                                         else if(h.includes('jumlah pembayaran')) monIdx.nominal = c;
                                         else if(h.includes('dokumen asli diterima')) monIdx.doc = c;
                                         else if(h === 'pajak') monIdx.pajak = c;
-                                        else if(h.includes('selesai verifikasi pajak') || h.includes('selesai verifikasi')) monIdx.selPajak = c;
+                                        else if(h.includes('selesai verifikasi') || h.includes('selesai verifikasi pajak')) monIdx.selPajak = c;
                                         else if(h === 'umum' || h.includes('diserahkan umum')) monIdx.umum = c;
                                         else if(h === 'keuangan' || h.includes('diserahkan keuangan')) monIdx.keu = c;
                                         else if(h === 'paid') monIdx.paid = c;
@@ -1266,14 +1334,14 @@
                             for (let r = 0; r < 10; r++) {
                                 if (!data[r]) continue;
                                 let str = data[r].join('').toLowerCase();
-                                if (str.includes('total task') && (str.includes('dokumen') || str.includes('asli'))) {
+                                if (str.includes('total task')) {
                                     let hr = data[r];
                                     for (let c=0; c<hr.length; c++) {
                                         let h = (hr[c]||'').toString().toLowerCase().trim();
                                         if(h==='total task') monSumIdx.task = c;
                                         else if(h.includes('dokumen asli')) monSumIdx.doc = c;
                                         else if(h==='pajak') monSumIdx.pajak = c;
-                                        else if(h.includes('selesai verifikasi pajak') || h.includes('selesai verifikasi')) monSumIdx.selPajak = c;
+                                        else if(h.includes('selesai verifikasi')) monSumIdx.selPajak = c;
                                         else if(h==='umum') monSumIdx.umum = c;
                                         else if(h==='keuangan') monSumIdx.keu = c;
                                         else if(h==='paid') monSumIdx.paid = c;
@@ -1317,6 +1385,7 @@
                             thead.innerHTML = headHTML;
 
                             let paidCount = 0;
+                            let croMapMon = {};
 
                             let formatKelengkapan = (val) => {
                                 if (val === '-' || !val) return '-';
@@ -1339,7 +1408,7 @@
                                 if (colZero === '-' || isNaN(colZero)) continue;
 
                                 let vendorName = getCell(row, monIdx.vendor);
-                                if (vendorName === '-') continue;
+                                if (vendorName === '-' || vendorName === 'nan') continue;
 
                                 let dateCell = getCell(row, monIdx.date).toUpperCase();
                                 if (window.selectedMonthFilter !== 'ALL') {
@@ -1348,6 +1417,7 @@
 
                                 let kebunName = getCell(row, monIdx.kebun);
                                 let invName = getCell(row, monIdx.inv);
+                                let regionalVal = getCell(row, monIdx.reg);
                                 
                                 let nominalRaw = getCell(row, monIdx.nominal);
                                 let cleanNominal = nominalRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
@@ -1357,7 +1427,20 @@
                                 let paidCellMon = getCell(row, monIdx.paid);
                                 let isPaidMon = (paidCellMon.toUpperCase() === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon.includes('☑'));
 
-                                if (isPaidMon) {
+                                // Ekstraksi CRO dari Regional / Vendor / Kebun di Monitoring
+                                let croName = extractCroName(regionalVal) || extractCroName(vendorName) || extractCroName(kebunName);
+                                if (croName) {
+                                    if (!croMapMon[croName]) croMapMon[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                    croMapMon[croName].total++;
+                                    if (isPaidMon) {
+                                        croMapMon[croName].paid++;
+                                        if (!isNaN(numNominal)) croMapMon[croName].nominalTotal += numNominal;
+                                    } else {
+                                        croMapMon[croName].pending++;
+                                    }
+                                }
+
+                                if (isPaidMon && vendorName !== '-' && vendorName !== '') {
                                     paidCount++;
                                     let paidItemHTML = `
                                         <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-black/50 hover:border-emerald-400/50 hover:shadow-[0_15px_35px_rgba(16,185,129,0.2)] hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group cursor-default backdrop-blur-sm">
@@ -1379,7 +1462,7 @@
                                 let cellData = [
                                     colZero,
                                     formatCellDate(getCell(row, monIdx.date)),
-                                    getCell(row, monIdx.reg),
+                                    regionalVal,
                                     formatKelengkapan(getCell(row, monIdx.kel)),
                                     vendorName,
                                     kebunName,
@@ -1408,6 +1491,8 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
+                            renderCroBreakdown(croMapMon);
+
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Pembayaran Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
 
                             if (paidContainer.innerHTML === '') {
@@ -1430,7 +1515,7 @@
                                 dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
                                 dateDisplay.classList.remove('hidden');
                             } else {
-                                let dateValue = data[monSumRowData] && data[monSumRowData][monSumIdx.date] !== undefined && data[monSumRowData][monSumIdx.date] !== null ? formatCellDate(data[monSumRowData][monSumIdx.date]) : "-";
+                                let dateValue = data[monSumRowData] && data[monSumRowData][monSumIdx.date] !== undefined ? formatCellDate(data[monSumRowData][monSumIdx.date]) : "-";
                                 if (dateValue && dateValue !== '-') {
                                     dateValueEl.innerText = dateValue;
                                     dateDisplay.classList.remove('hidden');
@@ -1470,7 +1555,7 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            let colIdx = { no: -1, cro: -1, wil: -1, pem: -1, sisa: -1, perm: -1, slpj: -1, sreq: -1, ket: -1, prog: -1, dok: -1 };
+                            let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
 
                             for (let r = 0; r < Math.min(10, data.length); r++) {
                                 if (!data[r]) continue;
@@ -1509,6 +1594,7 @@
                             let unpaidCount = 0;
                             let globalDate = "-"; 
                             let currentMonthSection = "";
+                            let croMapPetty = {};
 
                             let formatLinkCustom = (str, color) => {
                                 if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
@@ -1579,8 +1665,8 @@
                                 let sisaVal = getCell(row, colIdx.sisa);
                                 let permVal = getCell(row, colIdx.perm);
                                 
-                                let lpjVal = getCell(row, colIdx.slpj);
-                                let sreqVal = getCell(row, colIdx.sreq);
+                                let lpjVal = row[colIdx.slpj];
+                                let sreqVal = row[colIdx.sreq];
                                 
                                 let ketVal = getCell(row, colIdx.ket);
                                 let progVal = getCell(row, colIdx.prog);
@@ -1598,6 +1684,9 @@
                                 let sisaStr = formatRp(sisaVal);
                                 let permStr = formatRp(permVal);
 
+                                let cleanPerm = String(permVal).replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                let numPerm = parseFloat(cleanPerm);
+
                                 let lpjHTML = formatCheckmark(lpjVal);
                                 let sreqHTML = formatCheckmark(sreqVal);
 
@@ -1605,6 +1694,16 @@
                                 let isPaid = rawProg.includes('paid');
                                 let isReview = rawProg.includes('review') || rawProg.includes('dirops');
                                 let progHTML = formatProgBadge(progVal);
+
+                                let croName = extractCroName(croVal) || 'CRO UMUM';
+                                if (!croMapPetty[croName]) croMapPetty[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                croMapPetty[croName].total++;
+                                if (isPaid) {
+                                    croMapPetty[croName].paid++;
+                                    if (!isNaN(numPerm)) croMapPetty[croName].nominalTotal += numPerm;
+                                } else {
+                                    croMapPetty[croName].pending++;
+                                }
 
                                 let dokHTML = formatLinkCustom(dokVal, 'pink');
 
@@ -1643,6 +1742,8 @@
                                 rowHTML += '</tr>';
                                 allTableRowsHTML.push(rowHTML);
                             }
+
+                            renderCroBreakdown(croMapPetty);
 
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
