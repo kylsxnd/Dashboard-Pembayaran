@@ -204,11 +204,11 @@
             </div>
 
             <div class="p-4 flex-1 overflow-y-auto custom-scrollbar">
-                <p class="text-[10px] font-bold text-gray-400 mb-4 tracking-widest uppercase px-2 drop-shadow-md">Data Sheets (3 Utama)</p>
+                <p class="text-[10px] font-bold text-gray-400 mb-4 tracking-widest uppercase px-2 drop-shadow-md">Data Sheets (4 Menu)</p>
                 <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
             </div>
 
-            <!-- PROFIL USER DINAMIS (BISA DI KLIK UNTUK SETTING) -->
+            <!-- PROFIL USER DINAMIS -->
             <div class="p-5 border-t border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between gap-2 group hover:bg-white/[0.02] transition-colors">
                 <div class="flex items-center gap-3 overflow-hidden flex-1 cursor-pointer" id="edit-profile-btn" title="Edit Profil & Foto">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0 relative">
@@ -273,28 +273,16 @@
                                 TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
                             </div>
 
-                            <!-- ================= DROPDOWN BULAN UNIVERSAL ================= -->
+                            <!-- DROPDOWN BULAN -->
                             <div id="universal-month-filter-container" class="flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]">
                                 <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 <select id="universal-month-filter" class="bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
                                     <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
-                                    <option value="JANUARI" class="bg-zinc-900 text-white">Januari</option>
-                                    <option value="FEBRUARI" class="bg-zinc-900 text-white">Februari</option>
-                                    <option value="MARET" class="bg-zinc-900 text-white">Maret</option>
-                                    <option value="APRIL" class="bg-zinc-900 text-white">April</option>
-                                    <option value="MEI" class="bg-zinc-900 text-white">Mei</option>
-                                    <option value="JUNI" class="bg-zinc-900 text-white">Juni</option>
-                                    <option value="JULI" class="bg-zinc-900 text-white">Juli</option>
-                                    <option value="AGUSTUS" class="bg-zinc-900 text-white">Agustus</option>
-                                    <option value="SEPTEMBER" class="bg-zinc-900 text-white">September</option>
-                                    <option value="OKTOBER" class="bg-zinc-900 text-white">Oktober</option>
-                                    <option value="NOVEMBER" class="bg-zinc-900 text-white">November</option>
-                                    <option value="DESEMBER" class="bg-zinc-900 text-white">Desember</option>
+                                    <!-- Options otomatis di-inject js -->
                                 </select>
                                 <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -310,7 +298,7 @@
                     </div>
                 </div>
 
-                <!-- ================= REKAPAN PER CRO (DI BAWAH SUMMARY) ================= -->
+                <!-- REKAPAN PER CRO -->
                 <div id="cro-breakdown-section" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-150">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                         <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center gap-3 relative z-10 drop-shadow-lg">
@@ -408,8 +396,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <!-- BERSAMBUNG KE PART 2 -->
-             <form id="edit-profile-form" class="p-6 md:p-8 flex flex-col gap-5">
+            <form id="edit-profile-form" class="p-6 md:p-8 flex flex-col gap-5">
                 <div class="flex flex-col items-center justify-center mb-2">
                     <div class="relative w-24 h-24 rounded-full border-2 border-dashed border-emerald-500/50 p-1 group cursor-pointer hover:border-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                         <div class="w-full h-full rounded-full overflow-hidden bg-zinc-800 relative flex items-center justify-center">
@@ -439,7 +426,8 @@
         </div>
     </div>
 
-    <script>
+    <!-- BERSAMBUNG KE PART 2 -->
+     <script>
         // Global State untuk Filter Bulan Semua Sheet 
         window.selectedMonthFilter = 'ALL';
 
@@ -834,6 +822,7 @@
             const sheetTabs = [
                 'PDO', 
                 'Monitoring Pembayaran Pengelolaan Mandiri', 
+                'Monitoring Pembayaran Borongan',
                 'Petty Cash'
             ];
 
@@ -858,6 +847,9 @@
                     } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                         activeClassesStr = 'bg-emerald-500/20 backdrop-blur-md text-white border-l-4 border-emerald-400 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)] theme-pink:border-emerald-500 theme-pink:bg-emerald-500/10';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-emerald-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Monitoring Pembayaran Borongan') {
+                        activeClassesStr = 'bg-amber-500/20 backdrop-blur-md text-white border-l-4 border-amber-400 shadow-[inset_0_0_20px_rgba(245,158,11,0.1)] theme-pink:border-amber-500 theme-pink:bg-amber-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-amber-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
                     } else if (sheetName === 'Petty Cash') {
                         activeClassesStr = 'bg-pink-500/20 backdrop-blur-md text-white border-l-4 border-pink-400 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] theme-pink:border-pink-500 theme-pink:bg-pink-500/10';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-pink-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
@@ -879,31 +871,35 @@
                         currentActiveSheet = sheetName;
                         currentPage = 1;
                         
-                        // Kembalikan filter ke SEMUA BULAN kalau pindah sheet
                         window.selectedMonthFilter = 'ALL';
                         const filterEl = document.getElementById('universal-month-filter');
                         if (filterEl) filterEl.value = 'ALL';
                         
-                        // Ubah warna container Filter Dropdown sesuai menu
                         const filterContainer = document.getElementById('universal-month-filter-container');
                         const filterIcon = document.getElementById('month-filter-icon');
                         const filterArrow = document.getElementById('month-filter-arrow');
 
                         if (sheetName === 'PDO') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex-1 min-w-[140px]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-emerald-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-emerald-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
+                        } else if (sheetName === 'Monitoring Pembayaran Borongan') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-amber-500/40 shadow-[0_4px_20px_rgba(245,158,11,0.2)] flex-1 min-w-[140px]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-amber-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-amber-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Petty Cash') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
@@ -1014,6 +1010,8 @@
                 let apiEndpoint = '';
                 if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                     apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
+                } else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
+                    apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
                 } else {
                     apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
                 }
@@ -1046,15 +1044,17 @@
                         pdoBreakdown.classList.add('hidden');
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
+                        
+                        // Sembunyikan section CRO default, nanti dimunculkan jika ada datanya
+                        const croSection = document.getElementById('cro-breakdown-section');
+                        if(croSection) croSection.classList.add('hidden');
 
                         const filterContainer = document.getElementById('universal-month-filter-container');
                         const filterSelect = document.getElementById('universal-month-filter');
-                        const croSection = document.getElementById('cro-breakdown-section');
-                        
-                        if(croSection) croSection.classList.add('hidden');
+
                         if (filterContainer) {
-                            filterContainer.classList.add('hidden');
-                            filterContainer.classList.remove('flex');
+                            filterContainer.classList.remove('hidden');
+                            filterContainer.classList.add('flex');
                         }
 
                         // =========================================================
@@ -1062,11 +1062,6 @@
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
                             
-                            if (filterContainer) {
-                                filterContainer.classList.remove('hidden');
-                                filterContainer.classList.add('flex');
-                            }
-
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             
@@ -1314,17 +1309,13 @@
                         }
                         
                         // =========================================================
-                        // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
+                        // KONDISI 2: MONITORING PEMBAYARAN (MANDIRI & BORONGAN)
                         // =========================================================
-                        else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                        else if (currentActiveSheet.includes('Monitoring Pembayaran')) {
                             
-                            if (filterContainer) {
-                                filterContainer.classList.remove('hidden');
-                                filterContainer.classList.add('flex');
-                            }
-
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
+
                             document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
@@ -1466,18 +1457,6 @@
                                 return `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
                             };
 
-                            let formatLinkCustom = (str, color) => {
-                                if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
-                                str = String(str).trim();
-                                const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                if (urlRegex.test(str)) {
-                                    return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-${color}-500/20 text-${color}-300 border border-${color}-400/50 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:bg-${color}-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
-                                } else {
-                                    const safeName = str.replace(/'/g, "\\'");
-                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-${color}-300 font-bold hover:text-${color}-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-${color}-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-${color}-400/50 underline-offset-4 truncate">${str}</span></button>`;
-                                }
-                            };
-
                             for (let i = monHeaderRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
@@ -1504,30 +1483,34 @@
                                 let paidCellMon = getCell(row, monIdx.paid).toUpperCase();
                                 let isPaidMon = (paidCellMon === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon.includes('☑'));
 
-                                let croName = extractCroName(regionalVal) || extractCroName(vendorName) || extractCroName(kebunName) || 'LAINNYA';
-                                if (!croMapMon[croName]) croMapMon[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
-                                croMapMon[croName].total++;
-                                if (isPaidMon) {
-                                    croMapMon[croName].paid++;
-                                    if (!isNaN(numNominal)) croMapMon[croName].nominalTotal += numNominal;
-                                } else {
-                                    croMapMon[croName].pending++;
+                                // Ekstraksi CRO dari Regional / Vendor / Kebun di Monitoring
+                                let croName = extractCroName(regionalVal) || extractCroName(vendorName) || extractCroName(kebunName);
+                                if (croName) {
+                                    if (!croMapMon[croName]) croMapMon[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                    croMapMon[croName].total++;
+                                    if (isPaidMon) {
+                                        croMapMon[croName].paid++;
+                                        if (!isNaN(numNominal)) croMapMon[croName].nominalTotal += numNominal;
+                                    } else {
+                                        croMapMon[croName].pending++;
+                                    }
                                 }
 
                                 if (isPaidMon && vendorName !== '-' && vendorName !== '') {
                                     paidCount++;
+                                    let colorTheme = currentActiveSheet.includes('Borongan') ? 'amber' : 'emerald';
                                     let paidItemHTML = `
-                                        <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-black/50 hover:border-emerald-400/50 hover:shadow-[0_15px_35px_rgba(16,185,129,0.2)] hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group cursor-default backdrop-blur-sm">
-                                            <div class="absolute left-0 top-0 w-1.5 h-full bg-emerald-500 opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] text-emerald-400"></div>
+                                        <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-black/50 hover:border-${colorTheme}-400/50 hover:shadow-[0_15px_35px_rgba(var(--tw-colors-${colorTheme}-500),0.2)] hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group cursor-default backdrop-blur-sm">
+                                            <div class="absolute left-0 top-0 w-1.5 h-full bg-${colorTheme}-500 opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] text-${colorTheme}-400"></div>
                                             <div class="flex justify-between items-start gap-3 pl-3">
-                                                <p class="text-white font-bold text-sm md:text-base truncate max-w-[200px] md:max-w-[250px] group-hover:text-emerald-300 transition-colors drop-shadow-md" title="${vendorName}">${vendorName}</p>
-                                                <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 whitespace-nowrap flex-shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors tracking-wide shadow-[0_0_15px_rgba(16,185,129,0.2)]">PAID</span>
+                                                <p class="text-white font-bold text-sm md:text-base truncate max-w-[200px] md:max-w-[250px] group-hover:text-${colorTheme}-300 transition-colors drop-shadow-md" title="${vendorName}">${vendorName}</p>
+                                                <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black bg-${colorTheme}-500/30 text-${colorTheme}-300 border border-${colorTheme}-400/50 whitespace-nowrap flex-shrink-0 group-hover:bg-${colorTheme}-500 group-hover:text-white transition-colors tracking-wide shadow-sm">PAID</span>
                                             </div>
                                             <div class="flex flex-col gap-1.5 pl-3 mt-1">
-                                                <p class="text-xs text-gray-300 font-medium truncate drop-shadow-sm" title="${kebunName}"><span class="text-emerald-400 font-bold">Kebun:</span> ${kebunName}</p>
-                                                <p class="text-xs text-gray-300 font-medium truncate drop-shadow-sm" title="${invName}"><span class="text-emerald-400 font-bold">Inv:</span> ${invName}</p>
+                                                <p class="text-xs text-gray-300 font-medium truncate drop-shadow-sm" title="${kebunName}"><span class="text-${colorTheme}-400 font-bold">Kebun:</span> ${kebunName}</p>
+                                                <p class="text-xs text-gray-300 font-medium truncate drop-shadow-sm" title="${invName}"><span class="text-${colorTheme}-400 font-bold">Inv:</span> ${invName}</p>
                                             </div>
-                                            <p class="text-sm md:text-base font-black text-emerald-400 mt-3 pl-3 group-hover:scale-105 transform origin-left transition-transform drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">${nominalFmt}</p>
+                                            <p class="text-sm md:text-base font-black text-${colorTheme}-400 mt-3 pl-3 group-hover:scale-105 transform origin-left transition-transform drop-shadow-[0_0_8px_rgba(var(--tw-colors-${colorTheme}-500),0.5)]">${nominalFmt}</p>
                                         </div>
                                     `;
                                     paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
@@ -1567,10 +1550,11 @@
 
                             renderCroBreakdown(croMapMon);
 
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Pembayaran Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
+                            let titleColor = currentActiveSheet.includes('Borongan') ? 'amber' : 'emerald';
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-${titleColor}-500/20 backdrop-blur-md rounded-lg border border-${titleColor}-400/50 shadow-[0_0_15px_rgba(var(--tw-colors-${titleColor}-500),0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-${titleColor}-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Pembayaran Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-${titleColor}-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(var(--tw-colors-${titleColor}-500),0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
 
                             if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada data yang lunas (Paid).</p></div>`;
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-${titleColor}-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-${titleColor}-300/70 font-bold tracking-wide">Belum ada data yang lunas (Paid).</p></div>`;
                             }
 
                             if (allTableRowsHTML.length === 0) {
@@ -1604,11 +1588,6 @@
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
                             
-                            if (filterContainer) {
-                                filterContainer.classList.remove('hidden');
-                                filterContainer.classList.add('flex');
-                            }
-
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             noSummaryMsg.classList.remove('hidden');
