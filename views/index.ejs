@@ -179,7 +179,7 @@
     </div>
 
     <!-- ========================================================
-         WRAPPER DASHBOARD (Disembunyikan saat belum login)
+         WRAPPER DASHBOARD
          ======================================================== -->
     <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
         
@@ -310,7 +310,7 @@
                     </div>
                 </div>
 
-                <!-- ================= FITUR BARU: REKAPAN PER CRO (DI BAWAH SUMMARY) ================= -->
+                <!-- ================= REKAPAN PER CRO (DI BAWAH SUMMARY) ================= -->
                 <div id="cro-breakdown-section" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-150">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                         <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center gap-3 relative z-10 drop-shadow-lg">
@@ -408,7 +408,8 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <form id="edit-profile-form" class="p-6 md:p-8 flex flex-col gap-5">
+            <!-- BERSAMBUNG KE PART 2 -->
+             <form id="edit-profile-form" class="p-6 md:p-8 flex flex-col gap-5">
                 <div class="flex flex-col items-center justify-center mb-2">
                     <div class="relative w-24 h-24 rounded-full border-2 border-dashed border-emerald-500/50 p-1 group cursor-pointer hover:border-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                         <div class="w-full h-full rounded-full overflow-hidden bg-zinc-800 relative flex items-center justify-center">
@@ -530,7 +531,7 @@
             if (filterEl) {
                 filterEl.addEventListener('change', (e) => {
                     window.selectedMonthFilter = e.target.value.toUpperCase();
-                    fetchJsonData(true); 
+                    if(typeof fetchJsonData === 'function') fetchJsonData(true); 
                 });
             }
 
@@ -578,8 +579,8 @@
                     }, 700);
 
                     if(!fetchInterval) {
-                        fetchJsonData(); 
-                        fetchInterval = setInterval(() => { fetchJsonData(true); }, 10000);
+                        if(typeof fetchJsonData === 'function') fetchJsonData(); 
+                        fetchInterval = setInterval(() => { if(typeof fetchJsonData === 'function') fetchJsonData(true); }, 10000);
                     }
                 } else {
                     dashboardWrapper.classList.add('hidden', 'opacity-0');
@@ -760,9 +761,8 @@
                 });
             }
 
-
             // =========================================================
-            // 2. LOGIKA DASHBOARD 
+            // 3. UI DASHBOARD & SIDEBAR 
             // =========================================================
             let fetchInterval = null;
 
@@ -891,26 +891,26 @@
 
                         if (sheetName === 'PDO') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex-1 min-w-[140px]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-emerald-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-emerald-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         } else if (sheetName === 'Petty Cash') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
                         }
 
                         renderMenu(); 
-                        fetchJsonData();
+                        if(typeof fetchJsonData === 'function') fetchJsonData();
                         
                         if (window.innerWidth < 768) toggleSidebar();
                     };
@@ -1003,7 +1003,8 @@
                 }
                 return val ? val.toString().trim() : '-';
             }
-
+            
+            // <!-- BERSAMBUNG KE PART 3 -->
             function fetchJsonData(isSilent = false) {
                 if (!isSilent) {
                     document.getElementById('header-title').innerText = currentActiveSheet;
@@ -1045,16 +1046,27 @@
                         pdoBreakdown.classList.add('hidden');
                         dashboardWidgets.classList.add('hidden');
                         noSummaryMsg.classList.add('hidden');
-                        
-                        // Sembunyikan section CRO default, nanti dimunculkan jika ada datanya
+
+                        const filterContainer = document.getElementById('universal-month-filter-container');
+                        const filterSelect = document.getElementById('universal-month-filter');
                         const croSection = document.getElementById('cro-breakdown-section');
+                        
                         if(croSection) croSection.classList.add('hidden');
+                        if (filterContainer) {
+                            filterContainer.classList.add('hidden');
+                            filterContainer.classList.remove('flex');
+                        }
 
                         // =========================================================
                         // KONDISI 1: PDO
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
                             
+                            if (filterContainer) {
+                                filterContainer.classList.remove('hidden');
+                                filterContainer.classList.add('flex');
+                            }
+
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             
@@ -1150,6 +1162,30 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
+                            let availableMonths = [];
+                            for (let i = pdoHeaderRowIdx + 1; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row) continue;
+                                let dateCell = getCell(row, pdoIdx.date);
+                                if (dateCell !== '-') {
+                                    let match = dateCell.match(/[A-Za-z]+\s\d{4}/);
+                                    if (match && !availableMonths.includes(match[0])) availableMonths.push(match[0]);
+                                }
+                            }
+                            if (availableMonths.length > 0) {
+                                if (!window.selectedMonthFilter || (!availableMonths.map(m=>m.toUpperCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = 'ALL'; 
+                                }
+                            }
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
+                            availableMonths.forEach(m => {
+                                let val = m.toUpperCase();
+                                let selected = (val === window.selectedMonthFilter) ? 'selected' : '';
+                                optionsHTML += `<option value="${val}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
+                            });
+                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
+
                             let paidCount = 0;
                             let unpaidCount = 0;
                             let croMap = {};
@@ -1186,14 +1222,11 @@
                                 let tipeVal = getCell(row, pdoIdx.tipe);
                                 let progVal = getCell(row, pdoIdx.prog);
 
-                                // Ekstraksi Nama CRO dari Task
-                                let croName = extractCroName(taskCol);
-                                if (croName) {
-                                    if (!croMap[croName]) croMap[croName] = { total: 0, paid: 0, pending: 0 };
-                                    croMap[croName].total++;
-                                    if (isPaid) croMap[croName].paid++;
-                                    else croMap[croName].pending++;
-                                }
+                                let croName = extractCroName(taskCol) || 'LAINNYA';
+                                if (!croMap[croName]) croMap[croName] = { total: 0, paid: 0, pending: 0 };
+                                croMap[croName].total++;
+                                if (isPaid) croMap[croName].paid++;
+                                else croMap[croName].pending++;
 
                                 let taskItemHTML = `
                                     <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-black/50 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-300 gap-4 cursor-default group relative overflow-hidden backdrop-blur-sm">
@@ -1256,6 +1289,7 @@
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
                             }
@@ -1283,9 +1317,14 @@
                         // KONDISI 2: MONITORING PEMBAYARAN PENGELOLAAN MANDIRI
                         // =========================================================
                         else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            
+                            if (filterContainer) {
+                                filterContainer.classList.remove('hidden');
+                                filterContainer.classList.add('flex');
+                            }
+
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
-
                             document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
                             
                             let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
@@ -1384,6 +1423,32 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
+                            let monitoringAvailableMonths = [];
+                            for (let i = monHeaderRowIdx + 1; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row) continue;
+                                let dateCell = getCell(row, monIdx.date);
+                                if (dateCell !== '-') {
+                                    let match = dateCell.match(/[A-Za-z]+\s\d{4}/);
+                                    if (match && !monitoringAvailableMonths.includes(match[0])) monitoringAvailableMonths.push(match[0]);
+                                }
+                            }
+
+                            if (monitoringAvailableMonths.length > 0) {
+                                if (!window.selectedMonthFilter || (!monitoringAvailableMonths.map(m=>m.toUpperCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = 'ALL'; 
+                                }
+                            }
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
+                            monitoringAvailableMonths.forEach(m => {
+                                let val = m.toUpperCase();
+                                let selected = (val === window.selectedMonthFilter) ? 'selected' : '';
+                                optionsHTML += `<option value="${val}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
+                            });
+                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
+
+
                             let paidCount = 0;
                             let croMapMon = {};
 
@@ -1399,6 +1464,18 @@
                                     kelColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
                                 }
                                 return `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
+                            };
+
+                            let formatLinkCustom = (str, color) => {
+                                if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
+                                str = String(str).trim();
+                                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                if (urlRegex.test(str)) {
+                                    return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-${color}-500/20 text-${color}-300 border border-${color}-400/50 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:bg-${color}-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                } else {
+                                    const safeName = str.replace(/'/g, "\\'");
+                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-${color}-300 font-bold hover:text-${color}-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-${color}-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-${color}-400/50 underline-offset-4 truncate">${str}</span></button>`;
+                                }
                             };
 
                             for (let i = monHeaderRowIdx + 1; i < data.length; i++) {
@@ -1424,20 +1501,17 @@
                                 let numNominal = parseFloat(cleanNominal);
                                 let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
 
-                                let paidCellMon = getCell(row, monIdx.paid);
-                                let isPaidMon = (paidCellMon.toUpperCase() === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon.includes('☑'));
+                                let paidCellMon = getCell(row, monIdx.paid).toUpperCase();
+                                let isPaidMon = (paidCellMon === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon.includes('☑'));
 
-                                // Ekstraksi CRO dari Regional / Vendor / Kebun di Monitoring
-                                let croName = extractCroName(regionalVal) || extractCroName(vendorName) || extractCroName(kebunName);
-                                if (croName) {
-                                    if (!croMapMon[croName]) croMapMon[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
-                                    croMapMon[croName].total++;
-                                    if (isPaidMon) {
-                                        croMapMon[croName].paid++;
-                                        if (!isNaN(numNominal)) croMapMon[croName].nominalTotal += numNominal;
-                                    } else {
-                                        croMapMon[croName].pending++;
-                                    }
+                                let croName = extractCroName(regionalVal) || extractCroName(vendorName) || extractCroName(kebunName) || 'LAINNYA';
+                                if (!croMapMon[croName]) croMapMon[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                croMapMon[croName].total++;
+                                if (isPaidMon) {
+                                    croMapMon[croName].paid++;
+                                    if (!isNaN(numNominal)) croMapMon[croName].nominalTotal += numNominal;
+                                } else {
+                                    croMapMon[croName].pending++;
                                 }
 
                                 if (isPaidMon && vendorName !== '-' && vendorName !== '') {
@@ -1529,6 +1603,12 @@
                         // KONDISI 3: PETTY CASH
                         // =========================================================
                         else if (currentActiveSheet === 'Petty Cash') {
+                            
+                            if (filterContainer) {
+                                filterContainer.classList.remove('hidden');
+                                filterContainer.classList.add('flex');
+                            }
+
                             pdoBreakdown.classList.remove('hidden');
                             pdoBreakdown.classList.add('grid');
                             noSummaryMsg.classList.remove('hidden');
@@ -1555,7 +1635,7 @@
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
-                            let colIdx = { no: 0, cro: 1, wil: 3, pem: 4, sisa: 5, perm: 6, slpj: 11, sreq: 12, ket: 13, prog: 14, dok: 15 };
+                            let colIdx = { no: -1, cro: -1, wil: -1, pem: -1, sisa: -1, perm: -1, slpj: -1, sreq: -1, ket: -1, prog: -1, dok: -1 };
 
                             for (let r = 0; r < Math.min(10, data.length); r++) {
                                 if (!data[r]) continue;
@@ -1595,6 +1675,37 @@
                             let globalDate = "-"; 
                             let currentMonthSection = "";
                             let croMapPetty = {};
+
+                            // FILTER BULAN UNTUK PETTY CASH
+                            let availableMonthsPC = [];
+                            for (let r = 4; r < data.length; r++) {
+                                let row = data[r];
+                                if (!row) continue;
+                                let colZero = getCell(row, colIdx.no);
+                                let fullText = row.join(' ').replace(/,/g, '').trim();
+
+                                if ((colZero === '-' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
+                                    let title = row.find(v => v !== null && v !== '') || fullText;
+                                    let dateMatch = title.match(/Bulan\s+([A-Za-z]+)\s+\d{4}/i);
+                                    if(dateMatch) {
+                                        let m = dateMatch[1].toUpperCase();
+                                        if (!availableMonthsPC.includes(m)) availableMonthsPC.push(m);
+                                    }
+                                }
+                            }
+
+                            if (availableMonthsPC.length > 0) {
+                                if (!window.selectedMonthFilter || (!availableMonthsPC.includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = 'ALL'; 
+                                }
+                            }
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
+                            availableMonthsPC.forEach(m => {
+                                let selected = (m === window.selectedMonthFilter) ? 'selected' : '';
+                                optionsHTML += `<option value="${m}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
+                            });
+                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
 
                             let formatLinkCustom = (str, color) => {
                                 if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
@@ -1665,8 +1776,8 @@
                                 let sisaVal = getCell(row, colIdx.sisa);
                                 let permVal = getCell(row, colIdx.perm);
                                 
-                                let lpjVal = row[colIdx.slpj];
-                                let sreqVal = row[colIdx.sreq];
+                                let lpjVal = getCell(row, colIdx.slpj);
+                                let sreqVal = getCell(row, colIdx.sreq);
                                 
                                 let ketVal = getCell(row, colIdx.ket);
                                 let progVal = getCell(row, colIdx.prog);
@@ -1695,7 +1806,7 @@
                                 let isReview = rawProg.includes('review') || rawProg.includes('dirops');
                                 let progHTML = formatProgBadge(progVal);
 
-                                let croName = extractCroName(croVal) || 'CRO UMUM';
+                                let croName = extractCroName(croVal) || 'LAINNYA';
                                 if (!croMapPetty[croName]) croMapPetty[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
                                 croMapPetty[croName].total++;
                                 if (isPaid) {
