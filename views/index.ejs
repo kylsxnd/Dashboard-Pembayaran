@@ -1359,7 +1359,7 @@
                                 }
                             }
 
-                            let monSumIdx = { task: -1, doc: -1, pajak: -1, selPajak: -1, umum: -1, keu: -1, paid: -1, revReg: -1, date: -1 };
+                            let monSumIdx = { task: -1, doc: -1, pajak: -1, verifBerkas: -1, selPajak: -1, umum: -1, keu: -1, paid: -1, revReg: -1, date: -1 };
                             let monSumRowData = 4;
                             for (let r = 0; r < 10; r++) {
                                 if (!data[r]) continue;
@@ -1371,7 +1371,8 @@
                                         if(h==='total task') monSumIdx.task = c;
                                         else if(h.includes('dokumen asli')) monSumIdx.doc = c;
                                         else if(h==='pajak') monSumIdx.pajak = c;
-                                        else if(h.includes('selesai verifikasi')) monSumIdx.selPajak = c;
+                                        else if(h.includes('verifikasi berkas')) monSumIdx.verifBerkas = c; // <-- TAMBAHAN BARU
+                                        else if(h.includes('selesai verifikasi pajak') || h.includes('verifikasi dokumen')) monSumIdx.selPajak = c; // <-- UBAHAN
                                         else if(h==='umum') monSumIdx.umum = c;
                                         else if(h==='keuangan') monSumIdx.keu = c;
                                         else if(h==='paid') monSumIdx.paid = c;
@@ -1385,12 +1386,13 @@
 
                             let getMonSum = (idx) => (idx !== -1 && data[monSumRowData] && data[monSumRowData][idx] !== undefined && data[monSumRowData][idx] !== null) ? data[monSumRowData][idx] : 0;
 
-                            let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Selesai Verif Pajak", "Umum", "Keuangan", "Paid", "Revisi Regional"];
+                           let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Verifikasi Berkas", "Verifikasi Dokumen", "Umum", "Keuangan", "Paid", "Revisi Regional"];
                             let chartValues = [
                                 getMonSum(monSumIdx.task), 
                                 getMonSum(monSumIdx.doc), 
                                 getMonSum(monSumIdx.pajak), 
-                                getMonSum(monSumIdx.selPajak),
+                                getMonSum(monSumIdx.verifBerkas), // <-- TAMBAHAN BARU (Verifikasi Berkas)
+                                getMonSum(monSumIdx.selPajak),       // <-- UBAHAN JADI (Verifikasi Dokumen)
                                 getMonSum(monSumIdx.umum), 
                                 getMonSum(monSumIdx.keu), 
                                 getMonSum(monSumIdx.paid), 
