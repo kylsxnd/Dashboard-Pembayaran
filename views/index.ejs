@@ -1029,13 +1029,17 @@
                 }
                 
                 let apiEndpoint = '';
-                if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
-                } else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
-                    apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
-                } else {
-                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
-                }
+if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
+} else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
+    apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
+} else if (currentActiveSheet === 'Status Input Asta') {
+    apiEndpoint = '/api/sheet/status_input_asta';
+} else if (currentActiveSheet === 'Surat Keluar') {
+    apiEndpoint = '/api/sheet/surat_keluar';
+} else {
+    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+}
 
                 fetch(apiEndpoint)
                     .then(res => {
