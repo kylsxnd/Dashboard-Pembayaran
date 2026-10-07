@@ -855,12 +855,6 @@
                     } else if (sheetName === 'Petty Cash') {
                         activeClassesStr = 'bg-pink-500/20 backdrop-blur-md text-white border-l-4 border-pink-400 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] theme-pink:border-pink-500 theme-pink:bg-pink-500/10';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-pink-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
-                    } else if (sheetName === 'Surat Keluar') {
-                        activeClassesStr = 'bg-emerald-500/20 backdrop-blur-md text-white border-l-4 border-emerald-400 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)] theme-pink:border-emerald-500 theme-pink:bg-emerald-500/10';
-                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-emerald-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
-                    } else if (sheetName === 'Status Input Asta') {
-                        activeClassesStr = 'bg-amber-500/20 backdrop-blur-md text-white border-l-4 border-amber-400 shadow-[inset_0_0_20px_rgba(245,158,11,0.1)] theme-pink:border-amber-500 theme-pink:bg-amber-500/10';
-                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-amber-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
                     }
 
                     const iconSvg = isActive 
@@ -911,19 +905,6 @@
                             if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
                             if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
                             if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
-                        } else if (sheetName === 'Status Input Asta') {
-                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
-                            if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
-                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
-                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
-                        } else if (sheetName === 'Surat Keluar') {
-                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
-                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
-                            if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
-                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
-                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
-                        
                         }
 
                         renderMenu(); 
@@ -1029,17 +1010,13 @@
                 }
                 
                 let apiEndpoint = '';
-if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
-    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
-} else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
-    apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
-} else if (currentActiveSheet === 'Status Input Asta') {
-    apiEndpoint = '/api/sheet/status_input_asta';
-} else if (currentActiveSheet === 'Surat Keluar') {
-    apiEndpoint = '/api/sheet/surat_keluar';
-} else {
-    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
-}
+                if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
+                } else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
+                    apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
+                } else {
+                    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+                }
 
                 fetch(apiEndpoint)
                     .then(res => {
@@ -1896,88 +1873,7 @@ if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                                 }
                             }
                         }
-                       else if (currentActiveSheet === 'Status Input Asta' || currentActiveSheet === 'Surat Keluar') {
-        const contentDiv = document.getElementById('content');
-        
-        // 1. Cari baris summary secara otomatis berdasarkan kata 'TOTAL TASK'
-        let summaryHeaderIdx = -1;
-        let tableHeaderIdx = -1;
 
-        for (let i = 0; i < data.length; i++) {
-            let rowStr = JSON.stringify(data[i]).toUpperCase();
-            if (rowStr.includes('TOTAL TASK')) {
-                summaryHeaderIdx = i;
-                break;
-            }
-        }
-
-        let summaryHeaders = [];
-        let summaryValues = [];
-        if (summaryHeaderIdx !== -1) {
-            summaryHeaders = data[summaryHeaderIdx] || [];
-            summaryValues = data[summaryHeaderIdx + 1] || []; // Baris angka di bawahnya
-        }
-
-        // 2. Cari baris header tabel secara otomatis di bawah summary
-        if (summaryHeaderIdx !== -1) {
-            for (let i = summaryHeaderIdx + 2; i < data.length; i++) {
-                let row = data[i];
-                let nonNullCount = row.filter(cell => cell !== null && cell !== '').length;
-                if (nonNullCount >= 2) {
-                    let isNumericRow = row.every(cell => !isNaN(cell) && cell !== null && cell !== '');
-                    if (!isNumericRow) {
-                        tableHeaderIdx = i;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (tableHeaderIdx === -1) tableHeaderIdx = summaryHeaderIdx + 4;
-
-        const tableHeaders = data[tableHeaderIdx] || [];
-        const tableRows = data.slice(tableHeaderIdx + 1);
-
-        // Styling warna dinamis sesuai sheet
-        const borderColor = currentActiveSheet === 'Status Input Asta' ? 'border-teal-100' : 'border-indigo-100';
-        const textColor = currentActiveSheet === 'Status Input Asta' ? 'text-teal-600' : 'text-indigo-600';
-
-        // Render Summary Cards
-        let summaryCardsHTML = `<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-6">`;
-        for (let i = 0; i < summaryHeaders.length; i++) {
-            let h = summaryHeaders[i];
-            let v = summaryValues[i];
-            if (h !== null && h !== undefined && h.toString().trim() !== '') {
-                summaryCardsHTML += `
-                <div class="bg-white/80 backdrop-blur-md border ${borderColor} p-4 rounded-2xl shadow-sm hover:shadow-md transition-all">
-                    <p class="text-[10px] font-bold ${textColor} uppercase mb-1 line-clamp-2 leading-tight h-6">${h}</p>
-                    <h3 class="text-xl md:text-2xl font-black text-gray-800">${v !== null && v !== undefined ? v : '0'}</h3>
-                </div>`;
-            }
-        }
-        summaryCardsHTML += `</div>`;
-
-        // Render Tabel Utama
-        let tableHeaderHTML = tableHeaders.map(th => `<th class="px-4 py-3 text-xs font-black text-gray-600 uppercase tracking-wider bg-gray-50 border-b border-gray-200">${th || ''}</th>`).join('');
-        let tableBodyHTML = tableRows.map(row => {
-            let cells = row.map(cell => `<td class="px-4 py-3 text-xs text-gray-700 border-b border-gray-100">${cell || ''}</td>`).join('');
-            return `<tr class="hover:bg-gray-50/80 transition-colors">${cells}</tr>`;
-        }).join('');
-
-        if (contentDiv) {
-            contentDiv.innerHTML = `
-                ${summaryCardsHTML}
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse whitespace-nowrap">
-                            <thead><tr>${tableHeaderHTML}</tr></thead>
-                            <tbody>${tableBodyHTML}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-    }
                         // =========================================================
                         // KONDISI UMUM
                         // =========================================================
