@@ -88,6 +88,13 @@ function processStream(stream, targetSheetName, res) {
 }
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server Live Google Sheets berjalan di http://localhost:${PORT}`);
-});
+
+// Hanya jalankan app.listen jika di komputer lokal (development)
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server berjalan di http://localhost:${PORT}`);
+    });
+}
+
+// Wajib diexport agar Vercel bisa membaca Express app ini
+module.exports = app;
