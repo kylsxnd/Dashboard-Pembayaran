@@ -1896,66 +1896,68 @@ if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                                 }
                             }
                         }
-                       else if (currentActiveSheet === 'Status Input Asta') {
-        const contentDiv = document.getElementById('content'); // <-- Definikan variabelnya di sini
-        const summaryHeaders = data[2] || [];
-        const summaryValues = data[3] || [];
+                       else if (currentActiveSheet === 'Status Input Asta' || currentActiveSheet === 'Surat Keluar') {
+        const contentDiv = document.getElementById('content');
         
+        // 1. Cari baris summary secara otomatis berdasarkan kata 'TOTAL TASK'
+        let summaryHeaderIdx = -1;
+        let tableHeaderIdx = -1;
+
+        for (let i = 0; i < data.length; i++) {
+            let rowStr = JSON.stringify(data[i]).toUpperCase();
+            if (rowStr.includes('TOTAL TASK')) {
+                summaryHeaderIdx = i;
+                break;
+            }
+        }
+
+        let summaryHeaders = [];
+        let summaryValues = [];
+        if (summaryHeaderIdx !== -1) {
+            summaryHeaders = data[summaryHeaderIdx] || [];
+            summaryValues = data[summaryHeaderIdx + 1] || []; // Baris angka di bawahnya
+        }
+
+        // 2. Cari baris header tabel secara otomatis di bawah summary
+        if (summaryHeaderIdx !== -1) {
+            for (let i = summaryHeaderIdx + 2; i < data.length; i++) {
+                let row = data[i];
+                let nonNullCount = row.filter(cell => cell !== null && cell !== '').length;
+                if (nonNullCount >= 2) {
+                    let isNumericRow = row.every(cell => !isNaN(cell) && cell !== null && cell !== '');
+                    if (!isNumericRow) {
+                        tableHeaderIdx = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (tableHeaderIdx === -1) tableHeaderIdx = summaryHeaderIdx + 4;
+
+        const tableHeaders = data[tableHeaderIdx] || [];
+        const tableRows = data.slice(tableHeaderIdx + 1);
+
+        // Styling warna dinamis sesuai sheet
+        const borderColor = currentActiveSheet === 'Status Input Asta' ? 'border-teal-100' : 'border-indigo-100';
+        const textColor = currentActiveSheet === 'Status Input Asta' ? 'text-teal-600' : 'text-indigo-600';
+
+        // Render Summary Cards
         let summaryCardsHTML = `<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-6">`;
-        for(let i = 2; i < summaryHeaders.length; i++) {
-            if(summaryHeaders[i] && summaryHeaders[i].trim() !== '') {
+        for (let i = 0; i < summaryHeaders.length; i++) {
+            let h = summaryHeaders[i];
+            let v = summaryValues[i];
+            if (h !== null && h !== undefined && h.toString().trim() !== '') {
                 summaryCardsHTML += `
-                <div class="bg-white/80 backdrop-blur-md border border-teal-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all">
-                    <p class="text-[10px] font-bold text-teal-600 uppercase mb-1 line-clamp-2 leading-tight h-6">${summaryHeaders[i]}</p>
-                    <h3 class="text-xl md:text-2xl font-black text-gray-800">${summaryValues[i] || '0'}</h3>
+                <div class="bg-white/80 backdrop-blur-md border ${borderColor} p-4 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                    <p class="text-[10px] font-bold ${textColor} uppercase mb-1 line-clamp-2 leading-tight h-6">${h}</p>
+                    <h3 class="text-xl md:text-2xl font-black text-gray-800">${v !== null && v !== undefined ? v : '0'}</h3>
                 </div>`;
             }
         }
         summaryCardsHTML += `</div>`;
 
-        const tableHeaders = data[6] || [];
-        const tableRows = data.slice(7);
-
-        let tableHeaderHTML = tableHeaders.map(th => `<th class="px-4 py-3 text-xs font-black text-gray-600 uppercase tracking-wider bg-gray-50 border-b border-gray-200">${th || ''}</th>`).join('');
-        let tableBodyHTML = tableRows.map(row => {
-            let cells = row.map(cell => `<td class="px-4 py-3 text-xs text-gray-700 border-b border-gray-100">${cell || ''}</td>`).join('');
-            return `<tr class="hover:bg-gray-50/80 transition-colors">${cells}</tr>`;
-        }).join('');
-
-        if (contentDiv) {
-            contentDiv.innerHTML = `
-                ${summaryCardsHTML}
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse whitespace-nowrap">
-                            <thead><tr>${tableHeaderHTML}</tr></thead>
-                            <tbody>${tableBodyHTML}</tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-        }
-    }
-    else if (currentActiveSheet === 'Surat Keluar') {
-        const contentDiv = document.getElementById('content'); // <-- Definikan variabelnya di sini
-        const summaryHeaders = data[2] || [];
-        const summaryValues = data[3] || [];
-        
-        let summaryCardsHTML = `<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">`;
-        for(let i = 2; i < summaryHeaders.length; i++) {
-            if(summaryHeaders[i] && summaryHeaders[i].trim() !== '') {
-                summaryCardsHTML += `
-                <div class="bg-white/80 backdrop-blur-md border border-indigo-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all">
-                    <p class="text-[11px] font-bold text-indigo-600 uppercase mb-1">${summaryHeaders[i]}</p>
-                    <h3 class="text-2xl md:text-3xl font-black text-gray-800">${summaryValues[i] || '0'}</h3>
-                </div>`;
-            }
-        }
-        summaryCardsHTML += `</div>`;
-
-        const tableHeaders = data[4] || [];
-        const tableRows = data.slice(5);
-
+        // Render Tabel Utama
         let tableHeaderHTML = tableHeaders.map(th => `<th class="px-4 py-3 text-xs font-black text-gray-600 uppercase tracking-wider bg-gray-50 border-b border-gray-200">${th || ''}</th>`).join('');
         let tableBodyHTML = tableRows.map(row => {
             let cells = row.map(cell => `<td class="px-4 py-3 text-xs text-gray-700 border-b border-gray-100">${cell || ''}</td>`).join('');
