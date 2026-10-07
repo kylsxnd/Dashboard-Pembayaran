@@ -1,100 +1,2052 @@
-const express = require('express');
-const path = require('path');
-const XLSX = require('xlsx');
-const https = require('https');
-const app = express();
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-// Route API LIVE langsung mengambil dari Link Google Sheets Online
-app.get('/api/sheet/:sheetName', (req, res) => {
-    // Ubah jadi huruf kecil semua biar kebal error besar/kecil
-    const sheetNameKey = req.params.sheetName.toLowerCase();
-    
-    // KAMUS PINTAR TRANSLASI NAMA SHEET
-    const sheetMap = {
-        'monitoring_pembayaran': 'Monitoring Pembayaran',
-        'pdo': 'PDO',
-        // INI KUNCINYA: Web minta nama panjang, tapi kita arahin server buat nyari nama pendek (31 huruf limit Excel)
-        'monitoring_pembayaran_pengelolaan_mandiri': 'Monitoring Pembayaran Pengelola',
-        'spk_lokal': 'SPK Lokal',
-        'petty_cash': 'Petty Cash',
-        'surat_masuk': 'Surat Masuk',
-        'disposisi': 'Disposisi',
-        'sp3': 'SP3',
-        'surat_keluar': 'Surat Keluar',
-        'lpj_sp3': 'LPJ SP3',
-        'notulensi': 'NOTULENSI',
-        'dana_kontanan': 'DANA KONTANAN',
-        'kontanan': 'Kontanan',
-        'crash_program': 'Crash Program'
-    };
-
-    const targetSheetName = sheetMap[sheetNameKey] || sheetNameKey.replace(/_/g, ' ');
-    // URL Export langsung dari Google Sheets kamu
-    const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/1IcxrVgQm-WXCHyLebJKcRYyNdkG0ahaTBmTXAUhqMbA/export?format=xlsx';
-
-    https.get(googleSheetUrl, (googleRes) => {
-        // Tangani redirect jika ada
-        if (googleRes.statusCode >= 300 && googleRes.statusCode < 400 && googleRes.headers.location) {
-            https.get(googleRes.headers.location, (redirectRes) => {
-                processStream(redirectRes, targetSheetName, res);
-            }).on('error', (err) => {
-                console.error(err);
-                res.status(500).json({ error: "Gagal mengunduh dari Google Sheets." });
-            });
-            return;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Portal - Dashboard Agrinas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================================
+           BACKGROUND IMAGE SETTINGS
+           ======================================================== */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #09090b; 
+            background-image: linear-gradient(rgba(9, 9, 11, 0.65), rgba(9, 9, 11, 0.85)), url('/bg1.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: all 0.4s ease; 
         }
 
-        processStream(googleRes, targetSheetName, res);
-    }).on('error', (err) => {
-        console.error(err);
-        res.status(500).json({ error: "Gagal terhubung ke Google Sheets." });
-    });
-});
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+        
+        .table-container { -webkit-overflow-scrolling: touch; }
 
-function processStream(stream, targetSheetName, res) {
-    const chunks = [];
-    stream.on('data', (chunk) => chunks.push(chunk));
-    stream.on('end', () => {
-        try {
-            const buffer = Buffer.concat(chunks);
-            const workbook = XLSX.read(buffer, { type: 'buffer' });
-            
-            // Cari nama sheet di dalam Excel tanpa peduli huruf besar/kecil
-            const actualSheetName = workbook.SheetNames.find(
-                name => name.toLowerCase() === targetSheetName.toLowerCase()
-            );
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
 
-            // Kalau nama tab beneran nggak ada di file Excel
-            if (!actualSheetName || !workbook.Sheets[actualSheetName]) {
-                return res.status(404).json({ error: `Sheet "${targetSheetName}" tidak ditemukan di Google Sheets. Cek limit 31 karakter Excel.` });
+        /* ========================================================
+           TEMA SOFT PINK & CREAM
+           ======================================================== */
+        body.theme-pink {
+            background-color: #fdf2f8 !important;
+            background-image: linear-gradient(rgba(253, 242, 248, 0.65), rgba(253, 242, 248, 0.85)), url('/bg1.jpeg') !important;
+            color: #4b5563 !important;
+        }
+        body.theme-pink #sidebar,
+        body.theme-pink .bg-zinc-800,
+        body.theme-pink .bg-zinc-900,
+        body.theme-pink .bg-zinc-950,
+        body.theme-pink .bg-zinc-800\/40,
+        body.theme-pink .bg-zinc-800\/30,
+        body.theme-pink .bg-zinc-900\/60,
+        body.theme-pink .bg-zinc-900\/50,
+        body.theme-pink .bg-zinc-900\/40,
+        body.theme-pink .bg-zinc-950\/40,
+        body.theme-pink #custom-pdf-modal > div,
+        body.theme-pink #profile-modal > div,
+        body.theme-pink #auth-card {
+            background-color: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(16px) !important;
+            border-color: rgba(251, 207, 232, 0.8) !important; 
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.08) !important;
+        }
+        body.theme-pink header {
+            background-color: rgba(255, 255, 255, 0.6) !important;
+            border-bottom-color: rgba(251, 207, 232, 0.8) !important;
+        }
+        body.theme-pink .border-white\/5,
+        body.theme-pink .border-white\/10 { border-color: rgba(252, 231, 243, 0.8) !important; }
+        body.theme-pink .text-white { color: #111827 !important; }
+        body.theme-pink .text-gray-200 { color: #1f2937 !important; }
+        body.theme-pink .text-gray-300,
+        body.theme-pink .text-gray-400,
+        body.theme-pink .text-gray-500 { color: #6b7280 !important; }
+        
+        body.theme-pink .bg-white\/\[0\.02\],
+        body.theme-pink .bg-white\/\[0\.03\] { background-color: rgba(255, 245, 247, 0.5) !important; border-color: rgba(252, 231, 243, 0.8) !important; }
+        
+        body.theme-pink .hover\:bg-white\/\[0\.03\]:hover,
+        body.theme-pink .hover\:bg-zinc-700\/60:hover,
+        body.theme-pink .hover\:bg-zinc-800\/50:hover { 
+            background-color: rgba(252, 231, 243, 0.8) !important; 
+        }
+        
+        body.theme-pink th {
+            background-color: rgba(252, 231, 243, 0.9) !important;
+            color: #be185d !important;
+            border-bottom-color: rgba(251, 207, 232, 0.8) !important;
+        }
+        body.theme-pink td { border-bottom-color: rgba(253, 242, 248, 0.6) !important; }
+        body.theme-pink .bg-emerald-600\/10, body.theme-pink .bg-zinc-500\/5 { background-color: rgba(244, 114, 182, 0.1) !important; }
+        
+        body.theme-pink .border-l-4.border-transparent:hover { color: #be185d !important; background-color: rgba(252, 231, 243, 0.8) !important; }
+        body.theme-pink .border-sky-500 {
+            border-color: #0ea5e9 !important;
+            background: linear-gradient(to right, rgba(14,165,233,0.15), transparent) !important;
+            color: #0369a1 !important;
+        }
+        body.theme-pink .border-emerald-500 {
+            border-color: #10b981 !important;
+            background: linear-gradient(to right, rgba(16,185,129,0.15), transparent) !important;
+            color: #047857 !important;
+        }
+        body.theme-pink .border-pink-500 {
+            border-color: #ec4899 !important;
+            background: linear-gradient(to right, rgba(244,114,182,0.15), transparent) !important;
+            color: #be185d !important;
+        }
+
+        body.theme-pink h2.bg-gradient-to-r {
+            background-image: linear-gradient(to right, #9d174d, #ec4899) !important;
+            color: transparent !important;
+        }
+        body.theme-pink .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+        body.theme-pink .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(236, 72, 153, 0.3); }
+        body.theme-pink .bg-emerald-600 { background-color: #ec4899 !important; color: white !important; }
+        body.theme-pink button.hover\:text-white:hover { color: #be185d !important; }
+        body.theme-pink #mobile-overlay { background-color: rgba(255,255,255,0.6) !important; }
+        body.theme-pink #mobile-menu-btn { color: #be185d !important; }
+        body.theme-pink input { background-color: rgba(255,255,255,0.8)!important; color: #111827!important; border-color: rgba(236,72,153,0.3)!important; }
+    </style>
+</head>
+<body class="text-gray-200 flex h-screen overflow-hidden selection:bg-emerald-500/30">
+
+    <!-- ========================================================
+         HALAMAN LOGIN & REGISTER (AUTH)
+         ======================================================== -->
+    <div id="auth-page" class="fixed inset-0 z-[200] flex items-center justify-center bg-zinc-950/40 backdrop-blur-xl transition-all duration-700">
+        <div id="auth-card" class="bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 w-11/12 max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group transform transition-all duration-500">
+            <div class="absolute -top-20 -right-20 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex flex-col items-center mb-8 relative z-10">
+                <div class="w-24 h-24 flex items-center justify-center mb-3">
+                    <img src="/bg2.png" onerror="this.src='/bg2.jpeg'" alt="Logo Agrinas" class="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                </div>
+                <h2 class="text-white font-black tracking-widest text-xl drop-shadow-md mt-2">AGRINAS OPS</h2>
+                <p class="text-xs text-emerald-400 font-bold uppercase tracking-wider mt-1">Executive Portal</p>
+            </div>
+
+            <div id="auth-error" class="hidden mb-4 p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs text-center font-medium relative z-10"></div>
+
+            <!-- FORM LOGIN -->
+            <form id="login-form" class="flex flex-col gap-4 relative z-10">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
+                    <input type="email" id="login-email" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder-gray-600" placeholder="admin@agrinas.id">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
+                    <input type="password" id="login-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder-gray-600" placeholder="••••••••">
+                </div>
+                <button type="submit" class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                    MASUK SEKARANG
+                </button>
+                <p class="text-center text-xs text-gray-400 mt-4">Belum punya akun? <button type="button" id="go-to-register" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline cursor-pointer focus:outline-none">Daftar di sini</button></p>
+            </form>
+
+            <!-- FORM REGISTER -->
+            <form id="register-form" class="hidden flex flex-col gap-4 relative z-10">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Nama Lengkap</label>
+                    <input type="text" id="reg-name" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
+                    <input type="email" id="reg-email" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="nama@agrinas.id">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Password</label>
+                    <input type="password" id="reg-password" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-gray-600" placeholder="Minimal 6 karakter">
+                </div>
+                <button type="submit" class="mt-4 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(59,130,246,0.2)] hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                    DAFTAR AKUN BARU
+                </button>
+                <p class="text-center text-xs text-gray-400 mt-4">Sudah punya akun? <button type="button" id="go-to-login" class="text-blue-400 font-bold hover:text-blue-300 hover:underline cursor-pointer focus:outline-none">Masuk</button></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================
+         WRAPPER DASHBOARD
+         ======================================================== -->
+    <div id="dashboard-wrapper" class="flex h-screen w-full hidden opacity-0 transition-opacity duration-700">
+        
+        <!-- OVERLAY UNTUK HP -->
+        <div id="mobile-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="w-72 bg-zinc-900/60 backdrop-blur-2xl border-r border-white/10 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 shadow-[4px_0_24px_rgba(0,0,0,0.5)] md:shadow-none">
+            <div class="p-6 border-b border-white/10 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 flex items-center justify-center flex-shrink-0" id="logo-icon">
+                        <img src="/bg2.png" onerror="this.src='/bg2.jpeg'" alt="Logo Agrinas" class="w-full h-full object-contain drop-shadow-md">
+                    </div>
+                    <div>
+                        <h2 class="text-white font-black tracking-widest text-sm drop-shadow-md">AGRINAS OPS</h2>
+                        <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-0.5">Executive On-Farm</p>
+                    </div>
+                </div>
+                <button id="close-sidebar-btn" class="md:hidden p-2 text-gray-300 hover:text-white rounded-lg bg-white/10 focus:outline-none cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-4 flex-1 overflow-y-auto custom-scrollbar">
+                <p class="text-[10px] font-bold text-gray-400 mb-4 tracking-widest uppercase px-2 drop-shadow-md">Data Sheets (4 Menu)</p>
+                <div id="sidebar-menu" class="flex flex-col gap-1.5"></div>
+            </div>
+
+            <!-- PROFIL USER DINAMIS -->
+            <div class="p-5 border-t border-white/10 bg-black/20 backdrop-blur-md flex items-center justify-between gap-2 group hover:bg-white/[0.02] transition-colors">
+                <div class="flex items-center gap-3 overflow-hidden flex-1 cursor-pointer" id="edit-profile-btn" title="Edit Profil & Foto">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 p-[2px] shadow-lg flex-shrink-0 relative">
+                        <div class="w-full h-full bg-zinc-800 rounded-full flex items-center justify-center overflow-hidden">
+                            <span id="profile-initials" class="text-xs font-bold text-white">PIC</span>
+                            <img id="profile-photo" class="w-full h-full object-cover hidden" src="" alt="Profile">
+                        </div>
+                        <div class="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <svg class="w-4 h-4 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p id="profile-name" class="text-sm text-white font-semibold drop-shadow-md truncate group-hover:text-emerald-300 transition-colors">Staf PIC HO</p>
+                        <p id="profile-email" class="text-[10px] text-gray-400 truncate">pic.ho@agrinas.id</p>
+                    </div>
+                </div>
+                <button id="logout-btn" class="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors focus:outline-none flex-shrink-0 cursor-pointer" title="Keluar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <header class="h-16 md:h-20 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-zinc-950/40 backdrop-blur-xl relative z-10 w-full shadow-md">
+                <div class="flex items-center gap-2 md:gap-4">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white transition-colors focus:outline-none shadow-sm cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                    <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/30 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-lg border border-white/10 flex items-center shadow-inner">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 mr-1.5 md:mr-2 text-emerald-400 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                        <span id="header-title" class="truncate max-w-[150px] md:max-w-xs drop-shadow-md">Memuat Sheet...</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 md:gap-4">
+                    <button id="theme-toggle" class="p-2 md:p-2.5 rounded-lg bg-white/10 border border-white/20 text-gray-200 hover:text-white hover:bg-white/20 hover:shadow-lg transition-all duration-300 group cursor-pointer" title="Ganti Tema">
+                        <svg class="w-4 h-4 group-hover:scale-110 transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+                    </button>
+                    <div class="bg-emerald-500/20 backdrop-blur-md text-emerald-300 border border-emerald-400/30 text-[9px] md:text-[10px] font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-lg flex items-center shadow-[0_0_20px_rgba(16,185,129,0.3)] tracking-wider">
+                        <span class="w-2 h-2 md:w-2.5 md:h-2.5 bg-emerald-400 rounded-full mr-1.5 md:mr-2.5 animate-pulse shadow-[0_0_10px_rgba(52,211,153,1)]"></span>
+                        <span class="hidden sm:inline drop-shadow-md">LIVE SINKRON</span>
+                        <span class="inline sm:hidden drop-shadow-md">LIVE</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 gap-4 opacity-0 animate-fade-in-up">
+                    <div class="w-full md:w-auto">
+                        <h1 class="text-3xl md:text-4xl font-black text-white mb-1.5 md:mb-2 tracking-tight drop-shadow-xl" id="page-title">Loading...</h1>
+                        <p class="text-xs md:text-sm text-gray-300 flex items-center gap-2 drop-shadow-md font-medium">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Sinkronisasi langsung dari Google Sheets.
+                        </p>
+                    </div>
+                    <div class="flex flex-row md:flex-col items-center md:items-end gap-2 w-full md:w-auto justify-between md:justify-end flex-wrap">
+                        <div class="text-[10px] md:text-xs font-semibold text-gray-200 bg-black/40 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border border-white/20 shadow-lg whitespace-nowrap" id="last-update">
+                            Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-md">--:--:--</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 mt-1 md:mt-0 w-full md:w-auto justify-end order-last md:order-none">
+                            <div id="top-date-display" class="hidden text-[10px] md:text-[11px] font-bold text-emerald-100 tracking-widest bg-emerald-600/30 backdrop-blur-xl border border-emerald-400/40 px-3 py-1.5 md:px-4 md:py-2 rounded-lg shadow-[0_4px_20px_rgba(16,185,129,0.3)] whitespace-nowrap flex-shrink-0">
+                                TANGGAL: <span id="top-date-value" class="text-white ml-1 font-black drop-shadow-md">--/--/----</span>
+                            </div>
+
+                            <!-- DROPDOWN BULAN -->
+                            <div id="universal-month-filter-container" class="flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]">
+                                <svg id="month-filter-icon" class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <select id="universal-month-filter" class="bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center">
+                                    <option value="ALL" class="bg-zinc-900 text-white">SEMUA BULAN</option>
+                                    <!-- Options otomatis di-inject js -->
+                                </select>
+                                <svg id="month-filter-arrow" class="w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
+                    <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
+                        <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 md:mb-8 flex items-center gap-3 relative z-10 drop-shadow-lg">
+                            <div class="p-2 rounded-lg bg-white/10 backdrop-blur-md text-white border border-white/20 shadow-inner">
+                                <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            </div>
+                            Summary Data Panel
+                        </h3>
+                        <div id="summaryCardsContainer" class="relative z-10"></div>
+                    </div>
+                </div>
+
+                <!-- REKAPAN PER CRO -->
+                <div id="cro-breakdown-section" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-150">
+                    <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
+                        <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center gap-3 relative z-10 drop-shadow-lg">
+                            <div class="p-2 rounded-lg bg-white/10 backdrop-blur-md text-white border border-white/20 shadow-inner">
+                                <svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            Rekapan Status per CRO
+                        </h3>
+                        <div id="croCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10"></div>
+                    </div>
+                </div>
+
+                <div id="pdo-status-breakdown" class="hidden grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 mb-6 md:mb-8 opacity-0 animate-fade-in-up delay-200">
+                    <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl flex flex-col hover:border-emerald-400/50 hover:shadow-[0_15px_40px_rgba(16,185,129,0.15)] transition-all duration-300 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-colors"></div>
+                        <h3 id="panel-title-paid" class="text-emerald-300 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10 drop-shadow-md">
+                            <div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/40"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                            Task Sudah Paid
+                        </h3>
+                        <div id="paid-task-container" class="flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10"></div>
+                    </div>
+
+                    <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl flex flex-col hover:border-rose-400/50 hover:shadow-[0_15px_40px_rgba(244,63,94,0.15)] transition-all duration-300 relative overflow-hidden group" id="unpaid-panel-wrapper">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-colors"></div>
+                        <h3 id="panel-title-unpaid" class="text-rose-300 font-bold text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center flex-wrap gap-3 relative z-10 drop-shadow-md">
+                            <div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/40"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                            Task Belum Paid
+                        </h3>
+                        <div id="unpaid-task-container" class="flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10"></div>
+                    </div>
+                </div>
+
+                <div id="no-summary-msg" class="hidden mb-6 md:mb-8 bg-black/40 backdrop-blur-xl border border-white/20 text-gray-200 font-medium text-xs md:text-sm px-4 md:px-6 py-4 md:py-5 rounded-2xl flex items-center gap-3 opacity-0 animate-fade-in-up shadow-xl">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Sheet ini tidak memiliki ringkasan (Total/Summary).
+                </div>
+
+                <div class="bg-zinc-900/40 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col opacity-0 animate-fade-in-up delay-200">
+                    <div class="px-5 md:px-8 py-5 md:py-6 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
+                        <h3 class="text-white font-bold text-xs md:text-sm tracking-widest uppercase flex items-center gap-3 drop-shadow-lg">
+                            <div class="p-2 bg-white/10 rounded-lg backdrop-blur-md border border-white/10"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg></div>
+                            Detail Data Tabel
+                        </h3>
+                    </div>
+                    
+                    <div class="overflow-x-auto custom-scrollbar table-container flex-1 min-h-[300px] pb-4">
+                        <table class="w-full text-left border-collapse min-w-max">
+                            <thead id="table-head" class="text-[10px] md:text-xs text-gray-300 uppercase tracking-wider font-bold"></thead>
+                            <tbody id="table-body" class="text-xs md:text-sm divide-y divide-white/10">
+                                <tr><td colspan="20" class="p-16 text-center text-gray-300 flex flex-col justify-center items-center gap-4">
+                                    <svg class="animate-spin w-10 h-10 text-emerald-400 drop-shadow-lg" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    <span class="font-bold text-sm md:text-base tracking-wide drop-shadow-md">Mengambil data live dari Google Sheets...</span>
+                                </td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-5 md:px-8 py-4 md:py-5 border-t border-white/10 bg-black/30 backdrop-blur-xl flex justify-center items-center">
+                        <div id="pagination-container" class="flex items-center gap-2 md:gap-3 flex-wrap justify-center"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL PDF -->
+    <div id="custom-pdf-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[300] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-zinc-900/80 backdrop-blur-2xl border border-white/20 rounded-3xl w-full max-w-2xl flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.5)] transform scale-95 transition-transform duration-300 overflow-hidden" id="pdf-modal-box">
+            <div class="px-5 md:px-8 py-5 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
+                <div class="flex items-center gap-4 overflow-hidden">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+                        <svg class="w-5 h-5 text-emerald-400 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 id="pdf-modal-title" class="text-white font-bold text-sm md:text-base truncate drop-shadow-md">Preview Dokumen</h3>
+                </div>
+                <button id="pdf-modal-close" class="text-gray-300 hover:text-white hover:bg-rose-500/30 p-2.5 rounded-xl border border-transparent hover:border-rose-500/50 transition-all focus:outline-none cursor-pointer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="pdf-modal-content" class="p-8 md:p-12 flex flex-col items-center justify-center text-center relative"></div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT PROFILE -->
+    <div id="profile-modal" class="fixed inset-0 bg-black/80 backdrop-blur-xl z-[300] hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-zinc-900/80 backdrop-blur-2xl border border-white/20 rounded-3xl w-full max-w-sm flex flex-col shadow-[0_25px_50px_rgba(0,0,0,0.5)] transform scale-95 transition-transform duration-300 overflow-hidden" id="profile-modal-box">
+            <div class="px-6 py-5 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+                        <svg class="w-4 h-4 text-emerald-400 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <h3 class="text-white font-bold text-sm md:text-base drop-shadow-md tracking-wide">Pengaturan Profil</h3>
+                </div>
+                <button id="profile-modal-close" class="text-gray-300 hover:text-white hover:bg-rose-500/30 p-2 rounded-xl border border-transparent hover:border-rose-500/50 transition-all focus:outline-none cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <form id="edit-profile-form" class="p-6 md:p-8 flex flex-col gap-5">
+                <div class="flex flex-col items-center justify-center mb-2">
+                    <div class="relative w-24 h-24 rounded-full border-2 border-dashed border-emerald-500/50 p-1 group cursor-pointer hover:border-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                        <div class="w-full h-full rounded-full overflow-hidden bg-zinc-800 relative flex items-center justify-center">
+                            <span id="edit-photo-initials" class="text-2xl font-black text-white">PIC</span>
+                            <img id="edit-photo-preview" class="w-full h-full object-cover absolute inset-0 hidden" src="" alt="">
+                            <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg class="w-6 h-6 text-white drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                        </div>
+                        <input type="file" id="edit-photo-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    </div>
+                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mt-3">Klik untuk ganti foto</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Nama Lengkap</label>
+                    <input type="text" id="edit-name-input" required class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all shadow-inner">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">Email</label>
+                    <input type="email" id="edit-email-input" required class="w-full bg-black/50 border border-white/5 rounded-xl px-4 py-3 text-sm text-gray-500 focus:outline-none cursor-not-allowed" readonly title="Email tidak dapat diubah">
+                </div>
+                <div id="profile-save-msg" class="hidden text-emerald-300 text-xs font-bold text-center bg-emerald-500/20 border border-emerald-400/30 py-2.5 rounded-xl shadow-inner mt-1 uppercase tracking-wide">Berhasil disimpan!</div>
+                <button type="submit" class="mt-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.2)] hover:shadow-[0_10px_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:-translate-y-1 tracking-wide cursor-pointer">
+                    SIMPAN PERUBAHAN
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- BERSAMBUNG KE PART 2 -->
+     <script>
+        // Global State untuk Filter Bulan Semua Sheet 
+        window.selectedMonthFilter = 'ALL';
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // =========================================================
+            // FUNGSI UMUM UNTUK MENGAMBIL DATA DARI CELL DENGAN AMAN
+            // =========================================================
+            let getCell = (row, idx) => {
+                if (idx !== undefined && idx !== -1 && row[idx] !== undefined && row[idx] !== null && String(row[idx]) !== 'nan' && String(row[idx]) !== '') {
+                    return String(row[idx]).trim();
+                }
+                return '-';
+            };
+
+            let formatProgBadge = (val) => {
+                if (val === '-' || !val) return '-';
+                let str = String(val).trim();
+                if (str === '') return '-';
+                let lProg = str.toLowerCase();
+                let progColor = 'bg-slate-500/20 text-slate-300 border-slate-400/30';
+                if (lProg.includes('approved')) progColor = 'bg-purple-500/30 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
+                else if (lProg.includes('revisi')) progColor = 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]';
+                else if (lProg.includes('pembuatan')) progColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
+                return `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
+            };
+
+            let formatCheckmark = (val) => {
+                if (val === '-' || val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
+                let strVal = String(val).toUpperCase();
+                let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
+                if (isTrue) {
+                    return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-500 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
+                } else {
+                    return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
+                }
+            };
+
+            // Helper untuk mengekstrak nama CRO dari teks baris (misal: "PDO CRO I", "CRO V", dll)
+            let extractCroName = (text) => {
+                if (!text) return null;
+                let match = String(text).match(/CRO\s+[IVXLCDM\d]+/i);
+                if (match) return match[0].toUpperCase();
+                return null;
+            };
+
+            // Render Kartu Rekapan Per CRO di bawah Summary
+            let renderCroBreakdown = (itemsMap) => {
+                const container = document.getElementById('croCardsContainer');
+                const section = document.getElementById('cro-breakdown-section');
+                if (!container || !section) return;
+
+                container.innerHTML = '';
+                const keys = Object.keys(itemsMap).sort();
+
+                if (keys.length === 0) {
+                    section.classList.add('hidden');
+                    return;
+                }
+
+                section.classList.remove('hidden');
+                section.classList.remove('opacity-0');
+
+                const colors = ['sky', 'emerald', 'amber', 'rose', 'purple', 'cyan', 'pink', 'lime'];
+
+                keys.forEach((croKey, idx) => {
+                    let info = itemsMap[croKey];
+                    let col = colors[idx % colors.length];
+
+                    container.innerHTML += `
+                        <div class="bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-black/50 hover:border-${col}-400/50 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${col}-500/0 via-${col}-500/80 to-${col}-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] text-${col}-400"></div>
+                            <p class="text-xs md:text-sm font-black text-white group-hover:text-${col}-300 transition-colors uppercase tracking-wider mb-2 drop-shadow-md flex items-center justify-between">
+                                <span>${croKey}</span>
+                                <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-md font-bold text-gray-300">Total: ${info.total}</span>
+                            </p>
+                            <div class="flex items-center justify-between text-xs text-gray-300 font-medium">
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Paid: <b class="text-emerald-300">${info.paid}</b></span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Pending: <b class="text-rose-300">${info.pending}</b></span>
+                            </div>
+                            ${info.nominalTotal ? `<p class="text-xs font-black text-emerald-400 mt-2.5 pt-2 border-t border-white/10 drop-shadow-sm">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(info.nominalTotal)}</p>` : ''}
+                        </div>
+                    `;
+                });
+            };
+
+            // Event listener Dropdown Bulan Universal
+            const filterEl = document.getElementById('universal-month-filter');
+            if (filterEl) {
+                filterEl.addEventListener('change', (e) => {
+                    window.selectedMonthFilter = e.target.value.toUpperCase();
+                    if(typeof fetchJsonData === 'function') fetchJsonData(true); 
+                });
             }
 
-            const worksheet = workbook.Sheets[actualSheetName];
-            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null });
-            res.json({ rows });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: "Gagal memproses data dari Google Sheets." });
+            // =========================================================
+            // 1. SISTEM AUTENTIKASI & PROFILE
+            // =========================================================
+            const authPage = document.getElementById('auth-page');
+            const dashboardWrapper = document.getElementById('dashboard-wrapper');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const goToRegisterBtn = document.getElementById('go-to-register');
+            const goToLoginBtn = document.getElementById('go-to-login');
+            const authError = document.getElementById('auth-error');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            let activeUser = JSON.parse(localStorage.getItem('agrinas_active_user'));
+
+            function checkAuth() {
+                if (activeUser && activeUser.email) {
+                    document.getElementById('profile-name').innerText = activeUser.name;
+                    document.getElementById('profile-email').innerText = activeUser.email;
+                    
+                    let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    document.getElementById('profile-initials').innerText = initials || 'PIC';
+
+                    const profilePhotoEl = document.getElementById('profile-photo');
+                    const initialsEl = document.getElementById('profile-initials');
+                    
+                    if (activeUser.photo && profilePhotoEl && initialsEl) {
+                        profilePhotoEl.src = activeUser.photo;
+                        profilePhotoEl.classList.remove('hidden');
+                        initialsEl.classList.add('hidden');
+                    } else if (profilePhotoEl && initialsEl) {
+                        profilePhotoEl.classList.add('hidden');
+                        initialsEl.classList.remove('hidden');
+                    }
+
+                    authPage.classList.add('opacity-0');
+                    setTimeout(() => {
+                        authPage.classList.add('hidden');
+                        dashboardWrapper.classList.remove('hidden');
+                        setTimeout(() => {
+                            dashboardWrapper.classList.remove('opacity-0');
+                        }, 50);
+                    }, 700);
+
+                    if(!fetchInterval) {
+                        if(typeof fetchJsonData === 'function') fetchJsonData(); 
+                        fetchInterval = setInterval(() => { if(typeof fetchJsonData === 'function') fetchJsonData(true); }, 10000);
+                    }
+                } else {
+                    dashboardWrapper.classList.add('hidden', 'opacity-0');
+                    authPage.classList.remove('hidden');
+                    setTimeout(() => authPage.classList.remove('opacity-0'), 50);
+                }
+            }
+
+            function showError(msg) {
+                authError.innerText = msg;
+                authError.classList.remove('hidden');
+                setTimeout(() => authError.classList.add('hidden'), 5000);
+            }
+
+            goToRegisterBtn.addEventListener('click', () => {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                authError.classList.add('hidden');
+            });
+
+            goToLoginBtn.addEventListener('click', () => {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                authError.classList.add('hidden');
+            });
+
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('reg-name').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                const password = document.getElementById('reg-password').value;
+
+                if(password.length < 6) return showError("Password harus minimal 6 karakter!");
+
+                let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
+                
+                if(usersDB.find(u => u.email === email)) return showError("Email sudah terdaftar. Silakan login.");
+
+                usersDB.push({ name, email, password });
+                localStorage.setItem('agrinas_users_db', JSON.stringify(usersDB));
+
+                activeUser = { name, email };
+                localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
+                
+                registerForm.reset();
+                checkAuth();
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value;
+
+                let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
+                const user = usersDB.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    activeUser = { name: user.name, email: user.email, photo: user.photo };
+                    localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
+                    loginForm.reset();
+                    checkAuth();
+                } else {
+                    showError("Email atau Password salah!");
+                }
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('agrinas_active_user');
+                activeUser = null;
+                if(fetchInterval) {
+                    clearInterval(fetchInterval);
+                    fetchInterval = null;
+                }
+                window.location.reload(); 
+            });
+
+            // =========================================================
+            // FITUR EDIT PROFILE (NAMA & FOTO)
+            // =========================================================
+            const editProfileBtn = document.getElementById('edit-profile-btn');
+            const profileModal = document.getElementById('profile-modal');
+            const profileModalBox = document.getElementById('profile-modal-box');
+            const profileModalClose = document.getElementById('profile-modal-close');
+            const editProfileForm = document.getElementById('edit-profile-form');
+            const editPhotoInput = document.getElementById('edit-photo-input');
+            const editPhotoPreview = document.getElementById('edit-photo-preview');
+            const editPhotoInitials = document.getElementById('edit-photo-initials');
+            
+            let tempPhotoBase64 = null;
+
+            if(editProfileBtn) {
+                editProfileBtn.addEventListener('click', () => {
+                    if(!activeUser) return;
+                    
+                    document.getElementById('edit-name-input').value = activeUser.name;
+                    document.getElementById('edit-email-input').value = activeUser.email;
+                    
+                    let initials = activeUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    editPhotoInitials.innerText = initials || 'PIC';
+
+                    if (activeUser.photo) {
+                        editPhotoPreview.src = activeUser.photo;
+                        editPhotoPreview.classList.remove('hidden');
+                        editPhotoInitials.classList.add('hidden');
+                        tempPhotoBase64 = activeUser.photo;
+                    } else {
+                        editPhotoPreview.src = "";
+                        editPhotoPreview.classList.add('hidden');
+                        editPhotoInitials.classList.remove('hidden');
+                        tempPhotoBase64 = null;
+                    }
+
+                    document.getElementById('profile-save-msg').classList.add('hidden');
+                    
+                    profileModal.classList.remove('hidden');
+                    setTimeout(() => { 
+                        profileModal.classList.add('opacity-100'); 
+                        profileModalBox.classList.add('scale-100'); 
+                    }, 10);
+                });
+            }
+
+            function closeProfileModal() {
+                if(profileModal && profileModalBox) {
+                    profileModal.classList.remove('opacity-100');
+                    profileModalBox.classList.remove('scale-100');
+                    setTimeout(() => profileModal.classList.add('hidden'), 300);
+                }
+            }
+
+            if(profileModalClose) profileModalClose.addEventListener('click', (e) => { e.preventDefault(); closeProfileModal(); });
+            if(profileModal) profileModal.addEventListener('click', (e) => { if(e.target === profileModal) closeProfileModal(); });
+
+            if(editPhotoInput) {
+                editPhotoInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            tempPhotoBase64 = event.target.result;
+                            editPhotoPreview.src = tempPhotoBase64;
+                            editPhotoPreview.classList.remove('hidden');
+                            editPhotoInitials.classList.add('hidden');
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            if(editProfileForm) {
+                editProfileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const newName = document.getElementById('edit-name-input').value.trim();
+                    
+                    if (newName && activeUser) {
+                        activeUser.name = newName;
+                        if (tempPhotoBase64) activeUser.photo = tempPhotoBase64;
+
+                        localStorage.setItem('agrinas_active_user', JSON.stringify(activeUser));
+
+                        let usersDB = JSON.parse(localStorage.getItem('agrinas_users_db')) || [];
+                        const userIndex = usersDB.findIndex(u => u.email === activeUser.email);
+                        if (userIndex !== -1) {
+                            usersDB[userIndex].name = newName;
+                            if (tempPhotoBase64) usersDB[userIndex].photo = tempPhotoBase64;
+                            localStorage.setItem('agrinas_users_db', JSON.stringify(usersDB));
+                        }
+
+                        checkAuth();
+
+                        const msg = document.getElementById('profile-save-msg');
+                        msg.classList.remove('hidden');
+                        setTimeout(() => {
+                            msg.classList.add('hidden');
+                            closeProfileModal();
+                        }, 1500);
+                    }
+                });
+            }
+
+            // =========================================================
+            // 3. UI DASHBOARD & SIDEBAR 
+            // =========================================================
+            let fetchInterval = null;
+
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+            const sidebar = document.getElementById('sidebar');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                mobileOverlay.classList.toggle('hidden');
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleSidebar);
+            closeSidebarBtn.addEventListener('click', toggleSidebar);
+            mobileOverlay.addEventListener('click', toggleSidebar);
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const logoIcon = document.getElementById('logo-icon');
+            
+            if (localStorage.getItem('agrinas_theme') === 'pink') {
+                document.body.classList.add('theme-pink');
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                if (document.body.classList.contains('theme-pink')) {
+                    document.body.classList.remove('theme-pink');
+                    localStorage.setItem('agrinas_theme', 'dark');
+                } else {
+                    document.body.classList.add('theme-pink');
+                    localStorage.setItem('agrinas_theme', 'pink');
+                }
+            });
+
+            const modalOverlay = document.getElementById('custom-pdf-modal');
+            const modalBox = document.getElementById('pdf-modal-box');
+            const modalTitle = document.getElementById('pdf-modal-title');
+            const modalContent = document.getElementById('pdf-modal-content');
+            const closeBtn = document.getElementById('pdf-modal-close');
+
+            window.closePdfModal = function() {
+                modalOverlay.classList.remove('opacity-100');
+                modalBox.classList.remove('scale-100');
+                setTimeout(() => modalOverlay.classList.add('hidden'), 300);
+            };
+
+            closeBtn.addEventListener('click', (e) => { e.preventDefault(); window.closePdfModal(); });
+            modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) window.closePdfModal(); });
+
+            window.openSmartChipModal = function(fileName) {
+                modalTitle.innerText = fileName;
+                const cleanName = fileName.replace(/\.[^/.]+$/, "");
+                const searchUrl = `https://drive.google.com/drive/search?q=${encodeURIComponent(cleanName)}`;
+                modalContent.innerHTML = `
+                    <div class="w-20 h-20 md:w-24 md:h-24 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/20 relative z-10">
+                        <svg class="w-10 h-10 md:w-12 md:h-12 text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-black text-white mb-3 tracking-wide relative z-10 drop-shadow-lg">Dokumen Tersembunyi</h2>
+                    <p class="text-gray-300 font-medium mb-8 text-sm md:text-base leading-relaxed max-w-lg relative z-10 drop-shadow-md">Google Sheets menggunakan format <i>Smart Chip</i>, sehingga link aslinya disembunyikan. <br><br>Silakan klik tombol di bawah untuk mencarinya di Google Drive Anda secara otomatis.</p>
+                    <a href="${searchUrl}" target="_blank" class="px-8 md:px-10 py-4 md:py-5 bg-emerald-600/90 backdrop-blur-md hover:bg-emerald-500 text-white text-sm md:text-base font-bold tracking-wide rounded-2xl border border-emerald-400/50 transition-all duration-300 shadow-[0_10px_25px_rgba(16,185,129,0.3)] hover:shadow-[0_10px_35px_rgba(16,185,129,0.5)] hover:-translate-y-1 flex items-center gap-3 relative z-10">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        Cari di Google Drive
+                    </a>
+                `;
+                modalOverlay.classList.remove('hidden');
+                setTimeout(() => { modalOverlay.classList.add('opacity-100'); modalBox.classList.add('scale-100'); }, 10);
+            };
+
+            const sheetTabs = [
+                'PDO', 
+                'Monitoring Pembayaran Pengelolaan Mandiri', 
+                'Monitoring Pembayaran Borongan',
+                'Petty Cash',
+                'Status Input Asta',   // <--- TAMBAHKAN INI
+                'Surat Keluar'         // <--- TAMBAHKAN INI
+            ];
+
+            let currentActiveSheet = sheetTabs[0];
+            let allTableRowsHTML = []; 
+            let currentPage = 1;
+            const rowsPerPage = 10;
+
+            const menuContainer = document.getElementById('sidebar-menu');
+            
+            function renderMenu() {
+                menuContainer.innerHTML = '';
+                sheetTabs.forEach(sheetName => {
+                    const isActive = sheetName === currentActiveSheet;
+                    
+                    let activeClassesStr = '';
+                    let activeIconStr = '';
+
+                    if (sheetName === 'PDO') {
+                        activeClassesStr = 'bg-sky-500/20 backdrop-blur-md text-white border-l-4 border-sky-400 shadow-[inset_0_0_20px_rgba(14,165,233,0.1)] theme-pink:border-sky-500 theme-pink:bg-sky-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-sky-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                        activeClassesStr = 'bg-emerald-500/20 backdrop-blur-md text-white border-l-4 border-emerald-400 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)] theme-pink:border-emerald-500 theme-pink:bg-emerald-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-emerald-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Monitoring Pembayaran Borongan') {
+                        activeClassesStr = 'bg-amber-500/20 backdrop-blur-md text-white border-l-4 border-amber-400 shadow-[inset_0_0_20px_rgba(245,158,11,0.1)] theme-pink:border-amber-500 theme-pink:bg-amber-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-amber-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Petty Cash') {
+                        activeClassesStr = 'bg-pink-500/20 backdrop-blur-md text-white border-l-4 border-pink-400 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] theme-pink:border-pink-500 theme-pink:bg-pink-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-pink-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Surat Keluar') {
+                        activeClassesStr = 'bg-emerald-500/20 backdrop-blur-md text-white border-l-4 border-emerald-400 shadow-[inset_0_0_20px_rgba(16,185,129,0.1)] theme-pink:border-emerald-500 theme-pink:bg-emerald-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-emerald-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    } else if (sheetName === 'Status Input Asta') {
+                        activeClassesStr = 'bg-amber-500/20 backdrop-blur-md text-white border-l-4 border-amber-400 shadow-[inset_0_0_20px_rgba(245,158,11,0.1)] theme-pink:border-amber-500 theme-pink:bg-amber-500/10';
+                        activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-amber-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
+                    }
+
+                    const iconSvg = isActive 
+                        ? activeIconStr
+                        : `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-gray-400 group-hover:text-white transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>`;
+
+                    const activeClass = isActive 
+                        ? activeClassesStr
+                        : 'text-gray-400 hover:text-white hover:bg-white/10 group border-l-4 border-transparent hover:border-white/20';
+                    
+                    const btn = document.createElement('button');
+                    btn.className = `flex items-center px-5 py-4 rounded-r-2xl text-sm md:text-base transition-all duration-300 w-full text-left font-semibold ${activeClass}`;
+                    btn.innerHTML = `${iconSvg} <span class="truncate drop-shadow-md" title="${sheetName}">${sheetName}</span>`;
+                    
+                    btn.onclick = () => {
+                        currentActiveSheet = sheetName;
+                        currentPage = 1;
+                        
+                        window.selectedMonthFilter = 'ALL';
+                        const filterEl = document.getElementById('universal-month-filter');
+                        if (filterEl) filterEl.value = 'ALL';
+                        
+                        const filterContainer = document.getElementById('universal-month-filter-container');
+                        const filterIcon = document.getElementById('month-filter-icon');
+                        const filterArrow = document.getElementById('month-filter-arrow');
+
+                        if (sheetName === 'PDO') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-sky-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
+                        } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-emerald-500/40 shadow-[0_4px_20px_rgba(16,185,129,0.2)] flex-1 min-w-[140px]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-emerald-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-emerald-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
+                        } else if (sheetName === 'Monitoring Pembayaran Borongan') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-amber-500/40 shadow-[0_4px_20px_rgba(245,158,11,0.2)] flex-1 min-w-[140px]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-amber-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-amber-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
+                        } else if (sheetName === 'Petty Cash') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
+                        } else if (sheetName === 'Status Input Asta') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
+                        } else if (sheetName === 'Surat Keluar') {
+                            logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center shadow-[0_0_20px_rgba(244,114,182,0.5)]";
+                            if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-pink-500/40 shadow-[0_4px_20px_rgba(236,72,153,0.2)] flex-1 min-w-[140px]';
+                            if (filterEl) filterEl.className = 'bg-transparent text-pink-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
+                            if (filterIcon) filterIcon.className = 'w-3.5 h-3.5 md:w-4 md:h-4 text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)] pointer-events-none';
+                            if (filterArrow) filterArrow.className = 'w-3 h-3 md:w-4 md:h-4 text-pink-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none group-hover:translate-y-[-2px] transition-transform drop-shadow-md';
+                        
+                        }
+
+                        renderMenu(); 
+                        if(typeof fetchJsonData === 'function') fetchJsonData();
+                        
+                        if (window.innerWidth < 768) toggleSidebar();
+                    };
+                    menuContainer.appendChild(btn);
+                });
+            }
+
+            function renderSummaryCards(labels, dataValues) {
+                const cardsContainer = document.getElementById('summaryCardsContainer');
+                cardsContainer.innerHTML = '';
+                
+                cardsContainer.className = 'grid gap-3 md:gap-5 relative z-10';
+                if (labels.length === 10) {
+                    cardsContainer.classList.add('grid-cols-2', 'sm:grid-cols-5', 'lg:grid-cols-5');
+                } else if (labels.length === 8) {
+                    cardsContainer.classList.add('grid-cols-2', 'sm:grid-cols-4', 'lg:grid-cols-8');
+                } else if (labels.length === 7) {
+                    cardsContainer.classList.add('grid-cols-2', 'sm:grid-cols-4', 'lg:grid-cols-7');
+                } else {
+                    cardsContainer.classList.add('grid-cols-2', 'sm:grid-cols-4', 'lg:grid-cols-8');
+                }
+                
+                const accentColors = ['blue', 'emerald', 'amber', 'rose', 'purple', 'cyan', 'pink', 'lime'];
+
+                labels.forEach((label, i) => {
+                    const color = accentColors[i % accentColors.length];
+                    
+                    cardsContainer.innerHTML += `
+                        <div class="bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-black/50 hover:border-${color}-400/50 hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.4)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${color}-500/0 via-${color}-500/80 to-${color}-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] text-${color}-400"></div>
+                            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-${color}-500/10 rounded-full blur-2xl group-hover:bg-${color}-500/20 transition-colors duration-500"></div>
+                            
+                            <p class="text-[9px] md:text-[10px] text-gray-300 font-bold uppercase tracking-widest mb-1.5 md:mb-2 line-clamp-2 leading-snug min-h-[28px] md:min-h-[32px] group-hover:text-${color}-300 transition-colors duration-300 relative z-10 drop-shadow-md" title="${label}">${label}</p>
+                            <p class="text-2xl md:text-3xl font-black text-white group-hover:scale-110 transform origin-left transition-transform duration-300 relative z-10 drop-shadow-lg">${dataValues[i]}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            function renderPagination() {
+                const totalPages = Math.ceil(allTableRowsHTML.length / rowsPerPage);
+                const pagContainer = document.getElementById('pagination-container');
+                pagContainer.innerHTML = '';
+                if (totalPages <= 1) return;
+
+                const btnPrev = document.createElement('button');
+                btnPrev.className = `px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold tracking-wide ${currentPage === 1 ? 'text-gray-500 cursor-not-allowed' : 'text-emerald-300 hover:text-white hover:bg-emerald-500/30 transition-colors'}`;
+                btnPrev.innerText = 'PREV';
+                btnPrev.disabled = currentPage === 1;
+                btnPrev.onclick = () => { if (currentPage > 1) { currentPage--; renderTablePage(); } };
+                pagContainer.appendChild(btnPrev);
+
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(totalPages, startPage + 4);
+                if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const btnPage = document.createElement('button');
+                    const isActive = i === currentPage;
+                    btnPage.className = `w-8 h-8 md:w-10 md:h-10 rounded-xl text-xs md:text-sm font-bold flex items-center justify-center transition-all duration-300 ${isActive ? 'bg-emerald-500 text-white shadow-[0_4px_15px_rgba(16,185,129,0.5)] scale-110' : 'text-gray-300 hover:bg-white/20 hover:text-white'}`;
+                    btnPage.innerText = i;
+                    btnPage.onclick = () => { currentPage = i; renderTablePage(); };
+                    pagContainer.appendChild(btnPage);
+                }
+
+                const btnNext = document.createElement('button');
+                btnNext.className = `px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold tracking-wide ${currentPage === totalPages ? 'text-gray-500 cursor-not-allowed' : 'text-emerald-300 hover:text-white hover:bg-emerald-500/30 transition-colors'}`;
+                btnNext.innerText = 'NEXT';
+                btnNext.disabled = currentPage === totalPages;
+                btnNext.onclick = () => { if (currentPage < totalPages) { currentPage++; renderTablePage(); } };
+                pagContainer.appendChild(btnNext);
+            }
+
+            function renderTablePage() {
+                const tbody = document.getElementById('table-body');
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const rowsToShow = allTableRowsHTML.slice(start, end);
+                tbody.innerHTML = rowsToShow.join('');
+                renderPagination();
+            }
+
+            function formatCellDate(val) {
+                if (typeof val === 'number') {
+                    let dateObj = new Date(Math.round((val - 25569) * 86400 * 1000));
+                    return `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+                } else if (typeof val === 'string' && val.includes('00:00:00')) {
+                    let dateObj = new Date(val);
+                    if (!isNaN(dateObj)) return `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+                }
+                return val ? val.toString().trim() : '-';
+            }
+            
+            // <!-- BERSAMBUNG KE PART 3 -->
+            function fetchJsonData(isSilent = false) {
+                if (!isSilent) {
+                    document.getElementById('header-title').innerText = currentActiveSheet;
+                    document.getElementById('page-title').innerText = currentActiveSheet;
+                }
+                
+                let apiEndpoint = '';
+if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+    apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
+} else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
+    apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
+} else if (currentActiveSheet === 'Status Input Asta') {
+    apiEndpoint = '/api/sheet/status_input_asta';
+} else if (currentActiveSheet === 'Surat Keluar') {
+    apiEndpoint = '/api/sheet/surat_keluar';
+} else {
+    apiEndpoint = `/api/sheet/${currentActiveSheet.toLowerCase().replace(/ /g, '_')}`;
+}
+
+                fetch(apiEndpoint)
+                    .then(res => {
+                        if (!res.ok) throw new Error("Gagal mengambil data dari server");
+                        return res.json();
+                    })
+                    .then(result => {
+                        const data = result.rows;
+                        if (!data || data.length === 0) return;
+
+                        const thead = document.getElementById('table-head');
+                        const tbody = document.getElementById('table-body');
+                        
+                        if (!isSilent) tbody.innerHTML = '';
+                        
+                        allTableRowsHTML = [];
+
+                        const pdoBreakdown = document.getElementById('pdo-status-breakdown');
+                        const paidContainer = document.getElementById('paid-task-container');
+                        const unpaidContainer = document.getElementById('unpaid-task-container');
+                        
+                        const dashboardWidgets = document.getElementById('dashboard-widgets');
+                        const noSummaryMsg = document.getElementById('no-summary-msg');
+                        const titlePaidPanel = document.getElementById('panel-title-paid');
+                        const titleUnpaidPanel = document.getElementById('panel-title-unpaid');
+
+                        pdoBreakdown.classList.add('hidden');
+                        dashboardWidgets.classList.add('hidden');
+                        noSummaryMsg.classList.add('hidden');
+                        
+                        // Sembunyikan section CRO default, nanti dimunculkan jika ada datanya
+                        const croSection = document.getElementById('cro-breakdown-section');
+                        if(croSection) croSection.classList.add('hidden');
+
+                        const filterContainer = document.getElementById('universal-month-filter-container');
+                        const filterSelect = document.getElementById('universal-month-filter');
+
+                        if (filterContainer) {
+                            filterContainer.classList.remove('hidden');
+                            filterContainer.classList.add('flex');
+                        }
+
+                        // =========================================================
+                        // KONDISI 1: PDO
+                        // =========================================================
+                        if (currentActiveSheet === 'PDO') {
+                            
+                            pdoBreakdown.classList.remove('hidden');
+                            pdoBreakdown.classList.add('grid');
+                            
+                            pdoBreakdown.classList.remove('grid-cols-1');
+                            pdoBreakdown.classList.add('md:grid-cols-2');
+                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
+                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
+
+                            paidContainer.innerHTML = '';
+                            unpaidContainer.innerHTML = '';
+
+                            let pdoIdx = { no: -1, date: -1, task: -1, link: -1, tipe: -1, prog: -1, kelengkapan: -1, pajak: -1, umum: -1, keu: -1, rev: -1, paid: -1, dip: -1 };
+                            let pdoHeaderRowIdx = 6;
+                            for (let r = 0; r < 15; r++) {
+                                if (!data[r]) continue;
+                                let str = data[r].join('').toLowerCase();
+                                if (str.includes('task') && str.includes('link dokumen')) {
+                                    pdoHeaderRowIdx = r;
+                                    let hr = data[r];
+                                    for (let c=0; c<hr.length; c++) {
+                                        let h = (hr[c]||'').toString().toLowerCase().trim();
+                                        if(h==='no') pdoIdx.no = c;
+                                        else if(h.includes('after diproses')) pdoIdx.date = c;
+                                        else if(h==='task') pdoIdx.task = c;
+                                        else if(h.includes('link')) pdoIdx.link = c;
+                                        else if(h.includes('tipe')) pdoIdx.tipe = c;
+                                        else if(h==='progress') pdoIdx.prog = c;
+                                        else if(h.includes('dokumen diterima')) pdoIdx.kelengkapan = c;
+                                        else if(h==='pajak') pdoIdx.pajak = c;
+                                        else if(h.includes('umum') || h.includes('khusus sp2')) pdoIdx.umum = c;
+                                        else if(h.includes('diserahkan keuangan') || h === 'keuangan') pdoIdx.keu = c;
+                                        else if(h.includes('revisi')) pdoIdx.rev = c;
+                                        else if(h==='paid') pdoIdx.paid = c;
+                                        else if(h.includes('direktorat')) pdoIdx.dip = c;
+                                    }
+                                    break;
+                                }
+                            }
+
+                            let pdoSumIdx = { task: -1, doc: -1, surat: -1, rev: -1, appr: -1, pajak: -1, umum: -1, keu: -1, paid: -1, dip: -1, date: -1 };
+                            let pdoSumRowData = 4;
+                            for (let r = 0; r < 10; r++) {
+                                if (!data[r]) continue;
+                                let rowStr = data[r].join('').toLowerCase();
+                                if (rowStr.includes('total task') && rowStr.includes('paid')) {
+                                    let sumHeaderRow = data[r];
+                                    for(let c = 0; c < sumHeaderRow.length; c++) {
+                                        let str = (sumHeaderRow[c] || '').toString().toLowerCase().trim();
+                                        if(!str) continue;
+                                        if(str === 'total task') pdoSumIdx.task = c;
+                                        else if(str.includes('diterima') || str.includes('dokumen')) pdoSumIdx.doc = c;
+                                        else if(str.includes('pembuatan')) pdoSumIdx.surat = c;
+                                        else if(str.includes('revisi')) pdoSumIdx.rev = c;
+                                        else if(str.includes('aproved') || str.includes('approv')) pdoSumIdx.appr = c;
+                                        else if(str === 'pajak' || str.includes('verifikasi')) pdoSumIdx.pajak = c;
+                                        else if(str === 'umum') pdoSumIdx.umum = c;
+                                        else if(str === 'keuangan') pdoSumIdx.keu = c;
+                                        else if(str === 'paid') pdoSumIdx.paid = c;
+                                        else if(str.includes('direktorat') || str.includes('diperoses')) pdoSumIdx.dip = c;
+                                        else if(str === 'date') pdoSumIdx.date = c;
+                                    }
+                                    if (data[r+1]) pdoSumRowData = r + 1;
+                                    break;
+                                }
+                            }
+
+                            let getPdoSum = (idx) => (idx !== -1 && data[pdoSumRowData] && data[pdoSumRowData][idx] !== undefined && data[pdoSumRowData][idx] !== null) ? data[pdoSumRowData][idx] : 0;
+
+                            let chartLabels = [
+                                "Total Task", "Dokumen", "Pembuatan Surat", "Revisi Reg", 
+                                "Progres Aproved Kadiv dan Dir Ops", "Verifikasi Pajak", "Umum", "Keuangan", "Paid", "Diperoses di Direktorat Terkait"
+                            ];
+                            let chartValues = [
+                                getPdoSum(pdoSumIdx.task), getPdoSum(pdoSumIdx.doc), getPdoSum(pdoSumIdx.surat), getPdoSum(pdoSumIdx.rev),
+                                getPdoSum(pdoSumIdx.appr), getPdoSum(pdoSumIdx.pajak), getPdoSum(pdoSumIdx.umum), getPdoSum(pdoSumIdx.keu),
+                                getPdoSum(pdoSumIdx.paid), getPdoSum(pdoSumIdx.dip)
+                            ];
+
+                            dashboardWidgets.classList.remove('hidden');
+                            noSummaryMsg.classList.add('hidden');
+                            renderSummaryCards(chartLabels, chartValues);
+
+                            const headers = [
+                                "No", "Date (after diproses QC)", "Task", "Link Dokumen", 
+                                "Tipe Pengajuan", "Progress", "Dokumen Diterima", "Pajak", 
+                                "Diserahkan Umum ( Khusus SP2)", "Diserahkan Keuangan", "Revisi Regional", "Paid", "Diperoses di Direktorat Terkait"
+                            ];
+
+                            let headHTML = '<tr>';
+                            headers.forEach(h => {
+                                headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
+                            });
+                            headHTML += '</tr>';
+                            thead.innerHTML = headHTML;
+
+                            let availableMonths = [];
+                            for (let i = pdoHeaderRowIdx + 1; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row) continue;
+                                let dateCell = getCell(row, pdoIdx.date);
+                                if (dateCell !== '-') {
+                                    let match = dateCell.match(/[A-Za-z]+\s\d{4}/);
+                                    if (match && !availableMonths.includes(match[0])) availableMonths.push(match[0]);
+                                }
+                            }
+                            if (availableMonths.length > 0) {
+                                if (!window.selectedMonthFilter || (!availableMonths.map(m=>m.toUpperCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = 'ALL'; 
+                                }
+                            }
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
+                            availableMonths.forEach(m => {
+                                let val = m.toUpperCase();
+                                let selected = (val === window.selectedMonthFilter) ? 'selected' : '';
+                                optionsHTML += `<option value="${val}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
+                            });
+                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
+
+                            let paidCount = 0;
+                            let unpaidCount = 0;
+                            let croMap = {};
+
+                            let formatLink = (str) => {
+                                if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
+                                str = String(str).trim();
+                                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                if (urlRegex.test(str)) {
+                                    return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-sky-500/20 text-sky-300 border border-sky-400/50 shadow-[0_0_10px_rgba(14,165,233,0.2)] hover:bg-sky-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                } else {
+                                    const safeName = str.replace(/'/g, "\\'");
+                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-sky-300 font-bold hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-sky-400/50 underline-offset-4 truncate">${str}</span></button>`;
+                                }
+                            };
+
+                            for (let i = pdoHeaderRowIdx + 1; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row || row.every(val => val === null || val === '')) continue;
+                                let colZero = getCell(row, pdoIdx.no);
+                                if (colZero === '-' || isNaN(colZero)) continue;
+
+                                let dateCell = getCell(row, pdoIdx.date).toUpperCase();
+                                if (window.selectedMonthFilter !== 'ALL') {
+                                    if (!dateCell.includes(window.selectedMonthFilter)) continue; 
+                                }
+
+                                let taskCol = getCell(row, pdoIdx.task);
+                                if (taskCol === '-' || taskCol === 'nan') continue;
+
+                                let paidCell = getCell(row, pdoIdx.paid).toUpperCase();
+                                let isPaid = (paidCell === 'TRUE' || paidCell === '1' || paidCell === '1.0' || paidCell.includes('☑'));
+
+                                let tipeVal = getCell(row, pdoIdx.tipe);
+                                let progVal = getCell(row, pdoIdx.prog);
+
+                                let croName = extractCroName(taskCol) || 'LAINNYA';
+                                if (!croMap[croName]) croMap[croName] = { total: 0, paid: 0, pending: 0 };
+                                croMap[croName].total++;
+                                if (isPaid) croMap[croName].paid++;
+                                else croMap[croName].pending++;
+
+                                let taskItemHTML = `
+                                    <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-black/50 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-300 gap-4 cursor-default group relative overflow-hidden backdrop-blur-sm">
+                                        <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] ${isPaid ? 'bg-emerald-500 text-emerald-400' : 'bg-rose-500 text-rose-400'}"></div>
+                                        <div class="flex-1 min-w-0 pl-3">
+                                            <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-${isPaid ? 'emerald' : 'rose'}-200 transition-colors truncate drop-shadow-md" title="${taskCol}">${taskCol}</p>
+                                            <p class="text-[10px] md:text-xs text-gray-300 truncate font-medium drop-shadow-sm">Tipe: <span class="text-sky-300 font-bold">${tipeVal}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-300 font-bold">${progVal}</span></p>
+                                        </div>
+                                        <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-rose-500/30 text-rose-300 border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.2)]'} whitespace-nowrap flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
+                                            ${isPaid ? 'PAID' : 'BELUM PAID'}
+                                        </span>
+                                    </div>
+                                `;
+
+                                if (isPaid) {
+                                    paidCount++;
+                                    paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                } else {
+                                    unpaidCount++;
+                                    unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                }
+
+                                let cellData = [
+                                    colZero,
+                                    formatCellDate(getCell(row, pdoIdx.date)),
+                                    taskCol,
+                                    formatLink(getCell(row, pdoIdx.link)),
+                                    tipeVal,
+                                    formatProgBadge(progVal),
+                                    formatCheckmark(getCell(row, pdoIdx.kelengkapan)),
+                                    formatCheckmark(getCell(row, pdoIdx.pajak)),
+                                    formatCheckmark(getCell(row, pdoIdx.umum)),
+                                    formatCheckmark(getCell(row, pdoIdx.keu)),
+                                    formatCheckmark(getCell(row, pdoIdx.rev)),
+                                    formatCheckmark(getCell(row, pdoIdx.paid)),
+                                    formatCheckmark(getCell(row, pdoIdx.dip))
+                                ];
+
+                                let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
+                                cellData.forEach((cellVal, c) => {
+                                    let cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
+                                    if (c === 2) cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-white font-bold min-w-[250px] md:min-w-[300px] max-w-[400px] md:max-w-[500px] whitespace-normal leading-relaxed drop-shadow-md";
+                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
+                                });
+                                rowHTML += '</tr>';
+                                allTableRowsHTML.push(rowHTML);
+                            }
+
+                            renderCroBreakdown(croMap);
+
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Sudah Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
+
+                            if (paidContainer.innerHTML === '') {
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas di bulan ini.</p></div>`;
+                            }
+                            if (unpaidContainer.innerHTML === '') {
+                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Tidak ada task yang pending di bulan ini.</p></div>`;
+                            }
+
+                            if (allTableRowsHTML.length === 0) {
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
+                            } else {
+                                renderTablePage();
+                            }
+                            
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
+                            
+                            const dateDisplay = document.getElementById('top-date-display');
+                            const dateValueEl = document.getElementById('top-date-value');
+                            if (window.selectedMonthFilter !== 'ALL') {
+                                dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
+                                dateDisplay.classList.remove('hidden');
+                            } else {
+                                let dateValue = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.date] !== undefined ? formatCellDate(data[pdoSumRowData][pdoSumIdx.date]) : "-";
+                                if (dateValue && dateValue !== '-') {
+                                    dateValueEl.innerText = dateValue;
+                                    dateDisplay.classList.remove('hidden');
+                                } else {
+                                    dateDisplay.classList.add('hidden');
+                                }
+                            }
+                        }
+                        
+                        // =========================================================
+                        // KONDISI 2: MONITORING PEMBAYARAN (MANDIRI & BORONGAN)
+                        // =========================================================
+                        else if (currentActiveSheet.includes('Monitoring Pembayaran')) {
+                            
+                            pdoBreakdown.classList.remove('hidden');
+                            pdoBreakdown.classList.add('grid');
+
+                            document.getElementById('unpaid-panel-wrapper').classList.add('hidden');
+                            
+                            let pdoBreakdownContainer = document.getElementById('pdo-status-breakdown');
+                            pdoBreakdownContainer.classList.remove('md:grid-cols-2');
+                            pdoBreakdownContainer.classList.add('grid-cols-1');
+
+                            paidContainer.innerHTML = '';
+                            paidContainer.classList.remove('flex', 'flex-col');
+                            paidContainer.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-5');
+
+                            let monIdx = { no: -1, date: -1, reg: -1, kel: -1, vendor: -1, kebun: -1, inv: -1, tglInv: -1, nominal: -1, doc: -1, pajak: -1, selPajak: -1, umum: -1, keu: -1, paid: -1, tglBayar: -1, ket: -1 };
+                            let monHeaderRowIdx = 6;
+                            for (let r = 0; r < 12; r++) {
+                                if (!data[r]) continue;
+                                let str = data[r].join('').toLowerCase();
+                                if (str.includes('vendor') && (str.includes('regional') || str.includes('nama kebun'))) {
+                                    monHeaderRowIdx = r;
+                                    let hr = data[r];
+                                    for (let c=0; c<hr.length; c++) {
+                                        let h = (hr[c]||'').toString().toLowerCase().trim();
+                                        if(!h) continue;
+                                        if(h === 'no') monIdx.no = c;
+                                        else if(h.includes('after diproses')) monIdx.date = c;
+                                        else if(h === 'regional') monIdx.reg = c;
+                                        else if(h.includes('kelengkapan')) monIdx.kel = c;
+                                        else if(h === 'vendor') monIdx.vendor = c;
+                                        else if(h.includes('nama kebun') || h === 'kebun') monIdx.kebun = c;
+                                        else if(h.includes('nomor invoice')) monIdx.inv = c;
+                                        else if(h.includes('tanggal invoice')) monIdx.tglInv = c;
+                                        else if(h.includes('jumlah pembayaran')) monIdx.nominal = c;
+                                        else if(h.includes('dokumen asli diterima')) monIdx.doc = c;
+                                        else if(h === 'pajak') monIdx.pajak = c;
+                                        else if(h.includes('selesai verifikasi') || h.includes('selesai verifikasi pajak')) monIdx.selPajak = c;
+                                        else if(h === 'umum' || h.includes('diserahkan umum')) monIdx.umum = c;
+                                        else if(h === 'keuangan' || h.includes('diserahkan keuangan')) monIdx.keu = c;
+                                        else if(h === 'paid') monIdx.paid = c;
+                                        else if(h.includes('tanggal pembayaran')) monIdx.tglBayar = c;
+                                        else if(h === 'keterangan') monIdx.ket = c;
+                                    }
+                                    break;
+                                }
+                            }
+
+                            let monSumIdx = { task: -1, doc: -1, pajak: -1, verifBerkas: -1, selPajak: -1, umum: -1, keu: -1, paid: -1, revReg: -1, date: -1 };
+                            let monSumRowData = 4;
+                            for (let r = 0; r < 10; r++) {
+                                if (!data[r]) continue;
+                                let str = data[r].join('').toLowerCase();
+                                if (str.includes('total task')) {
+                                    let hr = data[r];
+                                    for (let c=0; c<hr.length; c++) {
+                                        let h = (hr[c]||'').toString().toLowerCase().trim();
+                                        if(h==='total task') monSumIdx.task = c;
+                                        else if(h.includes('dokumen asli')) monSumIdx.doc = c;
+                                        else if(h==='pajak') monSumIdx.pajak = c;
+                                        else if(h.includes('verifikasi berkas')) monSumIdx.verifBerkas = c; // <-- TAMBAHAN BARU
+                                        else if(h.includes('selesai verifikasi pajak') || h.includes('verifikasi dokumen')) monSumIdx.selPajak = c; // <-- UBAHAN
+                                        else if(h==='umum') monSumIdx.umum = c;
+                                        else if(h==='keuangan') monSumIdx.keu = c;
+                                        else if(h==='paid') monSumIdx.paid = c;
+                                        else if(h.includes('revisi')) monSumIdx.revReg = c;
+                                        else if(h==='date') monSumIdx.date = c;
+                                    }
+                                    if (data[r+1]) monSumRowData = r + 1;
+                                    break;
+                                }
+                            }
+
+                            let getMonSum = (idx) => (idx !== -1 && data[monSumRowData] && data[monSumRowData][idx] !== undefined && data[monSumRowData][idx] !== null) ? data[monSumRowData][idx] : 0;
+
+                           let chartLabels = ["Total Task", "Dokumen Asli", "Pajak", "Verifikasi Berkas", "Verifikasi Dokumen", "Umum", "Keuangan", "Paid", "Revisi Regional"];
+                            let chartValues = [
+                                getMonSum(monSumIdx.task), 
+                                getMonSum(monSumIdx.doc), 
+                                getMonSum(monSumIdx.pajak), 
+                                getMonSum(monSumIdx.verifBerkas), // <-- TAMBAHAN BARU (Verifikasi Berkas)
+                                getMonSum(monSumIdx.selPajak),       // <-- UBAHAN JADI (Verifikasi Dokumen)
+                                getMonSum(monSumIdx.umum), 
+                                getMonSum(monSumIdx.keu), 
+                                getMonSum(monSumIdx.paid), 
+                                getMonSum(monSumIdx.revReg)
+                            ];
+
+                            dashboardWidgets.classList.remove('hidden');
+                            renderSummaryCards(chartLabels, chartValues);
+
+                            const monHeaders = [
+                                "No", "Date (after diproses QC)", "Regional", "Kelengkapan Dokumen", 
+                                "Vendor", "Nama Kebun", "Nomor Invoice", "Tanggal Invoice", 
+                                "Jumlah Pembayaran", "Dokumen Asli Diterima", "Pajak", "Selesai Verifikasi Pajak",
+                                "Diserahkan Umum ( Khusus SP2)", "Diserahkan Keuangan", "Paid", "Tanggal Pembayaran", "Keterangan"
+                            ];
+
+                            let headHTML = '<tr>';
+                            monHeaders.forEach(h => {
+                                headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
+                            });
+                            headHTML += '</tr>';
+                            thead.innerHTML = headHTML;
+
+                            let monitoringAvailableMonths = [];
+                            for (let i = monHeaderRowIdx + 1; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row) continue;
+                                let dateCell = getCell(row, monIdx.date);
+                                if (dateCell !== '-') {
+                                    let match = dateCell.match(/[A-Za-z]+\s\d{4}/);
+                                    if (match && !monitoringAvailableMonths.includes(match[0])) monitoringAvailableMonths.push(match[0]);
+                                }
+                            }
+
+                            if (monitoringAvailableMonths.length > 0) {
+                                if (!window.selectedMonthFilter || (!monitoringAvailableMonths.map(m=>m.toUpperCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = 'ALL'; 
+                                }
+                            }
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
+                            monitoringAvailableMonths.forEach(m => {
+                                let val = m.toUpperCase();
+                                let selected = (val === window.selectedMonthFilter) ? 'selected' : '';
+                                optionsHTML += `<option value="${val}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
+                            });
+                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
+
+
+                            let paidCount = 0;
+                            let croMapMon = {};
+
+                            let formatKelengkapan = (val) => {
+                                if (val === '-' || !val) return '-';
+                                let str = String(val).trim();
+                                if (str === '') return '-';
+                                let lKel = str.toLowerCase();
+                                let kelColor = 'bg-slate-500/20 text-slate-300 border-slate-400/30';
+                                if (lKel.includes('lengkap') && !lKel.includes('tidak') && !lKel.includes('kurang')) {
+                                    kelColor = 'bg-emerald-500/30 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]';
+                                } else if (lKel.includes('tidak') || lKel.includes('kurang')) {
+                                    kelColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
+                                }
+                                return `<span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold tracking-wide ${kelColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
+                            };
+
+                            for (let i = monHeaderRowIdx + 1; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row || row.every(val => val === null || val === '')) continue;
+                                let colZero = getCell(row, monIdx.no);
+                                if (colZero === '-' || isNaN(colZero)) continue;
+
+                                let vendorName = getCell(row, monIdx.vendor);
+                                if (vendorName === '-' || vendorName === 'nan') continue;
+
+                                let dateCell = getCell(row, monIdx.date).toUpperCase();
+                                if (window.selectedMonthFilter !== 'ALL') {
+                                    if (!dateCell.includes(window.selectedMonthFilter)) continue; 
+                                }
+
+                                let kebunName = getCell(row, monIdx.kebun);
+                                let invName = getCell(row, monIdx.inv);
+                                let regionalVal = getCell(row, monIdx.reg);
+                                
+                                let nominalRaw = getCell(row, monIdx.nominal);
+                                let cleanNominal = nominalRaw.replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                let numNominal = parseFloat(cleanNominal);
+                                let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
+
+                                let paidCellMon = getCell(row, monIdx.paid).toUpperCase();
+                                let isPaidMon = (paidCellMon === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon.includes('☑'));
+
+                                // Ekstraksi CRO dari Regional / Vendor / Kebun di Monitoring
+                                let croName = extractCroName(regionalVal) || extractCroName(vendorName) || extractCroName(kebunName);
+                                if (croName) {
+                                    if (!croMapMon[croName]) croMapMon[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                    croMapMon[croName].total++;
+                                    if (isPaidMon) {
+                                        croMapMon[croName].paid++;
+                                        if (!isNaN(numNominal)) croMapMon[croName].nominalTotal += numNominal;
+                                    } else {
+                                        croMapMon[croName].pending++;
+                                    }
+                                }
+
+                                if (isPaidMon && vendorName !== '-' && vendorName !== '') {
+                                    paidCount++;
+                                    let colorTheme = currentActiveSheet.includes('Borongan') ? 'amber' : 'emerald';
+                                    let paidItemHTML = `
+                                        <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-5 md:p-6 flex flex-col gap-3 hover:bg-black/50 hover:border-${colorTheme}-400/50 hover:shadow-[0_15px_35px_rgba(var(--tw-colors-${colorTheme}-500),0.2)] hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden group cursor-default backdrop-blur-sm">
+                                            <div class="absolute left-0 top-0 w-1.5 h-full bg-${colorTheme}-500 opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] text-${colorTheme}-400"></div>
+                                            <div class="flex justify-between items-start gap-3 pl-3">
+                                                <p class="text-white font-bold text-sm md:text-base truncate max-w-[200px] md:max-w-[250px] group-hover:text-${colorTheme}-300 transition-colors drop-shadow-md" title="${vendorName}">${vendorName}</p>
+                                                <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black bg-${colorTheme}-500/30 text-${colorTheme}-300 border border-${colorTheme}-400/50 whitespace-nowrap flex-shrink-0 group-hover:bg-${colorTheme}-500 group-hover:text-white transition-colors tracking-wide shadow-sm">PAID</span>
+                                            </div>
+                                            <div class="flex flex-col gap-1.5 pl-3 mt-1">
+                                                <p class="text-xs text-gray-300 font-medium truncate drop-shadow-sm" title="${kebunName}"><span class="text-${colorTheme}-400 font-bold">Kebun:</span> ${kebunName}</p>
+                                                <p class="text-xs text-gray-300 font-medium truncate drop-shadow-sm" title="${invName}"><span class="text-${colorTheme}-400 font-bold">Inv:</span> ${invName}</p>
+                                            </div>
+                                            <p class="text-sm md:text-base font-black text-${colorTheme}-400 mt-3 pl-3 group-hover:scale-105 transform origin-left transition-transform drop-shadow-[0_0_8px_rgba(var(--tw-colors-${colorTheme}-500),0.5)]">${nominalFmt}</p>
+                                        </div>
+                                    `;
+                                    paidContainer.insertAdjacentHTML('beforeend', paidItemHTML);
+                                }
+
+                                let cellData = [
+                                    colZero,
+                                    formatCellDate(getCell(row, monIdx.date)),
+                                    regionalVal,
+                                    formatKelengkapan(getCell(row, monIdx.kel)),
+                                    vendorName,
+                                    kebunName,
+                                    invName,
+                                    formatCellDate(getCell(row, monIdx.tglInv)),
+                                    isNaN(numNominal) ? '-' : `<span class="font-black text-emerald-300 drop-shadow-sm">${nominalFmt}</span>`,
+                                    formatCheckmark(getCell(row, monIdx.doc)),
+                                    formatCheckmark(getCell(row, monIdx.pajak)),
+                                    formatCheckmark(getCell(row, monIdx.selPajak)),
+                                    formatCheckmark(getCell(row, monIdx.umum)),
+                                    formatCheckmark(getCell(row, monIdx.keu)),
+                                    formatCheckmark(getCell(row, monIdx.paid)),
+                                    formatCellDate(getCell(row, monIdx.tglBayar)),
+                                    getCell(row, monIdx.ket)
+                                ];
+
+                                let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
+                                cellData.forEach((cellVal, c) => {
+                                    let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
+                                    if (c >= 4 && c <= 6 || c === 16) { 
+                                        cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-white font-bold min-w-[200px] md:min-w-[250px] whitespace-normal leading-relaxed drop-shadow-md";
+                                    }
+                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
+                                });
+                                rowHTML += '</tr>';
+                                allTableRowsHTML.push(rowHTML);
+                            }
+
+                            renderCroBreakdown(croMapMon);
+
+                            let titleColor = currentActiveSheet.includes('Borongan') ? 'amber' : 'emerald';
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-${titleColor}-500/20 backdrop-blur-md rounded-lg border border-${titleColor}-400/50 shadow-[0_0_15px_rgba(var(--tw-colors-${titleColor}-500),0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-${titleColor}-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Pembayaran Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-${titleColor}-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(var(--tw-colors-${titleColor}-500),0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
+
+                            if (paidContainer.innerHTML === '') {
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-${titleColor}-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-${titleColor}-300/70 font-bold tracking-wide">Belum ada data yang lunas (Paid).</p></div>`;
+                            }
+
+                            if (allTableRowsHTML.length === 0) {
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="17" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
+                            } else {
+                                renderTablePage();
+                            }
+                            
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
+                            
+                            const dateDisplay = document.getElementById('top-date-display');
+                            const dateValueEl = document.getElementById('top-date-value');
+                            if (window.selectedMonthFilter !== 'ALL') {
+                                dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
+                                dateDisplay.classList.remove('hidden');
+                            } else {
+                                let dateValue = data[monSumRowData] && data[monSumRowData][monSumIdx.date] !== undefined ? formatCellDate(data[monSumRowData][monSumIdx.date]) : "-";
+                                if (dateValue && dateValue !== '-') {
+                                    dateValueEl.innerText = dateValue;
+                                    dateDisplay.classList.remove('hidden');
+                                } else {
+                                    dateDisplay.classList.add('hidden');
+                                }
+                            }
+                        }
+
+                        // =========================================================
+                        // KONDISI 3: PETTY CASH
+                        // =========================================================
+                        else if (currentActiveSheet === 'Petty Cash') {
+                            
+                            pdoBreakdown.classList.remove('hidden');
+                            pdoBreakdown.classList.add('grid');
+                            noSummaryMsg.classList.remove('hidden');
+
+                            document.getElementById('pdo-status-breakdown').classList.remove('grid-cols-1');
+                            document.getElementById('pdo-status-breakdown').classList.add('md:grid-cols-2');
+                            
+                            document.getElementById('unpaid-panel-wrapper').classList.remove('hidden');
+
+                            paidContainer.innerHTML = '';
+                            unpaidContainer.innerHTML = '';
+                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
+
+                            const displayHeaders = [
+                                "No", "CRO", "Wilayah", "Pemakaian Petty Cash (Rp)", 
+                                "Sisa Petty Cash (Rp)", "Permintaan Petty Cash (Rp)", 
+                                "Status LPJ", "Status Permintaan", "Keterangan", "Progress", "Dokumen"
+                            ];
+                            
+                            let headHTML = '<tr>';
+                            displayHeaders.forEach(h => {
+                                headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
+                            });
+                            headHTML += '</tr>';
+                            thead.innerHTML = headHTML;
+
+                            let colIdx = { no: -1, cro: -1, wil: -1, pem: -1, sisa: -1, perm: -1, slpj: -1, sreq: -1, ket: -1, prog: -1, dok: -1 };
+
+                            for (let r = 0; r < Math.min(10, data.length); r++) {
+                                if (!data[r]) continue;
+                                let rowStr = data[r].join('').toLowerCase();
+                                
+                                if (rowStr.includes('cro') && rowStr.includes('wilayah') && rowStr.includes('keterangan')) {
+                                    let headerRow = data[r];
+                                    for(let c = 0; c < headerRow.length; c++) {
+                                        let str = (headerRow[c] || '').toString().toLowerCase().trim();
+                                        if(!str) continue;
+                                        if(str === 'no') colIdx.no = c;
+                                        else if(str === 'cro') colIdx.cro = c;
+                                        else if(str === 'wilayah') colIdx.wil = c;
+                                        else if(str.includes('permintaan') && str.includes('petty cash')) colIdx.perm = c;
+                                        else if(str.includes('status lpj')) colIdx.slpj = c;
+                                        else if(str.includes('status permintaan') || str.includes('pengajuan')) colIdx.sreq = c;
+                                        else if(str === 'keterangan' || str.includes('keterangan')) colIdx.ket = c;
+                                        else if(str === 'progress' || str.includes('progress')) colIdx.prog = c;
+                                        else if(str === 'dokumen' || str.includes('dokumen')) colIdx.dok = c;
+                                    }
+                                    
+                                    if (data[r+1]) {
+                                        let subHeaderRow = data[r+1];
+                                        for(let c = 0; c < subHeaderRow.length; c++) {
+                                            let str = (subHeaderRow[c] || '').toString().toLowerCase().trim();
+                                            if (str.includes('pemakaian')) colIdx.pem = c;
+                                            else if (str.includes('sisa petty')) colIdx.sisa = c; 
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+
+                            let skipSection = false;
+                            let paidCount = 0;
+                            let unpaidCount = 0;
+                            let globalDate = "-"; 
+                            let currentMonthSection = "";
+                            let croMapPetty = {};
+
+                            // FILTER BULAN UNTUK PETTY CASH
+                            let availableMonthsPC = [];
+                            for (let r = 4; r < data.length; r++) {
+                                let row = data[r];
+                                if (!row) continue;
+                                let colZero = getCell(row, colIdx.no);
+                                let fullText = row.join(' ').replace(/,/g, '').trim();
+
+                                if ((colZero === '-' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
+                                    let title = row.find(v => v !== null && v !== '') || fullText;
+                                    let dateMatch = title.match(/Bulan\s+([A-Za-z]+)\s+\d{4}/i);
+                                    if(dateMatch) {
+                                        let m = dateMatch[1].toUpperCase();
+                                        if (!availableMonthsPC.includes(m)) availableMonthsPC.push(m);
+                                    }
+                                }
+                            }
+
+                            if (availableMonthsPC.length > 0) {
+                                if (!window.selectedMonthFilter || (!availableMonthsPC.includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                    window.selectedMonthFilter = 'ALL'; 
+                                }
+                            }
+
+                            let optionsHTML = '<option value="ALL" class="bg-zinc-900 text-white font-bold">SEMUA BULAN</option>';
+                            availableMonthsPC.forEach(m => {
+                                let selected = (m === window.selectedMonthFilter) ? 'selected' : '';
+                                optionsHTML += `<option value="${m}" class="bg-zinc-900 text-white font-bold" ${selected}>${m}</option>`;
+                            });
+                            if(filterSelect) filterSelect.innerHTML = optionsHTML;
+
+                            let formatLinkCustom = (str, color) => {
+                                if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
+                                str = String(str).trim();
+                                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                                if (urlRegex.test(str)) {
+                                    return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-${color}-500/20 text-${color}-300 border border-${color}-400/50 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:bg-${color}-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
+                                } else {
+                                    const safeName = str.replace(/'/g, "\\'");
+                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-${color}-300 font-bold hover:text-${color}-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-${color}-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-${color}-400/50 underline-offset-4 truncate">${str}</span></button>`;
+                                }
+                            };
+
+                            for (let i = 4; i < data.length; i++) {
+                                let row = data[i];
+                                if (!row || row.every(val => val === null || val === '')) continue;
+                                
+                                let colZero = getCell(row, colIdx.no);
+                                let fullText = row.join(' ').replace(/,/g, '').trim();
+
+                                if ((colZero === '-' || isNaN(colZero)) && fullText.toLowerCase().includes('bulan')) {
+                                    let title = row.find(v => v !== null && v !== '') || fullText;
+                                    
+                                    let dateMatch = title.match(/Bulan\s+([A-Za-z]+)\s+(\d{4})/i);
+                                    if(dateMatch) {
+                                        globalDate = `Bulan ${dateMatch[1]} ${dateMatch[2]}`;
+                                        currentMonthSection = dateMatch[1].toUpperCase();
+                                    }
+
+                                    let lowerTitle = title.toLowerCase();
+                                    if (lowerTitle.includes('juni') || lowerTitle.includes('juli')) {
+                                        skipSection = true;
+                                        continue;
+                                    } else {
+                                        skipSection = false;
+                                    }
+
+                                    if (window.selectedMonthFilter === 'ALL' || currentMonthSection === window.selectedMonthFilter) {
+                                        let rowHTML = `<tr><td colspan="11" class="px-5 md:px-8 py-5 md:py-6 bg-pink-500/20 backdrop-blur-md text-pink-300 font-black text-center text-xs md:text-sm tracking-widest uppercase border-b border-white/10 shadow-[inset_0_0_20px_rgba(236,72,153,0.1)] drop-shadow-md">${title}</td></tr>`;
+                                        allTableRowsHTML.push(rowHTML);
+
+                                        if (window.selectedMonthFilter === 'ALL') {
+                                            let monthHeaderHTML = `
+                                                <div class="flex items-center gap-3 my-2 opacity-80">
+                                                    <div class="h-px bg-white/20 flex-1"></div>
+                                                    <span class="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-black/40 px-3 py-1 rounded-full border border-white/10 shadow-inner">${title}</span>
+                                                    <div class="h-px bg-white/20 flex-1"></div>
+                                                </div>
+                                            `;
+                                            paidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
+                                            unpaidContainer.insertAdjacentHTML('beforeend', monthHeaderHTML);
+                                        }
+                                    }
+                                    continue;
+                                }
+
+                                if (skipSection) continue;
+                                if (colZero === '-' || isNaN(colZero)) continue;
+
+                                if (window.selectedMonthFilter !== 'ALL' && currentMonthSection !== window.selectedMonthFilter) {
+                                    continue;
+                                }
+
+                                let croVal = getCell(row, colIdx.cro);
+                                let wilVal = getCell(row, colIdx.wil);
+                                
+                                let pemVal = getCell(row, colIdx.pem);
+                                let sisaVal = getCell(row, colIdx.sisa);
+                                let permVal = getCell(row, colIdx.perm);
+                                
+                                let lpjVal = getCell(row, colIdx.slpj);
+                                let sreqVal = getCell(row, colIdx.sreq);
+                                
+                                let ketVal = getCell(row, colIdx.ket);
+                                let progVal = getCell(row, colIdx.prog);
+                                let dokVal = getCell(row, colIdx.dok);
+
+                                let formatRp = (val) => {
+                                    if (val === '-' || !val) return '-';
+                                    let cleanStr = val.toString().replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                    if (cleanStr === '' || cleanStr === '-') return '-';
+                                    let numVal = parseFloat(cleanStr);
+                                    return isNaN(numVal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numVal);
+                                };
+
+                                let pemStr = formatRp(pemVal);
+                                let sisaStr = formatRp(sisaVal);
+                                let permStr = formatRp(permVal);
+
+                                let cleanPerm = String(permVal).replace(/Rp/gi, '').replace(/,/g, '').replace(/\./g, '').trim();
+                                let numPerm = parseFloat(cleanPerm);
+
+                                let lpjHTML = formatCheckmark(lpjVal);
+                                let sreqHTML = formatCheckmark(sreqVal);
+
+                                let rawProg = progVal.toLowerCase();
+                                let isPaid = rawProg.includes('paid');
+                                let isReview = rawProg.includes('review') || rawProg.includes('dirops');
+                                let progHTML = formatProgBadge(progVal);
+
+                                let croName = extractCroName(croVal) || 'LAINNYA';
+                                if (!croMapPetty[croName]) croMapPetty[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                croMapPetty[croName].total++;
+                                if (isPaid) {
+                                    croMapPetty[croName].paid++;
+                                    if (!isNaN(numPerm)) croMapPetty[croName].nominalTotal += numPerm;
+                                } else {
+                                    croMapPetty[croName].pending++;
+                                }
+
+                                let dokHTML = formatLinkCustom(dokVal, 'pink');
+
+                                if (isPaid || isReview) {
+                                    let taskItemHTML = `
+                                        <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-black/50 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-300 gap-4 cursor-default group relative overflow-hidden backdrop-blur-sm">
+                                            <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] ${isPaid ? 'bg-emerald-500 text-emerald-400' : 'bg-purple-500 text-purple-400'}"></div>
+                                            <div class="flex-1 min-w-0 pl-3">
+                                                <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-${isPaid ? 'emerald' : 'purple'}-200 transition-colors truncate drop-shadow-md" title="${croVal} - ${wilVal}">${croVal} <span class="text-gray-400 font-medium ml-1">(${wilVal})</span></p>
+                                                <p class="text-[10px] md:text-xs text-gray-300 mb-2 truncate font-medium drop-shadow-sm" title="${ketVal}">Ket: <span class="text-pink-300 font-bold">${ketVal}</span></p>
+                                                <p class="text-[11px] md:text-sm font-black text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]">${permStr}</p>
+                                            </div>
+                                            <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-purple-500/30 text-purple-300 border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.2)]'} whitespace-nowrap uppercase flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
+                                                ${progVal}
+                                            </span>
+                                        </div>
+                                    `;
+
+                                    if (isPaid) {
+                                        paidCount++;
+                                        paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                    } else {
+                                        unpaidCount++;
+                                        unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
+                                    }
+                                }
+
+                                let cellData = [ colZero, croVal, wilVal, pemStr, sisaStr, permStr, lpjHTML, sreqHTML, ketVal, progHTML, dokHTML ];
+
+                                let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
+                                cellData.forEach((cellVal, c) => {
+                                    let cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
+                                    if (c === 8) cellClasses = "px-5 md:px-8 py-5 md:py-6 border-b border-white/10 align-middle text-white font-bold min-w-[250px] md:min-w-[300px] max-w-[400px] md:max-w-[500px] whitespace-normal leading-relaxed drop-shadow-md";
+                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
+                                });
+                                rowHTML += '</tr>';
+                                allTableRowsHTML.push(rowHTML);
+                            }
+
+                            renderCroBreakdown(croMapPetty);
+
+                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
+                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
+
+                            if (paidContainer.innerHTML === '') {
+                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada pengajuan yang lunas di bulan ini.</p></div>`;
+                            }
+                            if (unpaidContainer.innerHTML === '') {
+                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-purple-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-purple-300/70 font-bold tracking-wide">Tidak ada pengajuan yang sedang di-review di bulan ini.</p></div>`;
+                            }
+
+                            if (allTableRowsHTML.length === 0) {
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="11" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
+                            } else {
+                                renderTablePage();
+                            }
+                            
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
+                            
+                            const dateDisplay = document.getElementById('top-date-display');
+                            const dateValueEl = document.getElementById('top-date-value');
+                            if (window.selectedMonthFilter !== 'ALL') {
+                                dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
+                                dateDisplay.classList.remove('hidden');
+                            } else {
+                                if (globalDate && globalDate !== '-') {
+                                    dateValueEl.innerText = globalDate;
+                                    dateDisplay.classList.remove('hidden');
+                                } else {
+                                    dateDisplay.classList.add('hidden');
+                                }
+                            }
+                        }
+                       else if (currentActiveSheet === 'Status Input Asta') {
+        const contentDiv = document.getElementById('content'); // <-- Definikan variabelnya di sini
+        const summaryHeaders = data[2] || [];
+        const summaryValues = data[3] || [];
+        
+        let summaryCardsHTML = `<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-6">`;
+        for(let i = 2; i < summaryHeaders.length; i++) {
+            if(summaryHeaders[i] && summaryHeaders[i].trim() !== '') {
+                summaryCardsHTML += `
+                <div class="bg-white/80 backdrop-blur-md border border-teal-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                    <p class="text-[10px] font-bold text-teal-600 uppercase mb-1 line-clamp-2 leading-tight h-6">${summaryHeaders[i]}</p>
+                    <h3 class="text-xl md:text-2xl font-black text-gray-800">${summaryValues[i] || '0'}</h3>
+                </div>`;
+            }
         }
-    });
-}
+        summaryCardsHTML += `</div>`;
 
-const PORT = process.env.PORT || 3000;
+        const tableHeaders = data[6] || [];
+        const tableRows = data.slice(7);
 
-// Hanya jalankan app.listen jika di komputer lokal (development)
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`Server berjalan di http://localhost:${PORT}`);
-    });
-}
+        let tableHeaderHTML = tableHeaders.map(th => `<th class="px-4 py-3 text-xs font-black text-gray-600 uppercase tracking-wider bg-gray-50 border-b border-gray-200">${th || ''}</th>`).join('');
+        let tableBodyHTML = tableRows.map(row => {
+            let cells = row.map(cell => `<td class="px-4 py-3 text-xs text-gray-700 border-b border-gray-100">${cell || ''}</td>`).join('');
+            return `<tr class="hover:bg-gray-50/80 transition-colors">${cells}</tr>`;
+        }).join('');
 
-// Wajib diexport agar Vercel bisa membaca Express app ini
-module.exports = app;
+        if (contentDiv) {
+            contentDiv.innerHTML = `
+                ${summaryCardsHTML}
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead><tr>${tableHeaderHTML}</tr></thead>
+                            <tbody>${tableBodyHTML}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    else if (currentActiveSheet === 'Surat Keluar') {
+        const contentDiv = document.getElementById('content'); // <-- Definikan variabelnya di sini
+        const summaryHeaders = data[2] || [];
+        const summaryValues = data[3] || [];
+        
+        let summaryCardsHTML = `<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">`;
+        for(let i = 2; i < summaryHeaders.length; i++) {
+            if(summaryHeaders[i] && summaryHeaders[i].trim() !== '') {
+                summaryCardsHTML += `
+                <div class="bg-white/80 backdrop-blur-md border border-indigo-100 p-4 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                    <p class="text-[11px] font-bold text-indigo-600 uppercase mb-1">${summaryHeaders[i]}</p>
+                    <h3 class="text-2xl md:text-3xl font-black text-gray-800">${summaryValues[i] || '0'}</h3>
+                </div>`;
+            }
+        }
+        summaryCardsHTML += `</div>`;
+
+        const tableHeaders = data[4] || [];
+        const tableRows = data.slice(5);
+
+        let tableHeaderHTML = tableHeaders.map(th => `<th class="px-4 py-3 text-xs font-black text-gray-600 uppercase tracking-wider bg-gray-50 border-b border-gray-200">${th || ''}</th>`).join('');
+        let tableBodyHTML = tableRows.map(row => {
+            let cells = row.map(cell => `<td class="px-4 py-3 text-xs text-gray-700 border-b border-gray-100">${cell || ''}</td>`).join('');
+            return `<tr class="hover:bg-gray-50/80 transition-colors">${cells}</tr>`;
+        }).join('');
+
+        if (contentDiv) {
+            contentDiv.innerHTML = `
+                ${summaryCardsHTML}
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead><tr>${tableHeaderHTML}</tr></thead>
+                            <tbody>${tableBodyHTML}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+    }
+                        // =========================================================
+                        // KONDISI UMUM
+                        // =========================================================
+                        else {
+                            let tableHeadIdx = 2; 
+                            let dataStartIdx = tableHeadIdx + 1;
+                            while (dataStartIdx < data.length) {
+                                let col0 = data[dataStartIdx][0] ? data[dataStartIdx][0].toString().trim() : "";
+                                let col1 = data[dataStartIdx][1] ? data[dataStartIdx][1].toString().trim() : "";
+                                if (/^\d+$/.test(col0) || /\d{1,2}\s[a-zA-Z]+\s\d{4}/.test(col1) || col1.includes('00:00:00')) break;
+                                dataStartIdx++;
+                            }
+                            if (dataStartIdx >= data.length) dataStartIdx = tableHeadIdx + 1;
+
+                            let validColIndices = [];
+                            let headHTML = '<tr>';
+                            for (let c = 0; c < data[tableHeadIdx].length; c++) {
+                                let headerText = data[tableHeadIdx][c] ? data[tableHeadIdx][c].toString().trim() : "";
+                                if (headerText !== "") {
+                                    validColIndices.push(c);
+                                    headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${headerText}</th>`;
+                                }
+                            }
+                            headHTML += '</tr>';
+                            thead.innerHTML = headHTML;
+
+                            for (let i = dataStartIdx; i < data.length; i++) {
+                                let row = data[i];
+                                let rowStr = row.join('').trim();
+                                if (rowStr === '' || !rowStr.match(/[a-zA-Z0-9]/)) continue;
+
+                                let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
+                                validColIndices.forEach((colIndex) => {
+                                    let cellVal = row[colIndex] !== undefined && row[colIndex] !== null ? row[colIndex] : '-';
+                                    if (cellVal !== '-') cellVal = formatCellDate(cellVal);
+                                    if (cellVal === 'nan' || cellVal === '') cellVal = '-';
+                                    rowHTML += `<td class="px-5 md:px-8 py-4 md:py-6 border-b border-white/10 text-gray-200 font-medium whitespace-nowrap drop-shadow-sm">${cellVal}</td>`;
+                                });
+                                rowHTML += '</tr>';
+                                allTableRowsHTML.push(rowHTML);
+                            }
+
+                            if (allTableRowsHTML.length === 0) {
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="10" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di sheet ini.</td></tr>`;
+                                document.getElementById('pagination-container').innerHTML = '';
+                            } else {
+                                renderTablePage();
+                            }
+                            
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
+                            const dateDisplay = document.getElementById('top-date-display');
+                            dateDisplay.classList.add('hidden');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        if (!isSilent) {
+                            document.getElementById('table-head').innerHTML = '';
+                            document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-red-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Gagal memuat data dari server. Pastikan nama sheet benar.</td></tr>`;
+                        }
+                    });
+            }
+
+            // Render menu sidebar pertama kali
+            renderMenu();
+            
+            // Jalankan cek autentikasi pertama kali
+            checkAuth();
+            
+        });
+    </script>
+</body>
+</html>
