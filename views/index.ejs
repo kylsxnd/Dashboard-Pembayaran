@@ -886,11 +886,16 @@
                 croBreakdownSection.classList.add('hidden');
                 filterContainer.classList.remove('hidden');
 
+                // ================== TIMPA DARI SINI ==================
                 let apiEndpoint = '';
-                if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                if (currentActiveSheet === 'PDO') {
+                    apiEndpoint = '/api/sheet/PDO'; // Pastikan nama endpoint PDO pakai huruf besar jika di backend besar
+                } else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                     apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
                 } else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
                     apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
+                } else if (currentActiveSheet === 'Petty Cash') {
+                    apiEndpoint = '/api/sheet/Petty_Cash'; // Sesuaikan jika aslinya petty_cash (huruf kecil)
                 } else if (currentActiveSheet === 'Status Input Asta') {
                     apiEndpoint = '/api/sheet/status_input_asta';
                 } else if (currentActiveSheet === 'Surat Keluar') {
@@ -906,12 +911,18 @@
                     })
                     .then(result => {
                         allTableRowsHTML = [];
-                        let data = result.data || result.values || [];
+                        
+                        // PERBAIKAN: Tangkap data meskipun API langsung melempar Array
+                        let data = Array.isArray(result) ? result : (result.data || result.values || []); 
+                        
                         if (!data || data.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="20" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Data pada sheet kosong.</td></tr>`;
+                            tbody.innerHTML = `<tr><td colspan="20" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Data pada sheet kosong atau format API tidak sesuai.</td></tr>`;
+                            // Tetap update jam supaya ketahuan API merespon meski kosong
+                            let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                            document.getElementById('last-update').innerHTML = `Data API <span class="text-rose-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
                             return;
                         }
-
+                // ================== SAMPAI SINI ==================
                         // =========================================================
                         // KONDISI 1: PDO
                         // =========================================================
