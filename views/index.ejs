@@ -1897,6 +1897,7 @@ if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                             }
                         }
                        else if (currentActiveSheet === 'Status Input Asta') {
+        const contentDiv = document.getElementById('content'); // <-- Definikan variabelnya di sini
         const summaryHeaders = data[2] || [];
         const summaryValues = data[3] || [];
         
@@ -1921,19 +1922,22 @@ if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
             return `<tr class="hover:bg-gray-50/80 transition-colors">${cells}</tr>`;
         }).join('');
 
-        contentDiv.innerHTML = `
-            ${summaryCardsHTML}
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
-                        <thead><tr>${tableHeaderHTML}</tr></thead>
-                        <tbody>${tableBodyHTML}</tbody>
-                    </table>
+        if (contentDiv) {
+            contentDiv.innerHTML = `
+                ${summaryCardsHTML}
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead><tr>${tableHeaderHTML}</tr></thead>
+                            <tbody>${tableBodyHTML}</tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     }
     else if (currentActiveSheet === 'Surat Keluar') {
+        const contentDiv = document.getElementById('content'); // <-- Definikan variabelnya di sini
         const summaryHeaders = data[2] || [];
         const summaryValues = data[3] || [];
         
@@ -1958,17 +1962,19 @@ if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
             return `<tr class="hover:bg-gray-50/80 transition-colors">${cells}</tr>`;
         }).join('');
 
-        contentDiv.innerHTML = `
-            ${summaryCardsHTML}
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
-                        <thead><tr>${tableHeaderHTML}</tr></thead>
-                        <tbody>${tableBodyHTML}</tbody>
-                    </table>
+        if (contentDiv) {
+            contentDiv.innerHTML = `
+                ${summaryCardsHTML}
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead><tr>${tableHeaderHTML}</tr></thead>
+                            <tbody>${tableBodyHTML}</tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     }
                         // =========================================================
                         // KONDISI UMUM
