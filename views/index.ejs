@@ -315,7 +315,7 @@
                     </div>
                 </div>
 
-                <!-- SUMMARY DATA PANEL (OTOMATIS DISEMBUNYIKAN DI PDO) -->
+                <!-- SUMMARY DATA PANEL (OTOMATIS DISEMBUNYIKAN DI PDO NEW) -->
                 <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-150">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                         <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 md:mb-8 flex items-center gap-3 relative z-10 drop-shadow-lg">
@@ -468,7 +468,9 @@
                 if (str === '') return '-';
                 let lProg = str.toLowerCase();
                 let progColor = 'bg-slate-500/20 text-slate-300 border-slate-400/30';
-                if (lProg.includes('approved') || lProg.includes('selesai')) progColor = 'bg-purple-500/30 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
+                if (lProg.includes('approved') || lProg.includes('selesai') || lProg.includes('paid')) progColor = 'bg-purple-500/30 text-purple-300 border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]';
+                else if (lProg.includes('direktorat')) progColor = 'bg-emerald-500/30 text-emerald-300 border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]';
+                else if (lProg.includes('surat')) progColor = 'bg-sky-500/30 text-sky-300 border-sky-400/50 shadow-[0_0_10px_rgba(14,165,233,0.2)]';
                 else if (lProg.includes('revisi') || lProg.includes('review') || lProg.includes('verifikasi')) progColor = 'bg-amber-500/30 text-amber-300 border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.2)]';
                 else if (lProg.includes('pembuatan') || lProg.includes('proses')) progColor = 'bg-rose-500/30 text-rose-300 border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.2)]';
                 return `<span class="px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[11px] font-bold tracking-wide ${progColor} inline-block uppercase whitespace-nowrap">${str}</span>`;
@@ -485,11 +487,11 @@
                 }
             };
 
-            // Helper untuk mengekstrak nama CRO dari teks baris
+            // Helper untuk mengekstrak nama CRO dari teks baris (mendukung CRO 7 maupun CRO VII)
             let extractCroName = (text) => {
                 if (!text) return null;
                 let match = String(text).match(/CRO\s+[IVXLCDM\d]+/i);
-                if (match) return match[0].toUpperCase();
+                if (match) return match[0].replace(/\s+/g, ' ').trim().toUpperCase();
                 return null;
             };
 
@@ -500,7 +502,7 @@
                 if (!container || !section) return;
 
                 container.innerHTML = '';
-                const keys = Object.keys(itemsMap).sort();
+                const keys = Object.keys(itemsMap).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
                 if (keys.length === 0) {
                     section.classList.add('hidden');
@@ -842,7 +844,7 @@
             };
 
             const sheetTabs = [
-                'PDO', 
+                'PDO New', 
                 'Monitoring Pembayaran Pengelolaan Mandiri', 
                 'Monitoring Pembayaran Borongan',
                 'Petty Cash',
@@ -865,7 +867,7 @@
                     let activeClassesStr = '';
                     let activeIconStr = '';
 
-                    if (sheetName === 'PDO') {
+                    if (sheetName === 'PDO New') {
                         activeClassesStr = 'bg-sky-500/20 backdrop-blur-md text-white border-l-4 border-sky-400 shadow-[inset_0_0_20px_rgba(14,165,233,0.1)]';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-sky-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
                     } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
@@ -903,7 +905,7 @@
                         const filterIcon = document.getElementById('month-filter-icon');
                         const filterArrow = document.getElementById('month-filter-arrow');
 
-                        if (sheetName === 'PDO') {
+                        if (sheetName === 'PDO New') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
                             if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
@@ -1090,100 +1092,71 @@
                         }
 
                         // =========================================================
-                        // KONDISI 1: PDO
+                        // KONDISI 1: PDO NEW
                         // =========================================================
-                        if (currentActiveSheet === 'PDO') {
+                        if (currentActiveSheet === 'PDO New') {
                             
-                            // Sembunyikan panel Task Sudah Paid & Task Belum Paid khusus di PDO
+                            // Sembunyikan panel Task Sudah Paid & Task Belum Paid khusus di PDO New
                             if(pdoBreakdown) {
                                 pdoBreakdown.classList.add('hidden');
                                 pdoBreakdown.classList.remove('grid');
                             }
 
-                            let pdoIdx = { no: -1, date: -1, task: -1, link: -1, tipe: -1, prog: -1, kelengkapan: -1, pajak: -1, umum: -1, keu: -1, rev: -1, paid: -1, dip: -1 };
-                            let pdoHeaderRowIdx = 6;
-                            for (let r = 0; r < 15; r++) {
-                                if (!data[r]) continue;
-                                let str = data[r].join('').toLowerCase();
-                                if (str.includes('task') && str.includes('link dokumen')) {
-                                    pdoHeaderRowIdx = r;
-                                    let hr = data[r];
-                                    for (let c=0; c<hr.length; c++) {
-                                        let h = (hr[c]||'').toString().toLowerCase().trim();
-                                        if(h==='no') pdoIdx.no = c;
-                                        else if(h.includes('after diproses')) pdoIdx.date = c;
-                                        else if(h==='task') pdoIdx.task = c;
-                                        else if(h.includes('link')) pdoIdx.link = c;
-                                        else if(h.includes('tipe')) pdoIdx.tipe = c;
-                                        else if(h==='progress') pdoIdx.prog = c;
-                                        else if(h.includes('dokumen diterima')) pdoIdx.kelengkapan = c;
-                                        else if(h==='pajak') pdoIdx.pajak = c;
-                                        else if(h.includes('umum') || h.includes('khusus sp2')) pdoIdx.umum = c;
-                                        else if(h.includes('diserahkan keuangan') || h === 'keuangan') pdoIdx.keu = c;
-                                        else if(h.includes('revisi')) pdoIdx.rev = c;
-                                        else if(h==='paid') pdoIdx.paid = c;
-                                        else if(h.includes('direktorat')) pdoIdx.dip = c;
-                                    }
-                                    break;
-                                }
-                            }
-
-                            let pdoSumIdx = { task: -1, doc: -1, surat: -1, rev: -1, appr: -1, pajak: -1, umum: -1, keu: -1, paid: -1, dip: -1, date: -1 };
-                            let pdoSumRowData = 4;
-                            for (let r = 0; r < 10; r++) {
-                                if (!data[r]) continue;
-                                let rowStr = data[r].join('').toLowerCase();
-                                if (rowStr.includes('total task') && rowStr.includes('paid')) {
-                                    let sumHeaderRow = data[r];
-                                    for(let c = 0; c < sumHeaderRow.length; c++) {
-                                        let str = (sumHeaderRow[c] || '').toString().toLowerCase().trim();
-                                        if(!str) continue;
-                                        if(str === 'total task') pdoSumIdx.task = c;
-                                        else if(str.includes('diterima') || str.includes('dokumen')) pdoSumIdx.doc = c;
-                                        else if(str.includes('pembuatan')) pdoSumIdx.surat = c;
-                                        else if(str.includes('revisi')) pdoSumIdx.rev = c;
-                                        else if(str.includes('aproved') || str.includes('approv')) pdoSumIdx.appr = c;
-                                        else if(str === 'pajak' || str.includes('verifikasi')) pdoSumIdx.pajak = c;
-                                        else if(str === 'umum') pdoSumIdx.umum = c;
-                                        else if(str === 'keuangan') pdoSumIdx.keu = c;
-                                        else if(str === 'paid') pdoSumIdx.paid = c;
-                                        else if(str.includes('direktorat') || str.includes('diperoses')) pdoSumIdx.dip = c;
-                                        else if(str === 'date') pdoSumIdx.date = c;
-                                    }
-                                    if (data[r+1]) pdoSumRowData = r + 1;
-                                    break;
-                                }
-                            }
-
-                            // Sembunyikan Summary Data Panel khusus di PDO
                             dashboardWidgets.classList.add('hidden');
                             noSummaryMsg.classList.add('hidden');
 
-                            const headers = [
-                                "No", "Date (after diproses QC)", "Task", "Link Dokumen", 
-                                "Tipe Pengajuan", "Progress", "Dokumen Diterima", "Pajak", 
-                                "Diserahkan Umum ( Khusus SP2)", "Diserahkan Keuangan", "Revisi Regional", "Paid", "Diperoses di Direktorat Terkait"
-                            ];
+                            // Deteksi baris header pada sheet PDO New (Baris ke-3 / index 2)
+                            let pdoNewHeaderRowIdx = 2;
+                            for (let r = 0; r < Math.min(15, data.length); r++) {
+                                if (!data[r]) continue;
+                                let str = data[r].join('').toLowerCase();
+                                if (str.includes('perihal') && (str.includes('sistem pdo') || str.includes('link dokumen') || str.includes('tanggal pengajuan'))) {
+                                    pdoNewHeaderRowIdx = r;
+                                    break;
+                                }
+                            }
 
+                            let rawHeaders = data[pdoNewHeaderRowIdx] || [];
+                            let validCols = [];
+                            let pdoNewIdx = { no: -1, date: -1, cro: -1, perihal: -1, periode: -1, link: -1, sistem: -1, paid: -1 };
+
+                            for (let c = 0; c < rawHeaders.length; c++) {
+                                let label = (rawHeaders[c] !== null && rawHeaders[c] !== undefined) ? String(rawHeaders[c]).trim() : '';
+                                if (!label) continue;
+                                let h = label.toLowerCase();
+                                validCols.push({ index: c, label: label, lower: h });
+
+                                if (h === 'no') pdoNewIdx.no = c;
+                                else if (h.includes('tanggal pengajuan') || h.includes('tanggal') || h === 'date') pdoNewIdx.date = c;
+                                else if (h === 'cro') pdoNewIdx.cro = c;
+                                else if (h === 'perihal' || h.includes('task')) pdoNewIdx.perihal = c;
+                                else if (h === 'periode') pdoNewIdx.periode = c;
+                                else if (h.includes('link')) pdoNewIdx.link = c;
+                                else if (h.includes('sistem pdo') || h === 'progress' || h === 'status') pdoNewIdx.sistem = c;
+                                else if (h === 'paid') pdoNewIdx.paid = c;
+                            }
+
+                            // Render Header Tabel mengikuti kolom yang ada di PDO New
                             let headHTML = '<tr>';
-                            headers.forEach(h => {
-                                headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${h}</th>`;
+                            validCols.forEach(col => {
+                                headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${col.label}</th>`;
                             });
                             headHTML += '</tr>';
                             thead.innerHTML = headHTML;
 
+                            // Ekstrak Daftar Bulan dari kolom Tanggal Pengajuan Diterima
                             let availableMonths = [];
-                            for (let i = pdoHeaderRowIdx + 1; i < data.length; i++) {
+                            for (let i = pdoNewHeaderRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row) continue;
-                                let dateCell = getCell(row, pdoIdx.date);
+                                let dateCell = formatCellDate(getCell(row, pdoNewIdx.date));
                                 if (dateCell !== '-') {
                                     let match = dateCell.match(/[A-Za-z]+\s\d{4}/);
                                     if (match && !availableMonths.includes(match[0])) availableMonths.push(match[0]);
                                 }
                             }
                             if (availableMonths.length > 0) {
-                                if (!window.selectedMonthFilter || (!availableMonths.map(m=>m.toUpperCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
+                                if (!window.selectedMonthFilter || (!availableMonths.map(m => m.toUpperCase()).includes(window.selectedMonthFilter) && window.selectedMonthFilter !== 'ALL')) {
                                     window.selectedMonthFilter = 'ALL'; 
                                 }
                             }
@@ -1206,56 +1179,67 @@
                                     return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-sky-500/20 text-sky-300 border border-sky-400/50 shadow-[0_0_10px_rgba(14,165,233,0.2)] hover:bg-sky-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
                                 } else {
                                     const safeName = str.replace(/'/g, "\\'");
-                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-sky-300 font-bold hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[150px] md:max-w-[200px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-sky-400/50 underline-offset-4 truncate">${str}</span></button>`;
+                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-sky-300 font-bold hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[180px] md:max-w-[230px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-sky-400/50 underline-offset-4 truncate">${str}</span></button>`;
                                 }
                             };
 
-                            for (let i = pdoHeaderRowIdx + 1; i < data.length; i++) {
+                            for (let i = pdoNewHeaderRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
-                                let colZero = getCell(row, pdoIdx.no);
+                                
+                                let colZero = getCell(row, pdoNewIdx.no);
                                 if (colZero === '-' || isNaN(colZero)) continue;
 
-                                let dateCell = getCell(row, pdoIdx.date).toUpperCase();
+                                let rawDate = getCell(row, pdoNewIdx.date);
+                                let formattedDate = formatCellDate(rawDate);
                                 if (window.selectedMonthFilter !== 'ALL') {
-                                    if (!dateCell.includes(window.selectedMonthFilter)) continue; 
+                                    if (!formattedDate.toUpperCase().includes(window.selectedMonthFilter)) continue; 
                                 }
 
-                                let taskCol = getCell(row, pdoIdx.task);
-                                if (taskCol === '-' || taskCol === 'nan') continue;
+                                let perihalCol = getCell(row, pdoNewIdx.perihal);
+                                if (perihalCol === '-' || perihalCol === 'nan') continue;
 
-                                let paidCell = getCell(row, pdoIdx.paid).toUpperCase();
-                                let isPaid = (paidCell === 'TRUE' || paidCell === '1' || paidCell === '1.0' || paidCell.includes('☑'));
+                                let croRaw = getCell(row, pdoNewIdx.cro);
+                                let croName = (croRaw !== '-') ? croRaw.replace(/\s+/g, ' ').trim().toUpperCase() : (extractCroName(perihalCol) || 'LAINNYA');
 
-                                let tipeVal = getCell(row, pdoIdx.tipe);
-                                let progVal = getCell(row, pdoIdx.prog);
+                                let sistemVal = getCell(row, pdoNewIdx.sistem).toLowerCase();
+                                let paidCell = getCell(row, pdoNewIdx.paid).toUpperCase();
+                                let isPaid = (paidCell === 'TRUE' || paidCell === '1' || paidCell === '1.0' || paidCell.includes('☑') || sistemVal.includes('paid'));
 
-                                let croName = extractCroName(taskCol) || 'LAINNYA';
                                 if (!croMap[croName]) croMap[croName] = { total: 0, paid: 0, pending: 0 };
                                 croMap[croName].total++;
                                 if (isPaid) croMap[croName].paid++;
                                 else croMap[croName].pending++;
 
-                                let cellData = [
-                                    colZero,
-                                    formatCellDate(getCell(row, pdoIdx.date)),
-                                    taskCol,
-                                    formatLink(getCell(row, pdoIdx.link)),
-                                    tipeVal,
-                                    formatProgBadge(progVal),
-                                    formatCheckmark(getCell(row, pdoIdx.kelengkapan)),
-                                    formatCheckmark(getCell(row, pdoIdx.pajak)),
-                                    formatCheckmark(getCell(row, pdoIdx.umum)),
-                                    formatCheckmark(getCell(row, pdoIdx.keu)),
-                                    formatCheckmark(getCell(row, pdoIdx.rev)),
-                                    formatCheckmark(getCell(row, pdoIdx.paid)),
-                                    formatCheckmark(getCell(row, pdoIdx.dip))
-                                ];
-
                                 let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
-                                cellData.forEach((cellVal, c) => {
+                                validCols.forEach(col => {
+                                    let rawVal = getCell(row, col.index);
+                                    let cellVal = rawVal;
+                                    let h = col.lower;
+
+                                    if (col.index === pdoNewIdx.date || h.includes('tanggal') || h === 'date') {
+                                        cellVal = formatCellDate(rawVal);
+                                    } else if (col.index === pdoNewIdx.link || h.includes('link')) {
+                                        cellVal = formatLink(rawVal);
+                                    } else if (col.index === pdoNewIdx.sistem || h.includes('sistem') || h.includes('progress') || h.includes('status')) {
+                                        cellVal = formatProgBadge(rawVal);
+                                    } else if (
+                                        h.includes('review') || h.includes('surat') || h.includes('paraf') || 
+                                        h.includes('ttd') || h.includes('diterima') || h.includes('pajak') || 
+                                        h.includes('umum') || h.includes('keuangan') || h.includes('revisi') || 
+                                        h.includes('direktorat') || h === 'paid' ||
+                                        rawVal.toUpperCase() === 'TRUE' || rawVal.toUpperCase() === 'FALSE'
+                                    ) {
+                                        cellVal = formatCheckmark(rawVal);
+                                    }
+
                                     let cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
-                                    if (c === 2) cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-white font-bold min-w-[250px] md:min-w-[300px] max-w-[400px] md:max-w-[500px] whitespace-normal leading-relaxed drop-shadow-md";
+                                    if (col.index === pdoNewIdx.perihal) {
+                                        cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-white font-bold min-w-[260px] md:min-w-[320px] max-w-[420px] md:max-w-[520px] whitespace-normal leading-relaxed drop-shadow-md";
+                                    } else if (col.index === pdoNewIdx.cro) {
+                                        cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-sky-300 font-bold whitespace-nowrap drop-shadow-sm";
+                                    }
+
                                     rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
                                 });
                                 rowHTML += '</tr>';
@@ -1265,7 +1249,7 @@
                             renderCroBreakdown(croMap);
 
                             if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
+                                document.getElementById('table-body').innerHTML = `<tr><td colspan="${validCols.length || 9}" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
                                 document.getElementById('pagination-container').innerHTML = '';
                             } else {
                                 renderTablePage();
@@ -1280,13 +1264,7 @@
                                 dateValueEl.innerText = 'Bulan ' + window.selectedMonthFilter.charAt(0) + window.selectedMonthFilter.slice(1).toLowerCase();
                                 dateDisplay.classList.remove('hidden');
                             } else {
-                                let dateValue = data[pdoSumRowData] && data[pdoSumRowData][pdoSumIdx.date] !== undefined ? formatCellDate(data[pdoSumRowData][pdoSumIdx.date]) : "-";
-                                if (dateValue && dateValue !== '-') {
-                                    dateValueEl.innerText = dateValue;
-                                    dateDisplay.classList.remove('hidden');
-                                } else {
-                                    dateDisplay.classList.add('hidden');
-                                }
+                                dateDisplay.classList.add('hidden');
                             }
                         }
                         
