@@ -302,19 +302,6 @@
                     </div>
                 </div>
 
-                <!-- REKAPAN PER CRO (DITARIK KE PALING ATAS) -->
-                <div id="cro-breakdown-section" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-100">
-                    <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
-                        <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center gap-3 relative z-10 drop-shadow-lg">
-                            <div class="p-2 rounded-lg bg-white/10 backdrop-blur-md text-white border border-white/20 shadow-inner">
-                                <svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                            </div>
-                            Rekapan Status per CRO
-                        </h3>
-                        <div id="croCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10"></div>
-                    </div>
-                </div>
-
                 <!-- SUMMARY DATA PANEL (OTOMATIS DISEMBUNYIKAN DI PDO NEW) -->
                 <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-150">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
@@ -378,6 +365,19 @@
 
                     <div class="px-5 md:px-8 py-4 md:py-5 border-t border-white/10 bg-black/30 backdrop-blur-xl flex justify-center items-center">
                         <div id="pagination-container" class="flex items-center gap-2 md:gap-3 flex-wrap justify-center"></div>
+                    </div>
+                </div>
+
+                <!-- REKAPAN PER CRO (DIPINDAHKAN KE PALING BAWAH) -->
+                <div id="cro-breakdown-section" class="mt-6 md:mt-8 hidden opacity-0 animate-fade-in-up delay-200">
+                    <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
+                        <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 flex items-center gap-3 relative z-10 drop-shadow-lg">
+                            <div class="p-2 rounded-lg bg-white/10 backdrop-blur-md text-white border border-white/20 shadow-inner">
+                                <svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            Rekapan Status per CRO
+                        </h3>
+                        <div id="croCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10"></div>
                     </div>
                 </div>
             </div>
@@ -462,6 +462,12 @@
                 return '-';
             };
 
+            let isCheckedVal = (val) => {
+                if (val === '-' || val === null || val === undefined || val === '') return false;
+                let strVal = String(val).toUpperCase().trim();
+                return strVal === 'TRUE' || val === 1 || val === '1' || val === '1.0' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
+            };
+
             let formatProgBadge = (val) => {
                 if (val === '-' || !val) return '-';
                 let str = String(val).trim();
@@ -477,10 +483,7 @@
             };
 
             let formatCheckmark = (val) => {
-                if (val === '-' || val === null || val === undefined || val === '') return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
-                let strVal = String(val).toUpperCase();
-                let isTrue = strVal === 'TRUE' || val === 1 || val === '1' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
-                if (isTrue) {
+                if (isCheckedVal(val)) {
                     return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-emerald-500 border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)] mx-auto group-hover:scale-110 transition-transform"><svg class="w-3 h-3 md:w-4 md:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>`;
                 } else {
                     return `<div class="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-md bg-black/40 border border-white/20 mx-auto shadow-inner"></div>`;
@@ -495,7 +498,7 @@
                 return null;
             };
 
-            // Render Kartu Rekapan Per CRO
+            // Render Kartu Rekapan Per CRO (Proses Review, Proses Pembayaran, Paid)
             let renderCroBreakdown = (itemsMap) => {
                 const container = document.getElementById('croCardsContainer');
                 const section = document.getElementById('cro-breakdown-section');
@@ -519,17 +522,27 @@
                     let col = colors[idx % colors.length];
 
                     container.innerHTML += `
-                        <div class="bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-black/50 hover:border-${col}-400/50 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all duration-300 flex flex-col justify-center relative overflow-hidden group cursor-default">
+                        <div class="bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-black/50 hover:border-${col}-400/50 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all duration-300 flex flex-col justify-between relative overflow-hidden group cursor-default">
                             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-${col}-500/0 via-${col}-500/80 to-${col}-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] text-${col}-400"></div>
-                            <p class="text-xs md:text-sm font-black text-white group-hover:text-${col}-300 transition-colors uppercase tracking-wider mb-2 drop-shadow-md flex items-center justify-between">
+                            <p class="text-xs md:text-sm font-black text-white group-hover:text-${col}-300 transition-colors uppercase tracking-wider mb-3 drop-shadow-md flex items-center justify-between">
                                 <span>${croKey}</span>
-                                <span class="text-[10px] bg-white/10 px-2 py-0.5 rounded-md font-bold text-gray-300">Total: ${info.total}</span>
+                                <span class="text-[10px] bg-white/10 px-2.5 py-0.5 rounded-md font-bold text-gray-300">Total: ${info.total}</span>
                             </p>
-                            <div class="flex items-center justify-between text-xs text-gray-300 font-medium">
-                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Paid: <b class="text-emerald-300">${info.paid}</b></span>
-                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-400"></span> Pending: <b class="text-rose-300">${info.pending}</b></span>
+                            <div class="flex flex-col gap-1.5 text-xs text-gray-300 font-medium">
+                                <div class="flex items-center justify-between">
+                                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Proses Review</span>
+                                    <b class="text-amber-300">${info.review || 0}</b>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Proses Pembayaran</span>
+                                    <b class="text-sky-300">${info.pembayaran || 0}</b>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Paid</span>
+                                    <b class="text-emerald-300">${info.paid || 0}</b>
+                                </div>
                             </div>
-                            ${info.nominalTotal ? `<p class="text-xs font-black text-emerald-400 mt-2.5 pt-2 border-t border-white/10 drop-shadow-sm">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(info.nominalTotal)}</p>` : ''}
+                            ${info.nominalTotal ? `<p class="text-xs font-black text-emerald-400 mt-3 pt-2 border-t border-white/10 drop-shadow-sm">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(info.nominalTotal)}</p>` : ''}
                         </div>
                     `;
                 });
@@ -1118,7 +1131,7 @@
 
                             let rawHeaders = data[pdoNewHeaderRowIdx] || [];
                             let validCols = [];
-                            let pdoNewIdx = { no: -1, date: -1, cro: -1, perihal: -1, periode: -1, link: -1, sistem: -1, paid: -1 };
+                            let pdoNewIdx = { no: -1, date: -1, cro: -1, perihal: -1, periode: -1, link: -1, sistem: -1, surat: -1, keu: -1, paid: -1 };
 
                             for (let c = 0; c < rawHeaders.length; c++) {
                                 let label = (rawHeaders[c] !== null && rawHeaders[c] !== undefined) ? String(rawHeaders[c]).trim() : '';
@@ -1133,6 +1146,8 @@
                                 else if (h === 'periode') pdoNewIdx.periode = c;
                                 else if (h.includes('link')) pdoNewIdx.link = c;
                                 else if (h.includes('sistem pdo') || h === 'progress' || h === 'status') pdoNewIdx.sistem = c;
+                                else if (h.includes('surat pengajuan')) pdoNewIdx.surat = c;
+                                else if (h.includes('keuangan')) pdoNewIdx.keu = c;
                                 else if (h === 'paid') pdoNewIdx.paid = c;
                             }
 
@@ -1203,13 +1218,20 @@
                                 let croName = (croRaw !== '-') ? croRaw.replace(/\s+/g, ' ').trim().toUpperCase() : (extractCroName(perihalCol) || 'LAINNYA');
 
                                 let sistemVal = getCell(row, pdoNewIdx.sistem).toLowerCase();
-                                let paidCell = getCell(row, pdoNewIdx.paid).toUpperCase();
-                                let isPaid = (paidCell === 'TRUE' || paidCell === '1' || paidCell === '1.0' || paidCell.includes('☑') || sistemVal.includes('paid'));
+                                let isPaid = isCheckedVal(getCell(row, pdoNewIdx.paid)) || sistemVal.includes('paid') || sistemVal.includes('lunas');
+                                let isProsesPembayaran = !isPaid && (
+                                    sistemVal.includes('pembayaran') || sistemVal.includes('keuangan') || 
+                                    sistemVal.includes('direktorat') || sistemVal.includes('surat') || 
+                                    sistemVal.includes('approved') || sistemVal.includes('umum') || 
+                                    sistemVal.includes('pajak') || sistemVal.includes('bayar') ||
+                                    isCheckedVal(getCell(row, pdoNewIdx.surat)) || isCheckedVal(getCell(row, pdoNewIdx.keu))
+                                );
 
-                                if (!croMap[croName]) croMap[croName] = { total: 0, paid: 0, pending: 0 };
+                                if (!croMap[croName]) croMap[croName] = { total: 0, review: 0, pembayaran: 0, paid: 0 };
                                 croMap[croName].total++;
                                 if (isPaid) croMap[croName].paid++;
-                                else croMap[croName].pending++;
+                                else if (isProsesPembayaran) croMap[croName].pembayaran++;
+                                else croMap[croName].review++;
 
                                 let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
                                 validCols.forEach(col => {
@@ -1443,19 +1465,25 @@
                                 let numNominal = parseFloat(cleanNominal);
                                 let nominalFmt = isNaN(numNominal) ? '-' : new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(numNominal);
 
-                                let paidCellMon = getCell(row, monIdx.paid).toUpperCase();
-                                let isPaidMon = (paidCellMon === 'TRUE' || paidCellMon === '1' || paidCellMon === '1.0' || paidCellMon.includes('☑'));
+                                let isPaidMon = isCheckedVal(getCell(row, monIdx.paid));
+                                let isProsesBayarMon = !isPaidMon && (
+                                    isCheckedVal(getCell(row, monIdx.keu)) || 
+                                    isCheckedVal(getCell(row, monIdx.umum)) || 
+                                    isCheckedVal(getCell(row, monIdx.selPajak))
+                                );
 
                                 // Ekstraksi CRO
                                 let croName = extractCroName(regionalVal) || extractCroName(vendorName) || extractCroName(kebunName);
                                 if (croName) {
-                                    if (!croMapMon[croName]) croMapMon[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                    if (!croMapMon[croName]) croMapMon[croName] = { total: 0, review: 0, pembayaran: 0, paid: 0, nominalTotal: 0 };
                                     croMapMon[croName].total++;
                                     if (isPaidMon) {
                                         croMapMon[croName].paid++;
                                         if (!isNaN(numNominal)) croMapMon[croName].nominalTotal += numNominal;
+                                    } else if (isProsesBayarMon) {
+                                        croMapMon[croName].pembayaran++;
                                     } else {
-                                        croMapMon[croName].pending++;
+                                        croMapMon[croName].review++;
                                     }
                                 }
 
@@ -1746,16 +1774,22 @@
                                 let rawProg = progVal.toLowerCase();
                                 let isPaid = rawProg.includes('paid');
                                 let isReview = rawProg.includes('review') || rawProg.includes('dirops');
+                                let isProsesBayarPetty = !isPaid && (
+                                    rawProg.includes('pembayaran') || rawProg.includes('keuangan') || 
+                                    rawProg.includes('approved') || rawProg.includes('direktorat')
+                                );
                                 let progHTML = formatProgBadge(progVal);
 
                                 let croName = extractCroName(croVal) || 'LAINNYA';
-                                if (!croMapPetty[croName]) croMapPetty[croName] = { total: 0, paid: 0, pending: 0, nominalTotal: 0 };
+                                if (!croMapPetty[croName]) croMapPetty[croName] = { total: 0, review: 0, pembayaran: 0, paid: 0, nominalTotal: 0 };
                                 croMapPetty[croName].total++;
                                 if (isPaid) {
                                     croMapPetty[croName].paid++;
                                     if (!isNaN(numPerm)) croMapPetty[croName].nominalTotal += numPerm;
+                                } else if (isProsesBayarPetty) {
+                                    croMapPetty[croName].pembayaran++;
                                 } else {
-                                    croMapPetty[croName].pending++;
+                                    croMapPetty[croName].review++;
                                 }
 
                                 let dokHTML = formatLinkCustom(dokVal, 'pink');
