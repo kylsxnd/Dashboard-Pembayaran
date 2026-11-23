@@ -1094,16 +1094,11 @@
                         // =========================================================
                         if (currentActiveSheet === 'PDO') {
                             
-                            pdoBreakdown.classList.remove('hidden');
-                            pdoBreakdown.classList.add('grid');
-                            
-                            pdoBreakdown.classList.remove('grid-cols-1');
-                            pdoBreakdown.classList.add('md:grid-cols-2');
-                            document.querySelector('#unpaid-task-container').parentElement.classList.remove('hidden');
-                            paidContainer.className = 'flex flex-col gap-4 overflow-y-auto max-h-[450px] custom-scrollbar pr-3 relative z-10';
-
-                            paidContainer.innerHTML = '';
-                            unpaidContainer.innerHTML = '';
+                            // Sembunyikan panel Task Sudah Paid & Task Belum Paid khusus di PDO
+                            if(pdoBreakdown) {
+                                pdoBreakdown.classList.add('hidden');
+                                pdoBreakdown.classList.remove('grid');
+                            }
 
                             let pdoIdx = { no: -1, date: -1, task: -1, link: -1, tipe: -1, prog: -1, kelengkapan: -1, pajak: -1, umum: -1, keu: -1, rev: -1, paid: -1, dip: -1 };
                             let pdoHeaderRowIdx = 6;
@@ -1201,8 +1196,6 @@
                             });
                             if(filterSelect) filterSelect.innerHTML = optionsHTML;
 
-                            let paidCount = 0;
-                            let unpaidCount = 0;
                             let croMap = {};
 
                             let formatLink = (str) => {
@@ -1243,27 +1236,6 @@
                                 if (isPaid) croMap[croName].paid++;
                                 else croMap[croName].pending++;
 
-                                let taskItemHTML = `
-                                    <div class="flex-shrink-0 bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 flex justify-between items-center hover:bg-black/50 hover:border-white/30 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-300 gap-4 cursor-default group relative overflow-hidden backdrop-blur-sm">
-                                        <div class="absolute left-0 top-0 w-1.5 h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300 shadow-[0_0_10px_currentColor] ${isPaid ? 'bg-emerald-500 text-emerald-400' : 'bg-rose-500 text-rose-400'}"></div>
-                                        <div class="flex-1 min-w-0 pl-3">
-                                            <p class="text-white font-bold text-xs md:text-sm mb-2 group-hover:text-${isPaid ? 'emerald' : 'rose'}-200 transition-colors truncate drop-shadow-md" title="${taskCol}">${taskCol}</p>
-                                            <p class="text-[10px] md:text-xs text-gray-300 truncate font-medium drop-shadow-sm">Tipe: <span class="text-sky-300 font-bold">${tipeVal}</span> <span class="mx-2 opacity-50">|</span> Progress: <span class="text-purple-300 font-bold">${progVal}</span></p>
-                                        </div>
-                                        <span class="px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-black ${isPaid ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'bg-rose-500/30 text-rose-300 border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.2)]'} whitespace-nowrap flex-shrink-0 group-hover:scale-105 transition-transform tracking-wide">
-                                            ${isPaid ? 'PAID' : 'BELUM PAID'}
-                                        </span>
-                                    </div>
-                                `;
-
-                                if (isPaid) {
-                                    paidCount++;
-                                    paidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                } else {
-                                    unpaidCount++;
-                                    unpaidContainer.insertAdjacentHTML('beforeend', taskItemHTML);
-                                }
-
                                 let cellData = [
                                     colZero,
                                     formatCellDate(getCell(row, pdoIdx.date)),
@@ -1291,16 +1263,6 @@
                             }
 
                             renderCroBreakdown(croMap);
-
-                            if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Sudah Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
-                            if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-rose-500/20 backdrop-blur-md rounded-lg border border-rose-400/50 shadow-[0_0_15px_rgba(244,63,94,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Task Belum Paid <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-rose-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(244,63,94,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} PENDING</span>`;
-
-                            if (paidContainer.innerHTML === '') {
-                                paidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-emerald-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-emerald-300/70 font-bold tracking-wide">Belum ada task yang lunas di bulan ini.</p></div>`;
-                            }
-                            if (unpaidContainer.innerHTML === '') {
-                                unpaidContainer.innerHTML = `<div class="col-span-full p-6 border border-dashed border-rose-400/30 bg-black/20 rounded-2xl text-center"><p class="text-xs md:text-sm text-rose-300/70 font-bold tracking-wide">Tidak ada task yang pending di bulan ini.</p></div>`;
-                            }
 
                             if (allTableRowsHTML.length === 0) {
                                 document.getElementById('table-body').innerHTML = `<tr><td colspan="16" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
