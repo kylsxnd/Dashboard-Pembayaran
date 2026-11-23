@@ -315,7 +315,7 @@
                     </div>
                 </div>
 
-                <!-- SUMMARY DATA PANEL (OTOMATIS DISEMBUNYIKAN DI PDO NEW) -->
+                <!-- SUMMARY DATA PANEL (OTOMATIS DISEMBUNYIKAN DI PEMBAYARAN PDO) -->
                 <div id="dashboard-widgets" class="mb-6 md:mb-8 hidden opacity-0 animate-fade-in-up delay-150">
                     <div class="bg-zinc-900/40 backdrop-blur-xl border border-white/20 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden group">
                         <h3 class="text-white font-black text-xs md:text-sm tracking-widest uppercase mb-6 md:mb-8 flex items-center gap-3 relative z-10 drop-shadow-lg">
@@ -857,7 +857,7 @@
             };
 
             const sheetTabs = [
-                'PDO New', 
+                'Pembayaran PDO', 
                 'Monitoring Pembayaran Pengelolaan Mandiri', 
                 'Monitoring Pembayaran Borongan',
                 'Petty Cash',
@@ -880,7 +880,7 @@
                     let activeClassesStr = '';
                     let activeIconStr = '';
 
-                    if (sheetName === 'PDO New') {
+                    if (sheetName === 'Pembayaran PDO') {
                         activeClassesStr = 'bg-sky-500/20 backdrop-blur-md text-white border-l-4 border-sky-400 shadow-[inset_0_0_20px_rgba(14,165,233,0.1)]';
                         activeIconStr = `<svg class="w-4 h-4 md:w-5 md:h-5 mr-3 md:mr-4 text-sky-400 flex-shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>`;
                     } else if (sheetName === 'Monitoring Pembayaran Pengelolaan Mandiri') {
@@ -918,7 +918,7 @@
                         const filterIcon = document.getElementById('month-filter-icon');
                         const filterArrow = document.getElementById('month-filter-arrow');
 
-                        if (sheetName === 'PDO New') {
+                        if (sheetName === 'Pembayaran PDO') {
                             logoIcon.className = "w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.5)]";
                             if (filterContainer) filterContainer.className = 'flex relative items-center gap-2 bg-black/60 backdrop-blur-xl px-3 py-1.5 md:px-4 md:py-2 rounded-lg border shadow-[0_4px_20px_rgba(0,0,0,0.2)] cursor-pointer hover:bg-black/80 transition-all group z-20 w-full md:w-auto mt-1 md:mt-0 border-sky-500/40 shadow-[0_4px_20px_rgba(14,165,233,0.2)] flex-1 min-w-[140px]';
                             if (filterEl) filterEl.className = 'bg-transparent text-sky-400 font-black text-[10px] md:text-xs uppercase tracking-widest focus:outline-none cursor-pointer appearance-none outline-none pr-6 z-10 w-full drop-shadow-md text-center';
@@ -1055,7 +1055,9 @@
                 }
                 
                 let apiEndpoint = '';
-                if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
+                if (currentActiveSheet === 'Pembayaran PDO') {
+                    apiEndpoint = '/api/sheet/pdo_new';
+                } else if (currentActiveSheet === 'Monitoring Pembayaran Pengelolaan Mandiri') {
                     apiEndpoint = '/api/sheet/monitoring_pembayaran_pengelolaan_Mandiri';
                 } else if (currentActiveSheet === 'Monitoring Pembayaran Borongan') {
                     apiEndpoint = '/api/sheet/monitoring_pembayaran_borongan';
@@ -1105,11 +1107,11 @@
                         }
 
                         // =========================================================
-                        // KONDISI 1: PDO NEW
+                        // KONDISI 1: PEMBAYARAN PDO
                         // =========================================================
-                        if (currentActiveSheet === 'PDO New') {
+                        if (currentActiveSheet === 'Pembayaran PDO') {
                             
-                            // Sembunyikan panel Task Sudah Paid & Task Belum Paid khusus di PDO New
+                            // Sembunyikan panel Task Sudah Paid & Task Belum Paid khusus di Pembayaran PDO
                             if(pdoBreakdown) {
                                 pdoBreakdown.classList.add('hidden');
                                 pdoBreakdown.classList.remove('grid');
@@ -1118,7 +1120,7 @@
                             dashboardWidgets.classList.add('hidden');
                             noSummaryMsg.classList.add('hidden');
 
-                            // Deteksi baris header pada sheet PDO New (Baris ke-3 / index 2)
+                            // Deteksi baris header pada sheet Pembayaran PDO (Baris ke-3 / index 2)
                             let pdoNewHeaderRowIdx = 2;
                             for (let r = 0; r < Math.min(15, data.length); r++) {
                                 if (!data[r]) continue;
@@ -1151,7 +1153,7 @@
                                 else if (h === 'paid') pdoNewIdx.paid = c;
                             }
 
-                            // Render Header Tabel mengikuti kolom yang ada di PDO New
+                            // Render Header Tabel mengikuti kolom yang ada di Pembayaran PDO
                             let headHTML = '<tr>';
                             validCols.forEach(col => {
                                 headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${col.label}</th>`;
