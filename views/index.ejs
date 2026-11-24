@@ -355,8 +355,8 @@
                     Sheet ini tidak memiliki ringkasan (Total/Summary).
                 </div>
 
-                <!-- TABEL DATA UTAMA -->
-                <div class="bg-zinc-900/40 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col opacity-0 animate-fade-in-up delay-200">
+                <!-- TABEL DATA UTAMA (OTOMATIS DISEMBUNYIKAN DI PEMBAYARAN PDO) -->
+                <div id="main-table-section" class="bg-zinc-900/40 backdrop-blur-2xl border border-white/20 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative flex flex-col opacity-0 animate-fade-in-up delay-200">
                     <div class="px-5 md:px-8 py-5 md:py-6 border-b border-white/10 flex justify-between items-center bg-white/[0.05]">
                         <h3 class="text-white font-bold text-xs md:text-sm tracking-widest uppercase flex items-center gap-3 drop-shadow-lg">
                             <div class="p-2 bg-white/10 rounded-lg backdrop-blur-md border border-white/10"><svg class="w-4 h-4 md:w-5 md:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg></div>
@@ -465,7 +465,15 @@
             let isCheckedVal = (val) => {
                 if (val === '-' || val === null || val === undefined || val === '') return false;
                 let strVal = String(val).toUpperCase().trim();
-                return strVal === 'TRUE' || val === 1 || val === '1' || val === '1.0' || val === true || strVal.includes('TRUE') || strVal.includes('☑');
+                return strVal === 'TRUE' || val === 1 || val === '1' || val === '1.0' || val === true || strVal.includes('TRUE') || strVal.includes('☑') || strVal.includes('✓');
+            };
+
+            // Cek apakah suatu kolom tahapan terisi/aktif (checkbox TRUE, tanda centang, tanggal, atau teks status aktif)
+            let isStageActive = (val) => {
+                if (val === '-' || val === null || val === undefined || val === '') return false;
+                let str = String(val).trim().toLowerCase();
+                if (str === '' || str === '-' || str === 'false' || str === '0' || str === '0.0' || str === 'belum' || str === 'tidak' || str === 'no' || str === '☐') return false;
+                return true;
             };
 
             let formatProgBadge = (val) => {
@@ -498,8 +506,8 @@
                 return null;
             };
 
-            // Render Kartu Rekapan Per CRO (Proses Review, Proses Pembayaran, Paid)
-            let renderCroBreakdown = (itemsMap) => {
+            // Render Kartu Rekapan Per CRO
+            let renderCroBreakdown = (itemsMap, secondLabel = 'Pembuatan Surat Pengajuan') => {
                 const container = document.getElementById('croCardsContainer');
                 const section = document.getElementById('cro-breakdown-section');
                 if (!container || !section) return;
@@ -520,6 +528,7 @@
                 keys.forEach((croKey, idx) => {
                     let info = itemsMap[croKey];
                     let col = colors[idx % colors.length];
+                    let secondCount = (info.surat !== undefined) ? info.surat : (info.pembayaran || 0);
 
                     container.innerHTML += `
                         <div class="bg-black/30 border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg backdrop-blur-md hover:bg-black/50 hover:border-${col}-400/50 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(0,0,0,0.4)] transition-all duration-300 flex flex-col justify-between relative overflow-hidden group cursor-default">
@@ -534,8 +543,8 @@
                                     <b class="text-amber-300">${info.review || 0}</b>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Proses Pembayaran</span>
-                                    <b class="text-sky-300">${info.pembayaran || 0}</b>
+                                    <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-sky-400"></span> ${secondLabel}</span>
+                                    <b class="text-sky-300">${secondCount}</b>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Paid</span>
@@ -1037,13 +1046,31 @@
                 renderPagination();
             }
 
-            function formatCellDate(val) {
+            const namaBulanID = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            function formatCellDate(val, withMonthName = false) {
+                if (val === null || val === undefined || val === '-' || val === '') return '-';
+                let numVal = null;
                 if (typeof val === 'number') {
-                    let dateObj = new Date(Math.round((val - 25569) * 86400 * 1000));
-                    return `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+                    numVal = val;
+                } else if (typeof val === 'string' && /^\d{5}(\.\d+)?$/.test(val.trim())) {
+                    numVal = parseFloat(val.trim());
+                }
+
+                if (numVal !== null && numVal > 30000) {
+                    let dateObj = new Date(Math.round((numVal - 25569) * 86400 * 1000));
+                    if (withMonthName) {
+                        return `${dateObj.getUTCDate().toString().padStart(2, '0')} ${namaBulanID[dateObj.getUTCMonth()]} ${dateObj.getUTCFullYear()}`;
+                    }
+                    return `${dateObj.getUTCDate().toString().padStart(2, '0')}/${(dateObj.getUTCMonth()+1).toString().padStart(2, '0')}/${dateObj.getUTCFullYear()}`;
                 } else if (typeof val === 'string' && val.includes('00:00:00')) {
                     let dateObj = new Date(val);
-                    if (!isNaN(dateObj)) return `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+                    if (!isNaN(dateObj)) {
+                        if (withMonthName) {
+                            return `${dateObj.getDate().toString().padStart(2, '0')} ${namaBulanID[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+                        }
+                        return `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+                    }
                 }
                 return val ? val.toString().trim() : '-';
             }
@@ -1089,6 +1116,7 @@
                         const noSummaryMsg = document.getElementById('no-summary-msg');
                         const titlePaidPanel = document.getElementById('panel-title-paid');
                         const titleUnpaidPanel = document.getElementById('panel-title-unpaid');
+                        const mainTableSection = document.getElementById('main-table-section');
 
                         if(pdoBreakdown) pdoBreakdown.classList.add('hidden');
                         if(dashboardWidgets) dashboardWidgets.classList.add('hidden');
@@ -1097,6 +1125,9 @@
                         // Sembunyikan section CRO default
                         const croSection = document.getElementById('cro-breakdown-section');
                         if(croSection) croSection.classList.add('hidden');
+
+                        // Tampilkan tabel utama secara default untuk sheet selain Pembayaran PDO
+                        if(mainTableSection) mainTableSection.classList.remove('hidden');
 
                         const filterContainer = document.getElementById('universal-month-filter-container');
                         const filterSelect = document.getElementById('universal-month-filter');
@@ -1107,66 +1138,68 @@
                         }
 
                         // =========================================================
-                        // KONDISI 1: PEMBAYARAN PDO
+                        // KONDISI 1: PEMBAYARAN PDO (HANYA REKAPAN STATUS PER CRO)
                         // =========================================================
                         if (currentActiveSheet === 'Pembayaran PDO') {
                             
-                            // Sembunyikan panel Task Sudah Paid & Task Belum Paid khusus di Pembayaran PDO
+                            // Sembunyikan Detail Data Tabel, Summary Panel, dan Panel Paid/Belum Paid
+                            if(mainTableSection) mainTableSection.classList.add('hidden');
                             if(pdoBreakdown) {
                                 pdoBreakdown.classList.add('hidden');
                                 pdoBreakdown.classList.remove('grid');
                             }
+                            if(dashboardWidgets) dashboardWidgets.classList.add('hidden');
+                            if(noSummaryMsg) noSummaryMsg.classList.add('hidden');
 
-                            dashboardWidgets.classList.add('hidden');
-                            noSummaryMsg.classList.add('hidden');
-
-                            // Deteksi baris header pada sheet Pembayaran PDO (Baris ke-3 / index 2)
+                            // Deteksi baris header pada sheet Pembayaran PDO
                             let pdoNewHeaderRowIdx = 2;
                             for (let r = 0; r < Math.min(15, data.length); r++) {
                                 if (!data[r]) continue;
                                 let str = data[r].join('').toLowerCase();
-                                if (str.includes('perihal') && (str.includes('sistem pdo') || str.includes('link dokumen') || str.includes('tanggal pengajuan'))) {
+                                if (str.includes('perihal') || str.includes('proses review') || str.includes('pembuatan surat pengajuan') || (str.includes('cro') && str.includes('tanggal'))) {
                                     pdoNewHeaderRowIdx = r;
                                     break;
                                 }
                             }
 
-                            let rawHeaders = data[pdoNewHeaderRowIdx] || [];
-                            let validCols = [];
-                            let pdoNewIdx = { no: -1, date: -1, cro: -1, perihal: -1, periode: -1, link: -1, sistem: -1, surat: -1, keu: -1, paid: -1 };
+                            let pdoNewIdx = { no: -1, date: -1, cro: -1, perihal: -1, periode: -1, link: -1, sistem: -1, review: -1, surat: -1, keu: -1, paid: -1 };
 
-                            for (let c = 0; c < rawHeaders.length; c++) {
-                                let label = (rawHeaders[c] !== null && rawHeaders[c] !== undefined) ? String(rawHeaders[c]).trim() : '';
-                                if (!label) continue;
-                                let h = label.toLowerCase();
-                                validCols.push({ index: c, label: label, lower: h });
+                            let mapHeaderColumns = (hr) => {
+                                if (!hr) return;
+                                for (let c = 0; c < hr.length; c++) {
+                                    let label = (hr[c] !== null && hr[c] !== undefined) ? String(hr[c]).trim() : '';
+                                    if (!label) continue;
+                                    let h = label.toLowerCase();
 
-                                if (h === 'no') pdoNewIdx.no = c;
-                                else if (h.includes('tanggal pengajuan') || h.includes('tanggal') || h === 'date') pdoNewIdx.date = c;
-                                else if (h === 'cro') pdoNewIdx.cro = c;
-                                else if (h === 'perihal' || h.includes('task')) pdoNewIdx.perihal = c;
-                                else if (h === 'periode') pdoNewIdx.periode = c;
-                                else if (h.includes('link')) pdoNewIdx.link = c;
-                                else if (h.includes('sistem pdo') || h === 'progress' || h === 'status') pdoNewIdx.sistem = c;
-                                else if (h.includes('surat pengajuan')) pdoNewIdx.surat = c;
-                                else if (h.includes('keuangan')) pdoNewIdx.keu = c;
-                                else if (h === 'paid') pdoNewIdx.paid = c;
+                                    if (h === 'no' && pdoNewIdx.no === -1) pdoNewIdx.no = c;
+                                    else if ((h.includes('tanggal pengajuan') || h.includes('tanggal') || h === 'date') && pdoNewIdx.date === -1) pdoNewIdx.date = c;
+                                    else if (h === 'cro' && pdoNewIdx.cro === -1) pdoNewIdx.cro = c;
+                                    else if ((h === 'perihal' || h.includes('task')) && pdoNewIdx.perihal === -1) pdoNewIdx.perihal = c;
+                                    else if (h === 'periode' && pdoNewIdx.periode === -1) pdoNewIdx.periode = c;
+                                    else if (h.includes('link') && pdoNewIdx.link === -1) pdoNewIdx.link = c;
+                                    else if ((h.includes('sistem pdo') || h === 'progress' || h === 'status') && pdoNewIdx.sistem === -1) pdoNewIdx.sistem = c;
+                                    else if ((h.includes('proses review') || h === 'review') && pdoNewIdx.review === -1) pdoNewIdx.review = c;
+                                    else if ((h.includes('pembuatan surat pengajuan') || h.includes('surat pengajuan') || h.includes('pembuatan surat')) && pdoNewIdx.surat === -1) pdoNewIdx.surat = c;
+                                    else if (h.includes('keuangan') && pdoNewIdx.keu === -1) pdoNewIdx.keu = c;
+                                    else if (h === 'paid' && pdoNewIdx.paid === -1) pdoNewIdx.paid = c;
+                                }
+                            };
+
+                            // Cek baris header utama maupun baris subheader tepat di bawahnya (antisipasi merge cell)
+                            mapHeaderColumns(data[pdoNewHeaderRowIdx]);
+                            if (pdoNewIdx.review === -1 || pdoNewIdx.surat === -1 || pdoNewIdx.paid === -1) {
+                                mapHeaderColumns(data[pdoNewHeaderRowIdx + 1]);
                             }
-
-                            // Render Header Tabel mengikuti kolom yang ada di Pembayaran PDO
-                            let headHTML = '<tr>';
-                            validCols.forEach(col => {
-                                headHTML += `<th class="px-5 md:px-8 py-4 md:py-6 font-bold bg-black/50 backdrop-blur-md sticky top-0 z-10 border-b border-white/20 whitespace-nowrap align-bottom drop-shadow-md text-gray-200">${col.label}</th>`;
-                            });
-                            headHTML += '</tr>';
-                            thead.innerHTML = headHTML;
 
                             // Ekstrak Daftar Bulan dari kolom Tanggal Pengajuan Diterima
                             let availableMonths = [];
                             for (let i = pdoNewHeaderRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row) continue;
-                                let dateCell = formatCellDate(getCell(row, pdoNewIdx.date));
+                                let colZero = getCell(row, pdoNewIdx.no);
+                                if (colZero === '-' || isNaN(colZero)) continue;
+
+                                let dateCell = formatCellDate(getCell(row, pdoNewIdx.date), true);
                                 if (dateCell !== '-') {
                                     let match = dateCell.match(/[A-Za-z]+\s\d{4}/);
                                     if (match && !availableMonths.includes(match[0])) availableMonths.push(match[0]);
@@ -1188,18 +1221,6 @@
 
                             let croMap = {};
 
-                            let formatLink = (str) => {
-                                if (str === '-' || !str || String(str) === 'nan' || String(str) === '') return '-';
-                                str = String(str).trim();
-                                const urlRegex = /(https?:\/\/[^\s]+)/g;
-                                if (urlRegex.test(str)) {
-                                    return str.replace(urlRegex, (url) => `<a href="${url}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] md:text-[11px] font-bold tracking-wide bg-sky-500/20 text-sky-300 border border-sky-400/50 shadow-[0_0_10px_rgba(14,165,233,0.2)] hover:bg-sky-500/40 transition-all duration-300 hover:-translate-y-0.5">Buka Dokumen</a>`);
-                                } else {
-                                    const safeName = str.replace(/'/g, "\\'");
-                                    return `<button onclick="openSmartChipModal('${safeName}')" class="inline-flex items-center gap-2 text-sky-300 font-bold hover:text-sky-200 transition-colors cursor-pointer text-left focus:outline-none truncate max-w-[180px] md:max-w-[230px] hover:-translate-y-0.5 drop-shadow-md" title="${safeName}"><svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><span class="underline decoration-sky-400/50 underline-offset-4 truncate">${str}</span></button>`;
-                                }
-                            };
-
                             for (let i = pdoNewHeaderRowIdx + 1; i < data.length; i++) {
                                 let row = data[i];
                                 if (!row || row.every(val => val === null || val === '')) continue;
@@ -1208,76 +1229,49 @@
                                 if (colZero === '-' || isNaN(colZero)) continue;
 
                                 let rawDate = getCell(row, pdoNewIdx.date);
-                                let formattedDate = formatCellDate(rawDate);
+                                let formattedDate = formatCellDate(rawDate, true);
                                 if (window.selectedMonthFilter !== 'ALL') {
                                     if (!formattedDate.toUpperCase().includes(window.selectedMonthFilter)) continue; 
                                 }
 
                                 let perihalCol = getCell(row, pdoNewIdx.perihal);
-                                if (perihalCol === '-' || perihalCol === 'nan') continue;
-
                                 let croRaw = getCell(row, pdoNewIdx.cro);
+                                if (perihalCol === '-' && croRaw === '-') continue;
+
                                 let croName = (croRaw !== '-') ? croRaw.replace(/\s+/g, ' ').trim().toUpperCase() : (extractCroName(perihalCol) || 'LAINNYA');
 
                                 let sistemVal = getCell(row, pdoNewIdx.sistem).toLowerCase();
-                                let isPaid = isCheckedVal(getCell(row, pdoNewIdx.paid)) || sistemVal.includes('paid') || sistemVal.includes('lunas');
-                                let isProsesPembayaran = !isPaid && (
-                                    sistemVal.includes('pembayaran') || sistemVal.includes('keuangan') || 
-                                    sistemVal.includes('direktorat') || sistemVal.includes('surat') || 
-                                    sistemVal.includes('approved') || sistemVal.includes('umum') || 
-                                    sistemVal.includes('pajak') || sistemVal.includes('bayar') ||
-                                    isCheckedVal(getCell(row, pdoNewIdx.surat)) || isCheckedVal(getCell(row, pdoNewIdx.keu))
+                                let reviewCell = getCell(row, pdoNewIdx.review);
+                                let suratCell = getCell(row, pdoNewIdx.surat);
+                                let paidCell = getCell(row, pdoNewIdx.paid);
+
+                                // Tarikan status sesuai kolom: Paid -> Pembuatan Surat Pengajuan -> Proses Review
+                                let isPaid = isStageActive(paidCell) || sistemVal.includes('paid') || sistemVal.includes('lunas');
+                                let isPembuatanSurat = !isPaid && (
+                                    isStageActive(suratCell) ||
+                                    sistemVal.includes('surat pengajuan') ||
+                                    sistemVal.includes('pembuatan surat') ||
+                                    sistemVal.includes('surat')
+                                );
+                                let isProsesReview = !isPaid && !isPembuatanSurat && (
+                                    isStageActive(reviewCell) ||
+                                    sistemVal.includes('review') ||
+                                    pdoNewIdx.review === -1 ||
+                                    (!isStageActive(reviewCell) && !isStageActive(suratCell) && !isStageActive(paidCell))
                                 );
 
-                                if (!croMap[croName]) croMap[croName] = { total: 0, review: 0, pembayaran: 0, paid: 0 };
+                                if (!croMap[croName]) croMap[croName] = { total: 0, review: 0, surat: 0, paid: 0 };
                                 croMap[croName].total++;
-                                if (isPaid) croMap[croName].paid++;
-                                else if (isProsesPembayaran) croMap[croName].pembayaran++;
-                                else croMap[croName].review++;
-
-                                let rowHTML = '<tr class="hover:bg-white/5 transition-colors duration-200 group">';
-                                validCols.forEach(col => {
-                                    let rawVal = getCell(row, col.index);
-                                    let cellVal = rawVal;
-                                    let h = col.lower;
-
-                                    if (col.index === pdoNewIdx.date || h.includes('tanggal') || h === 'date') {
-                                        cellVal = formatCellDate(rawVal);
-                                    } else if (col.index === pdoNewIdx.link || h.includes('link')) {
-                                        cellVal = formatLink(rawVal);
-                                    } else if (col.index === pdoNewIdx.sistem || h.includes('sistem') || h.includes('progress') || h.includes('status')) {
-                                        cellVal = formatProgBadge(rawVal);
-                                    } else if (
-                                        h.includes('review') || h.includes('surat') || h.includes('paraf') || 
-                                        h.includes('ttd') || h.includes('diterima') || h.includes('pajak') || 
-                                        h.includes('umum') || h.includes('keuangan') || h.includes('revisi') || 
-                                        h.includes('direktorat') || h === 'paid' ||
-                                        rawVal.toUpperCase() === 'TRUE' || rawVal.toUpperCase() === 'FALSE'
-                                    ) {
-                                        cellVal = formatCheckmark(rawVal);
-                                    }
-
-                                    let cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-gray-200 whitespace-nowrap font-medium drop-shadow-sm";
-                                    if (col.index === pdoNewIdx.perihal) {
-                                        cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-white font-bold min-w-[260px] md:min-w-[320px] max-w-[420px] md:max-w-[520px] whitespace-normal leading-relaxed drop-shadow-md";
-                                    } else if (col.index === pdoNewIdx.cro) {
-                                        cellClasses = "px-4 md:px-6 py-4 md:py-5 border-b border-white/10 align-middle text-sky-300 font-bold whitespace-nowrap drop-shadow-sm";
-                                    }
-
-                                    rowHTML += `<td class="${cellClasses}">${cellVal}</td>`;
-                                });
-                                rowHTML += '</tr>';
-                                allTableRowsHTML.push(rowHTML);
+                                if (isPaid) {
+                                    croMap[croName].paid++;
+                                } else if (isPembuatanSurat) {
+                                    croMap[croName].surat++;
+                                } else if (isProsesReview) {
+                                    croMap[croName].review++;
+                                }
                             }
 
-                            renderCroBreakdown(croMap);
-
-                            if (allTableRowsHTML.length === 0) {
-                                document.getElementById('table-body').innerHTML = `<tr><td colspan="${validCols.length || 9}" class="px-6 py-16 text-center text-gray-400 font-bold text-sm md:text-base bg-black/20 backdrop-blur-sm">Tidak ada baris data di bulan ini.</td></tr>`;
-                                document.getElementById('pagination-container').innerHTML = '';
-                            } else {
-                                renderTablePage();
-                            }
+                            renderCroBreakdown(croMap, 'Pembuatan Surat Pengajuan');
                             
                             let syncTime = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                             document.getElementById('last-update').innerHTML = `Data API <span class="text-emerald-400 font-bold ml-1 drop-shadow-[0_0_5px_currentColor]">${syncTime}</span>`;
@@ -1541,7 +1535,7 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            renderCroBreakdown(croMapMon);
+                            renderCroBreakdown(croMapMon, 'Proses Pembayaran');
 
                             let titleColor = currentActiveSheet.includes('Borongan') ? 'amber' : 'emerald';
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-${titleColor}-500/20 backdrop-blur-md rounded-lg border border-${titleColor}-400/50 shadow-[0_0_15px_rgba(var(--tw-colors-${titleColor}-500),0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-${titleColor}-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Pembayaran Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-${titleColor}-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(var(--tw-colors-${titleColor}-500),0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
@@ -1832,7 +1826,7 @@
                                 allTableRowsHTML.push(rowHTML);
                             }
 
-                            renderCroBreakdown(croMapPetty);
+                            renderCroBreakdown(croMapPetty, 'Proses Pembayaran');
 
                             if (titlePaidPanel) titlePaidPanel.innerHTML = `<div class="p-2 bg-emerald-500/20 backdrop-blur-md rounded-lg border border-emerald-400/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Lunas <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-emerald-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(16,185,129,0.6)] flex-shrink-0 tracking-wide">${paidCount} PAID</span>`;
                             if (titleUnpaidPanel) titleUnpaidPanel.innerHTML = `<div class="p-2 bg-purple-500/20 backdrop-blur-md rounded-lg border border-purple-400/50 shadow-[0_0_15px_rgba(168,85,247,0.3)]"><svg class="w-4 h-4 md:w-5 md:h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div> Status Review <span class="ml-auto md:ml-3 px-3 py-1.5 rounded-lg bg-purple-500 text-white font-black text-[10px] md:text-xs shadow-[0_4px_15px_rgba(168,85,247,0.6)] flex-shrink-0 tracking-wide">${unpaidCount} REVIEW</span>`;
